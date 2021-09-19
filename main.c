@@ -38,6 +38,8 @@ typedef struct game_state {
 	int cursor_x;
 	int cursor_y;
 	int turn;
+	char current_unit_code;
+	char selected_code;
 } game_state;
 
 GLfloat* buildSquareVertices(float offset_x, float offset_y, 
@@ -150,11 +152,28 @@ void printMap(int size_x, int size_y, char **mapBuffer){
 	}
 }
 
+void step(game_state* state);
+// Starts first turn on next turn
+void turn(game_state* state){
+	//state-> turn is -1 when the game starts
+	state->turn = (state->turn + 1)%state->player_number;
+	// NOTE(filip): Hardcoded turns for 2 players
+	// TODO(filip): Dynamic turns for variable number of players
+	if(state->turn == 0){
+		state-> current_unit_code = '3';
+	}
+	if(state->turn == 1){
+		state-> current_unit_code = '5';
+	}
+
+	step(state);
+}
+
 // Jump to the next unit (or first if state->started == 0)
 void step(game_state* state){
 	printf("STATE! Started: %d, x: %d, y: %d\n", state->started, state->cursor_x, state->cursor_y);
 	if(state->started == 1){
-		(state->map)->data[state->cursor_y][(state->cursor_x)++] = '3';
+		(state->map)->data[state->cursor_y][(state->cursor_x)++] = state->current_unit_code;
 	}
 	else{
 		state->started = 1;
@@ -163,9 +182,9 @@ void step(game_state* state){
 	{
 		for(;state->cursor_x < (state->map)->size_x;state->cursor_x++)
 		{
-			if((state->map)->data[state->cursor_y][state->cursor_x] == '3')
+			if((state->map)->data[state->cursor_y][state->cursor_x] == state->current_unit_code)
 			{
-				(state->map)->data[state->cursor_y][state->cursor_x] = '4';
+				(state->map)->data[state->cursor_y][state->cursor_x] = state->selected_code;
 				return;
 			}
 		}
@@ -173,7 +192,7 @@ void step(game_state* state){
 	}
 	state->cursor_y = 0;
 	state->started = 0;
-	step(state);
+	turn(state);
 }
 
 // Generates a random test map
@@ -196,6 +215,12 @@ void generateTestMap(game_map *map)
 	map->data[1][2] = '3';
 	map->data[3][5] = '3';
 	map->data[6][6] = '3';	
+
+	map->data[14][19] = '4';
+	map->data[13][10] = '5';
+	map->data[9][18] = '5';
+	map->data[11][17] = '5';
+	map->data[13][6] = '5';	
 }
 
 void updateMapGL(game_map* map, float *colors, GLfloat *mapVertices, GLuint VBO){
@@ -308,8 +333,10 @@ int main()
 	state.cursor_x = 0;
 	state.cursor_y = 0;	
 	state.started = 0;
+	state.selected_code = '6';
+	state.turn = -1;
 	
-	step(&state);
+	turn(&state);
 	// Build vertices and indices
 	buildMapGL(test_map.size_x, test_map.size_y, -0.8, -0.5, &vertices, &indices);
 
@@ -327,13 +354,13 @@ int main()
 	// Bind the VBO specifying it's a GL_ARRAY_BUFFER
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	// Introduce the vertices into the VBO
-	glBufferData(GL_ARRAY_BUFFER, getVertexBufferSizeMap(&map), vertices, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, getMapVertexBufferSize(&test_map), vertices, GL_DYNAMIC_DRAW);
 
 
 	// Bind the EBO specifying it's a GL_ELEMENT_ARRAY_BUFFER
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	// Introduce the indices into the EBO
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, getIndexBufferSizeMap(&map) , indices, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, getMapIndexBufferSize(&test_map) , indices, GL_DYNAMIC_DRAW);
 
 	// Configure the Vertex Attributes so that OpenGL knows how to read the VBO
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
@@ -357,11 +384,13 @@ int main()
 	// GAME --------------------------------------------------------------------
 
 	// List of colors  
-	GLfloat colors[] = {0.15f, 0.15f, 0.15f, //Dark grey: TODO(filip): Fog of war
-						0.8f, 0.8f, 0.7f,	 //Light yellow: map tiles
-						0.1f, 0.1f, 0.5f,    //Dark blue: Base
-						0.1f, 0.8f, 0.1f,	 //Blue: Unit
-						0.9f, 0.9f, 0.0f};	 //Yellow: Selected
+	GLfloat colors[] = {0.15f, 0.15f, 0.15f, //0. Dark grey: TODO(filip): Fog of war
+						0.8f, 0.8f, 0.7f,	 //1. Light yellow: map tiles
+						0.1f, 0.1f, 0.5f,    //2. Dark blue: Blue ase
+						0.1f, 0.8f, 0.1f,	 //3. Blue: Blue unit
+						0.5f, 0.1f, 0.1f,    //4. Dark red: Red base
+						0.8f, 0.1f, 0.1f,	 //5. Red: Red unit
+						0.9f, 0.9f, 0.0f};	 //6. Yellow: Selected
 	// Main while loop
 	int a = 0;
 	int prev_p = 0;
