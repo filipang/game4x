@@ -1,3 +1,18 @@
+/*******************************************************************************
+* 
+* FILENAME : main.c
+*
+* DESCRIPTION :
+*       Main file for game4x. This is a short game development project which
+*       will eventually be re-written in Assembly to be handed in as college
+*       homework. 
+*
+* AUTHORS : filipang, ciobanuradu           
+* 
+* START DATE :    19/09/2021
+*
+*******************************************************************************/
+
 #include <stdio.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -6,7 +21,7 @@
 
 #define PI 3.14159265359
 
-// NOTE(filip): Remove this on release
+// NOTE(filip): Don't define DEBUG when releasing
 #define DEBUG
 
 // NOTE(filip): Everything has to be simplified to be re-written in ASM
@@ -35,17 +50,21 @@ const char* fragmentShaderSource = "#version 330 core\n"
 // NOTE(filip): Maybe move these structs in header file?
 
 // NOTE(filip): Mabe make data unsigned char* instead of unsigned char** for ASM
-typedef struct game_map {
+// TODO(filip): Organize these structs better
+typedef struct game_map 
+{
 	unsigned char **data;
 	int size_x;
 	int size_y;
 } game_map;
 
-typedef struct ui_state {
+typedef struct ui_state 
+{
     unsigned char **ui_map;
 } ui_state;
 
-typedef struct game_state {
+typedef struct game_state 
+{
 	game_map *map;
 	ui_state *ui;
 	int player_number;
@@ -61,11 +80,16 @@ typedef struct game_state {
 	int move_attack_state;
 } game_state;
 
+
+// NOTE(filip): LEGACY CODE ----------------------------------------------------
+// NOTE(filip): There are 180 lines of legacy code
+// TODO(filip): Decide if you should remove this
 // Generates vertices for a single square + color
-// NOTE(filip): Vertex in memory: (pos_x, pos_y, pos_z, col_x, col_y, col_z)
+// Vertex in memory: (pos_x, pos_y, pos_z, col_x, col_y, col_z)
 GLfloat* buildSquareVertices(float offset_x, float offset_y, 
 						 	 float color_r, float color_b, float color_g, 
-						 	 float side_len, GLfloat* dest){
+						 	 float side_len, GLfloat* dest)
+{
 	*(dest++) = offset_x;
 	*(dest++) = offset_y;
 	*(dest++) = 0.0f;
@@ -99,7 +123,8 @@ GLfloat* buildSquareVertices(float offset_x, float offset_y,
 
 // Generates indices (two triangles) for a single square (divided by diagonal)
 // Square vertices are in order, so triangles are (0,1,3) and (0,2,3)
-GLuint* buildSquareIndices(GLuint offset, GLuint* dest){
+GLuint* buildSquareIndices(GLuint offset, GLuint* dest)
+{
 	*(dest ++) = offset;
 	*(dest ++) = offset + 1;
 	*(dest ++) = offset + 3;
@@ -111,11 +136,137 @@ GLuint* buildSquareIndices(GLuint offset, GLuint* dest){
 	return dest;
 }
 
+// This generates vertices and indices for map
+void buildSquareMapGL(int size_x, int size_y, 
+				float side_len, 
+				float offset_x, float offset_y, 
+				GLfloat** vertices, GLuint** indices)
+{
+	int i, j;
+	*vertices = (GLfloat *) malloc(4 * 6 * size_x * size_y * sizeof (GLfloat));
+	*indices = (GLuint *) malloc(6 * size_x * size_y * sizeof (GLuint));
+	GLfloat *iter_v = *vertices;
+	GLuint *iter_i = *indices;
+	uint index_cnt = 0;
+	for(i = 0; i < size_y; i++){
+		for(j = 0; j < size_x; j++){
+			iter_v = buildSquareVertices(offset_x + j * side_len, 
+										 offset_y + i * side_len, 
+									     0.0f, 0.0f, 0.0f,
+									     side_len, iter_v);
+			
+			iter_i = buildSquareIndices(index_cnt, iter_i);
+			index_cnt += 4;	
+			#ifdef DEBUG
+			printf("(%.2f,%.2f) ", (float)j*0.08f, (float)i*0.08f);
+			#endif
+		}
+		#ifdef DEBUG
+		printf("\n");
+		#endif
+	}
+}
+
+int getSquareMapVertexBufferSize(game_map *map)
+{
+	return map->size_x*map->size_y*4*6*sizeof(GLfloat);
+}
+
+int getSquareMapIndexBufferSize(game_map *map)
+{
+	return map->size_x*map->size_y*6*sizeof(GLuint);
+}
+
+void initializeMap(int size_x, int size_y, unsigned char ***map);
+void initializeUIState(int size_x, int size_y, unsigned char ***ui);
+// Generates hard coded square test map
+void generateSquareTestMap(game_map *map, ui_state *ui)
+{
+	int i, j;
+	map->size_x = 20;
+   	map->size_y = 15;	
+	initializeMap(map->size_x, map->size_y, &map->data);
+	initializeUIState(map->size_x, map->size_y, &ui->ui_map);
+	for(i = 0; i < map->size_y; i++)
+	{
+		for(j = 0; j < map->size_x; j++)
+		{
+			map->data[i][j] = 1;
+		}
+	}
+
+	map->data[0][3] = 2;
+	map->data[2][1] = 3;
+	map->data[1][2] = 3;
+	map->data[3][5] = 3;
+	map->data[6][6] = 3;	
+
+	map->data[14][19] = 4;
+	map->data[13][10] = 5;
+	map->data[9][18] = 5;
+	map->data[11][17] = 5;
+	map->data[13][6] = 5;	
+}
+
+void updateSquareMapGL(game_map* map,
+	   			 ui_state* ui,	
+				 float *colors, 
+				 GLfloat *mapVertices, 
+				 GLuint VBO){
+	int i, j, k;
+	glBindBuffer(GL_ARRAY_BUFFER, VBO); // Binds GL_ARRAY_BUFFER to our VBO
+
+	// Render game map
+	GLfloat *iter = mapVertices;
+	for(i = 0; i < map->size_y; i++)
+	{
+		for(j = 0; j < map->size_x; j++)
+		{
+			for (k = 0; k < 4; k++)
+			{
+				iter=iter+3;
+				*(iter++) = *(colors + 3 * map->data[i][j]    ); 			
+				*(iter++) = *(colors + 3 * map->data[i][j] + 1); 			
+				*(iter++) = *(colors + 3 * map->data[i][j] + 2); 			
+			}
+		}
+	}
+
+	// Render UI mask over game map
+	iter = mapVertices;
+	for(i = 0; i < map->size_y; i++)
+	{
+		for(j = 0; j < map->size_x; j++)
+		{
+			for (k = 0; k < 4; k++)
+			{
+				if(ui->ui_map[i][j] != 0)
+				{
+					iter=iter+3;
+					*(iter++) = *(colors + 3*ui->ui_map[i][j]    ); 			
+					*(iter++) = *(colors + 3*ui->ui_map[i][j] + 1); 			
+					*(iter++) = *(colors + 3*ui->ui_map[i][j] + 2); 			
+				}
+			}
+		}
+	}
+
+	// Writes new changes
+	glBufferSubData(GL_ARRAY_BUFFER, 0, // Writes new data to GL_ARRAY_BUFFER
+					getSquareMapVertexBufferSize(map), // Size of new data 
+					mapVertices); // New data to render
+	
+	glBindBuffer(GL_ARRAY_BUFFER, 0);	
+}
+
+// LEGACY CODE ENDS HERE -------------------------------------------------------
+
 // Generates vertices for a single hexagon + color
-// NOTE(filip): Vertex in memory: (pos_x, pos_y, pos_z, col_x, col_y, col_z)
+// Vertex in memory: (pos_x, pos_y, pos_z, col_x, col_y, col_z)
 GLfloat* buildHexagonVertices(float offset_x, float offset_y, 
 						 	 float color_r, float color_b, float color_g, 
-						 	 float side_len, GLfloat* dest){
+						 	 float side_len, GLfloat* dest)
+{
 	*(dest++) = offset_x;
 	*(dest++) = offset_y + side_len;
 	*(dest++) = 0.0f;
@@ -161,7 +312,8 @@ GLfloat* buildHexagonVertices(float offset_x, float offset_y,
 	return dest;
 }
 
-GLuint* buildHexagonIndices(GLuint offset, GLuint* dest){
+GLuint* buildHexagonIndices(GLuint offset, GLuint* dest)
+{
 	*(dest ++) = offset;
 	*(dest ++) = offset + 1;
 	*(dest ++) = offset + 5;
@@ -181,41 +333,13 @@ GLuint* buildHexagonIndices(GLuint offset, GLuint* dest){
 	return dest;
 }
 
-// This generates vertices and indices for map
-void buildSquareMapGL(int size_x, int size_y, 
-				float side_len, 
-				float offset_x, float offset_y, 
-				GLfloat** vertices, GLuint** indices){
-	int i, j;
-	*vertices = (GLfloat *) malloc(4 * 6 * size_x * size_y * sizeof (GLfloat));
-	*indices = (GLuint *) malloc(6 * size_x * size_y * sizeof (GLuint));
-	GLfloat *iter_v = *vertices;
-	GLuint *iter_i = *indices;
-	uint index_cnt = 0;
-	for(i = 0; i < size_y; i++){
-		for(j = 0; j < size_x; j++){
-			iter_v = buildSquareVertices(offset_x + j * side_len, 
-										 offset_y + i * side_len, 
-									     0.0f, 0.0f, 0.0f,
-									     side_len, iter_v);
-			
-			iter_i = buildSquareIndices(index_cnt, iter_i);
-			index_cnt += 4;	
-			#ifdef DEBUG
-			printf("(%.2f,%.2f) ", (float)j*0.08f, (float)i*0.08f);
-			#endif
-		}
-		#ifdef DEBUG
-		printf("\n");
-		#endif
-	}
-}
 
 // This generates vertices and indices for map
 void buildHexagonMapGL(int size_x, int size_y, 
 				float side_len, 
 				float offset_x, float offset_y, 
-				GLfloat** vertices, GLuint** indices){
+				GLfloat** vertices, GLuint** indices)
+{
 	int i, j;
 	*vertices = (GLfloat *) malloc(6 * 6 * size_x * size_y * sizeof (GLfloat));
 	*indices = (GLuint *) malloc(4 * 3 * size_x * size_y * sizeof (GLuint));
@@ -224,6 +348,7 @@ void buildHexagonMapGL(int size_x, int size_y,
 	uint index_cnt = 0;
 	for(i = 0; i < size_y; i++){
 		for(j = 0; j < size_x; j++){
+			// NOTE(filip): Organize this to be more readable
 			iter_v = buildHexagonVertices(offset_x + (j + i*0.5) * sqrt(3) * side_len, 
 										  offset_y + i * (sqrt(3)/2) * sqrt(3) *  side_len, 
 									      0.0f, 0.0f, 0.0f,
@@ -241,38 +366,36 @@ void buildHexagonMapGL(int size_x, int size_y,
 	}
 }
 
-int getSquareMapVertexBufferSize(game_map *map){
-	return map->size_x*map->size_y*4*6*sizeof(GLfloat);
-}
-
-int getSquareMapIndexBufferSize(game_map *map){
-	return map->size_x*map->size_y*6*sizeof(GLuint);
-}
-
-int getHexagonMapVertexBufferSize(game_map *map){
+int getHexagonMapVertexBufferSize(game_map *map)
+{
 	return map->size_x*map->size_y*6*6*sizeof(GLfloat);
 }
 
-int getHexagonMapIndexBufferSize(game_map *map){
+int getHexagonMapIndexBufferSize(game_map *map)
+{
 	return map->size_x*map->size_y*4*3*sizeof(GLuint);
 }
 
-void freeMapVertices(GLfloat* vertices){
+void freeMapVertices(GLfloat* vertices)
+{
 	free(vertices);
 }
 
-
-void freeMapIndices(GLuint* indices){
+void freeMapIndices(GLuint* indices)
+{
 	free(indices);
 }
 
-void initializeUIState(int size_x, int size_y, unsigned char ***uiMapPtr){
+void initializeUIState(int size_x, int size_y, unsigned char ***uiMapPtr)
+{
 	int i, j;
 	*uiMapPtr = (unsigned char **) malloc(sizeof(unsigned char *) * size_y);
-	for(i = 0; i < size_y; i++){
+	for(i = 0; i < size_y; i++)
+	{
 		*(*uiMapPtr + i) = 
 			(unsigned char *) malloc(sizeof(unsigned char) * size_x);
-		for(j = 0; j < size_x; j++) {
+		for(j = 0; j < size_x; j++) 
+		{
 			*(*(*uiMapPtr + i) + j) = 0;
 		}
 	}
@@ -281,76 +404,92 @@ void initializeUIState(int size_x, int size_y, unsigned char ***uiMapPtr){
 void initializeMap(int size_x, int size_y, unsigned char ***mapBufferPtr){
 	int i, j;
 	*mapBufferPtr = (unsigned char **) malloc(sizeof(unsigned char *) * size_y);
-	for(i = 0; i < size_y; i++){
+	for(i = 0; i < size_y; i++)
+	{
 		*(*mapBufferPtr + i) = 
 			(unsigned char *) malloc(sizeof(unsigned char) * size_x);
-		for(j = 0; j < size_x; j++) {
+		for(j = 0; j < size_x; j++) 
+		{
 			*(*(*mapBufferPtr + i) + j) = 0;
 		}
 	}
 }
 
 void printMap(int size_x, int size_y, 
-			  unsigned char **map, unsigned char **ui_map){
+			  unsigned char **map, unsigned char **ui_map)
+{
 	int i, j;
 	printf("Map data:\n");
-	for(i = 0; i < size_y; i++){
-		for(j = 0; j < size_x; j++){
+	for(i = 0; i < size_y; i++)
+	{
+		for(j = 0; j < size_x; j++)
+		{
 			printf("%d", *(*(map + i) + j));
 		}
 		printf("\n");
 	}
 
 	printf("UI data:\n");
-	for(i = 0; i < size_y; i++){
-		for(j = 0; j < size_x; j++){
+	for(i = 0; i < size_y; i++)
+	{
+		for(j = 0; j < size_x; j++)
+		{
 			printf("%d", *(*(ui_map + i) + j));
 		}
 		printf("\n");
 	}
 }
 
+// NOTE(filip): Function header
 void step(game_state* state);
+
 // Starts first turn on next turn
-void turn(game_state* state){
+void turn(game_state* state)
+{
 	//state-> turn is -1 when the game starts
 	state->turn = (state->turn + 1)%state->player_number;
 	// NOTE(filip): Hardcoded turns for 2 players
 	// TODO(filip): Dynamic turns for variable number of players
-	if(state->turn == 0){
+	if(state->turn == 0)
+	{
 		state-> current_unit_code = 3;
 	}
-	if(state->turn == 1){
+	if(state->turn == 1)
+	{
 		state-> current_unit_code = 5;
 	}
 
 	step(state);
 }
 
-void setMoveCursor(int new_move_x, int new_move_y, int range, game_state *state);
+// NOTE(filip): Function header
+void setMoveCursor(int new_move_x, int new_move_y, 
+				   int range, game_state *state);
 
 // Jump to the next unit (or first if state->started == 0)
-void step(game_state* state){
-	if(state->started == 1){
+// FIXME(filip): Jump to next unit only if it hasn't moved yet
+void step(game_state* state)
+{
+	if(state->started == 1)
+	{
 		(state->ui)->ui_map[state->cursor_y][(state->cursor_x)++] = 0;
 	}
-	else{
+	else
+	{
 		state->started = 1;
 	}
+
 	for(;state->cursor_y < (state->map)->size_y;state->cursor_y++)
 	{
 		for(;state->cursor_x < (state->map)->size_x;state->cursor_x++)
 		{
-			printf("Comparing %d and %d\n", 
-				   (state->map)->data[state->cursor_y][state->cursor_x], 
-				    state->current_unit_code);
-
 			if((state->map)->data[state->cursor_y][state->cursor_x] == 
 				state->current_unit_code)
 			{
 				(state->ui)->ui_map[state->cursor_y][state->cursor_x] =
 				   	state->selected_code; 
 				state->started_move = 0;
+				// TODO(filip): Get rid of hard coded range value
 				setMoveCursor(state->cursor_x, state->cursor_y, 4, state);
 				return;
 			}
@@ -362,9 +501,13 @@ void step(game_state* state){
 	turn(state);
 }
 
-void setMoveCursor(int new_move_x, int new_move_y, int range, game_state *state){
+void setMoveCursor(int new_move_x, int new_move_y, 
+				   int range, game_state *state)
+{
 	int cost = 0, i, j;
-	if(state->started_move && (state->move_cursor_x != state->cursor_x || state->move_cursor_y != state->cursor_y))
+	if(state->started_move && 
+			(state->move_cursor_x != state->cursor_x || 
+			 state->move_cursor_y != state->cursor_y))
 		state->ui->ui_map[state->move_cursor_y][state->move_cursor_x] = 0;
 	else 
 		state->started_move = 1;
@@ -377,14 +520,18 @@ void setMoveCursor(int new_move_x, int new_move_y, int range, game_state *state)
 	cost = abs(state->cursor_x - state->move_cursor_x) + 
 		   abs(state->cursor_y - state->move_cursor_y);
 	
-	if(new_move_x != state->cursor_x || new_move_y != state->cursor_y){	
-		if(cost > range){
+	if(new_move_x != state->cursor_x || new_move_y != state->cursor_y)
+	{	
+		if(cost > range)
+		{
 			state->ui->ui_map[new_move_y][new_move_x] = 9;
 		}
-		if(cost == range){
+		if(cost == range)
+		{
 			state->ui->ui_map[new_move_y][new_move_x] = 8;
 		}
-		if(cost < range){
+		if(cost < range)
+		{
 			state->ui->ui_map[new_move_y][new_move_x] = 7;
 		}
 	}
@@ -392,36 +539,21 @@ void setMoveCursor(int new_move_x, int new_move_y, int range, game_state *state)
 
 }
 
-// Generates hard coded square test map
-void generateSquareTestMap(game_map *map, ui_state *ui)
+// Confirms move, moving unit from cursor to move_cursor
+void moveSelectedUnit(game_state *state)
 {
-	int i, j;
-	map->size_x = 20;
-   	map->size_y = 15;	
-	initializeMap(map->size_x, map->size_y, &map->data);
-	initializeUIState(map->size_x, map->size_y, &ui->ui_map);
-	for(i = 0; i < map->size_y; i++)
-	{
-		for(j = 0; j < map->size_x; j++)
-		{
-			map->data[i][j] = 1;
-		}
-	}
+	state->map->data[state->cursor_y][state->cursor_x] 
+		= 1;
+	state->map->data[state->move_cursor_y][state->move_cursor_x] 
+		= state->current_unit_code;
 
-	map->data[0][3] = 2;
-	map->data[2][1] = 3;
-	map->data[1][2] = 3;
-	map->data[3][5] = 3;
-	map->data[6][6] = 3;	
-
-	map->data[14][19] = 4;
-	map->data[13][10] = 5;
-	map->data[9][18] = 5;
-	map->data[11][17] = 5;
-	map->data[13][6] = 5;	
+	state->ui->ui_map[state->move_cursor_y][state->move_cursor_x] = 0;
+	step(state);
 }
 
 // Generates a hard coded hexagonal test map
+// TODO(filip): Free memory allocated by initializeMap() and initializeUIState()
+// 				Create freeMap and freeUIState functions
 void generateHexagonalTestMap(game_map *map, ui_state *ui)
 {
 	int i, j;
@@ -452,58 +584,23 @@ void generateHexagonalTestMap(game_map *map, ui_state *ui)
 	map->data[9][7] = 5;	
 }
 
-void updateSquareMapGL(game_map* map,
-	   			 ui_state* ui,	
-				 float *colors, 
-				 GLfloat *mapVertices, 
-				 GLuint VBO){
-	int i, j, k;
-	glBindBuffer(GL_ARRAY_BUFFER, VBO); // Binds GL_ARRAY_BUFFER to our VBO
-
-	GLfloat *iter = mapVertices;
-	for(i = 0; i < map->size_y; i++){
-		for(j = 0; j < map->size_x; j++){
-			for (k = 0; k < 4; k++){
-				iter=iter+3;
-				*(iter++) = *(colors + 3 * map->data[i][j]    ); 			
-				*(iter++) = *(colors + 3 * map->data[i][j] + 1); 			
-				*(iter++) = *(colors + 3 * map->data[i][j] + 2); 			
-			}
-		}
-	}
-	iter = mapVertices;
-	for(i = 0; i < map->size_y; i++){
-		for(j = 0; j < map->size_x; j++){
-			for (k = 0; k < 4; k++){
-				if(ui->ui_map[i][j] != 0){
-
-					iter=iter+3;
-					*(iter++) = *(colors + 3*ui->ui_map[i][j]    ); 			
-					*(iter++) = *(colors + 3*ui->ui_map[i][j] + 1); 			
-					*(iter++) = *(colors + 3*ui->ui_map[i][j] + 2); 			
-				}
-			}
-		}
-	}
-	glBufferSubData(GL_ARRAY_BUFFER, 0, // Writes new data to GL_ARRAY_BUFFER
-					getSquareMapVertexBufferSize(map), // Size of new data 
-					mapVertices); // New data to render
-	
-	glBindBuffer(GL_ARRAY_BUFFER, 0);	
-}
-
+// Called everytime the map needs to be rendered
 void updateHexagonMapGL(game_map* map,
 	   			 ui_state* ui,	
 				 float *colors, 
 				 GLfloat *mapVertices, 
-				 GLuint VBO){
+				 GLuint VBO)
+{
 	int i, j, k;
 	glBindBuffer(GL_ARRAY_BUFFER, VBO); // Binds GL_ARRAY_BUFFER to our VBO
 
 	GLfloat *iter = mapVertices;
-	for(i = 0; i < map->size_y; i++){
-		for(j = 0; j < map->size_x; j++){
-			for (k = 0; k < 6; k++){
+	for(i = 0; i < map->size_y; i++)
+	{
+		for(j = 0; j < map->size_x; j++)
+		{
+			for (k = 0; k < 6; k++)
+			{
 				iter=iter+3;
 				*(iter++) = *(colors + 3 * map->data[i][j]    ); 			
 				*(iter++) = *(colors + 3 * map->data[i][j] + 1); 			
@@ -512,10 +609,14 @@ void updateHexagonMapGL(game_map* map,
 		}
 	}
 	iter = mapVertices;
-	for(i = 0; i < map->size_y; i++){
-		for(j = 0; j < map->size_x; j++){
-			for (k = 0; k < 6; k++){
-				if(ui->ui_map[i][j] != 0){
+	for(i = 0; i < map->size_y; i++)
+	{
+		for(j = 0; j < map->size_x; j++)
+		{
+			for (k = 0; k < 6; k++)
+			{
+				if(ui->ui_map[i][j] != 0)
+				{
 					iter+=3;
 					*(iter++) = *(colors + 3*ui->ui_map[i][j]    ); 			
 					*(iter++) = *(colors + 3*ui->ui_map[i][j] + 1); 			
@@ -534,26 +635,20 @@ void updateHexagonMapGL(game_map* map,
 	glBindBuffer(GL_ARRAY_BUFFER, 0);	
 }
 
-void moveSelectedUnit(game_state *state){
-	state->map->data[state->cursor_y][state->cursor_x] 
-		= 1;
-	state->map->data[state->move_cursor_y][state->move_cursor_x] 
-		= state->current_unit_code;
-
-	state->ui->ui_map[state->move_cursor_y][state->move_cursor_x] = 0;
-	step(state);
-}
-
-void setSquare(unsigned char c,int x, int y, unsigned char **mapBuffer){
+// NOTE(filip): Not used
+void setSquare(unsigned char c,int x, int y, unsigned char **mapBuffer)
+{
 	*(*(mapBuffer+y)+x) = c;
 }
 
+// Callback for every key pressed
 void key_callback(GLFWwindow* window, 
 				  int key, 
 				  int scancode, 
 				  int action, 
 				  int mods)
 {
+	// Closes window when pressing ESCAPE
 	if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
@@ -634,6 +729,8 @@ int main()
 
 	generateHexagonalTestMap(&test_map, &ui);
 
+	// NOTE(filip): Consider moving these somewhere else
+	// Initialize values for game state
 	state.map = &test_map;
 	state.ui = &ui;
 	state.player_number = 2;
@@ -645,6 +742,7 @@ int main()
 	state.turn = -1;
 	state.move_attack_state = 1;
 
+	// This starts the turn of player 0
 	turn(&state);
 
 	// TODO(filip): Add way to render things other than the map
@@ -710,6 +808,7 @@ int main()
 
 	// GAME --------------------------------------------------------------------
 
+	// TODO(filip): Move this somewhere else
 	// List of colors  
 	GLfloat colors[] = {0.15f, 0.15f, 0.15f, //0. Dark grey
 						0.8f, 0.8f, 0.7f,	 //1. Light yellow: map tiles
@@ -722,32 +821,36 @@ int main()
 						0.6f, 0.6f, 0.0f,	 //8. Dark Yellow
 						0.7f, 0.4f, 0.0f};	 //9. Dark Orange
 	// Main while loop
-	int a = 0;
 	int prev_p = 0, prev_a = 0, prev_b = 0, prev_c=0, prev_d=0, prev_e=0;
 	while (!glfwWindowShouldClose(window))
 	{
-		// TODO(filip): Find better way for getting only first frame of button
-		//              press
+		// TODO(filip): Find better way to handle input
 		if(glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
 		{
-			if(prev_p == 0){
+			if(prev_p == 0)
+			{
 				step(&state);
 				printMap(test_map.size_x, test_map.size_y, 
 						 test_map.data, ui.ui_map);	
 			}
 			prev_p = 1;
 		}
-		else{
+		else
+		{
 			prev_p = 0;
 		}
 
 		if(state.move_attack_state){
 			// NOTE(filip): moves cursor up
-			// TODO(filip): highlight path from unit to move cursor
+			// TODO(filip): Implement pathfinding
+			// TODO(filip): Highlight path from unit to move cursor
 			if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 			{
-				if(prev_a == 0){
-					setMoveCursor(state.move_cursor_x, state.move_cursor_y + 1, 4, &state);
+				if(prev_a == 0)
+				{
+					// TODO(filip): Get rid of hard coded range value
+					setMoveCursor(state.move_cursor_x, state.move_cursor_y + 1, 
+							      4, &state);
 				}
 				prev_a = 1;
 			}
@@ -758,8 +861,11 @@ int main()
 			// NOTE(filip): moves cursor up
 			if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 			{
-				if(prev_b == 0){
-					setMoveCursor(state.move_cursor_x, state.move_cursor_y - 1, 4, &state);
+				if(prev_b == 0)
+				{
+					// TODO(filip): Get rid of hard coded range value
+					setMoveCursor(state.move_cursor_x, state.move_cursor_y - 1, 
+							      4, &state);
 				}
 				prev_b = 1;
 			}
@@ -770,8 +876,11 @@ int main()
 			// NOTE(filip): moves cursor left
 			if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 			{
-				if(prev_c == 0){
-					setMoveCursor(state.move_cursor_x - 1, state.move_cursor_y, 4, &state);
+				if(prev_c == 0)
+				{
+					// TODO(filip): Get rid of hard coded range value
+					setMoveCursor(state.move_cursor_x - 1, state.move_cursor_y, 
+							      4, &state);
 				}
 				prev_c = 1;
 			}
@@ -782,8 +891,11 @@ int main()
 			// NOTE(filip): moves cursor right
 			if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 			{
-				if(prev_d == 0){
-					setMoveCursor(state.move_cursor_x + 1, state.move_cursor_y, 4, &state);
+				if(prev_d == 0)
+				{
+					// TODO(filip): Get rid of hard coded range value
+					setMoveCursor(state.move_cursor_x + 1, state.move_cursor_y, 
+								  4, &state);
 				}
 				prev_d = 1;
 			}
@@ -794,7 +906,8 @@ int main()
 			// NOTE(filip): move
 			if(glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
 			{
-				if(prev_e == 0){
+				if(prev_e == 0)
+				{
 					moveSelectedUnit(&state);
 				}
 				prev_e = 1;
@@ -827,6 +940,7 @@ int main()
 		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);
 		// Take care of all GLFW events
+		// TODO(filip): Consider freezing main thread when there is no input
 		glfwPollEvents();
 	}
 
