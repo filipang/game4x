@@ -21,6 +21,8 @@
 
 #define PI 3.14159265359
 #define MAXBUF 1000
+#define MAX_PLAYERS 8
+
 // NOTE(filip): Don't define DEBUG when releasing
 #define DEBUG
 
@@ -49,9 +51,7 @@ void create_unit(unit **u, int position_x, int position_y, int type, int team, i
 }
 
 void add_unit(unit *src, unit **dst){
-	if(*dst == NULL){
-		*dst = src;		
-	}else if((*dst)->next == NULL)
+	if((*dst)->next == NULL)
 	{
 		(*dst)->next = src;
 	}
@@ -61,25 +61,22 @@ void add_unit(unit *src, unit **dst){
 	}
 }
 
-void remove_unit(unit **iter, unit *first, int position_x, int position_y){
-	if(*iter == NULL){	
+// ACICLIC
+void remove_unit(unit **base, unit **iter){
+
+}
+
+unit* find_unit(unit *iter, int position_x, int position_y){
+	if(iter == NULL){	
+		return NULL;
 	}
-	else if(first->next == first){
-		free(*iter);
-		iter = NULL;
-	}
-	else if((*iter)->next->position_x == position_x && (*iter)->next->position_y == position_y)
+	else if(iter->position_x == position_x && iter->position_y == position_y)
 	{
-		free((*iter)->next);
-		(*iter)->next = (*iter)->next->next;	
-	}
-	else if((*iter)->next == first)
-	{
-		//DIDN'T FIND UNIT
+		return iter;
 	}
 	else
 	{
-		remove_unit(&(*iter)->next, first, position_x, position_y);
+		return find_unit(iter->next, position_x, position_y);
 	}
 }
 
@@ -112,7 +109,7 @@ typedef struct game_state
 	int move_cursor_x;
 	int move_cursor_y;
 
-	unit *unit_list;
+	unit* units[MAX_PLAYERS];
 	
 	// NOTE(ionut): Every third element belongs to the same map to compress all
 	// 				3 into one vector
@@ -448,17 +445,35 @@ void generateHexagonalTestMap(game_state *state)
 	allocMap(state->size_x, state->size_y, &state->unit_map);
 	allocMap(state->size_x, state->size_y, &state->ui_map);
 
-	state->unit_map[2][1] = 1;
-	state->unit_map[1][2] = 1;
-	state->unit_map[6][6] = 1;	
-	state->unit_map[3][5] = 1;
+	for(i = 0; i < 3; i++){
+		unit *u;
+		create_unit(&u, 0, 0, 0, 0, 3);
+		add_unit(u, &state->units[0]);
+	}
 
-	state->unit_map[13][10] = 2;
-	state->unit_map[13][6] = 2;	
-	state->unit_map[13][10] = 2;	
-	state->unit_map[10][6] = 2;	
-	state->unit_map[7][12] = 2;	
-	state->unit_map[9][7] = 2;	
+	for(i = 0; i < 3; i++){
+		unit *u;
+		create_unit(&u, 0, 0, 0, 1, 3);
+		add_unit(u, &state->units[1]);
+	}
+
+	state->unit_map[2][1] = 1; 
+	find_unit(state->units[0], state->units[0], 1, 2);
+
+	state->unit_map[1][3] = 1;
+	find_unit(state->units[0], state->units[0], 3, 1);
+
+	state->unit_map[6][6] = 1;	
+	find_unit(state->units[0], state->units[0], 6, 6);
+
+	state->unit_map[13][10] = 1;
+	find_unit(state->units[0], state->units[0], 10, 13);
+
+	state->unit_map[13][6] = 1;	
+	find_unit(state->units[0], state->units[0], 6, 13);
+
+	state->unit_map[12][9] = 1;	
+	find_unit(state->units[0], state->units[0], 9, 12);
 }
 
 // Called everytime the map needs to be rendered
@@ -486,9 +501,16 @@ void updateHexagonMapGL(game_state *state,
 				}
 				else if(state->unit_map[i][j] != 0)
 				{
-					*(iter++) = state->colors[state->unit_map[i][j] * 9 + 3];
-					*(iter++) = state->colors[state->unit_map[i][j] * 9 + 4];
-					*(iter++) = state->colors[state->unit_map[i][j] * 9 + 5];
+					unit* u;
+					for(int l = 0; l < state->player_number; l++){
+						unit* temp = find_unit(state->units[l], state->units[l], j, i);
+						if(temp != NULL)
+							u = temp;
+					}
+					
+					*(iter++) = state->colors[u->type * 9 + 3];
+					*(iter++) = state->colors[u->type * 9 + 4];
+					*(iter++) = state->colors[u->type * 9 + 5];
 				}
 				else
 				{
@@ -499,6 +521,7 @@ void updateHexagonMapGL(game_state *state,
 			}
 		}
 	}
+
 	glBufferSubData(GL_ARRAY_BUFFER, 0, // Writes new data to GL_ARRAY_BUFFER
 					getHexagonMapVertexBufferSize(state), // Size of new data 
 					mapVertices); // New data to render
@@ -601,8 +624,6 @@ int main()
 
 	game_state state;
 
-	generateHexagonalTestMap(&state);
-
 	// NOTE(filip): Consider moving these somewhere else
 	// Initialize values for game state
 	state.player_number = 2;
@@ -612,6 +633,12 @@ int main()
 	state.move_cursor_x = -9999;
 	state.move_cursor_y = -9999;
 	state.turn = -1;
+	for(int i = 0; i < MAX_PLAYERS; i++)
+	{
+		state.units[i] = NULL;
+	}
+
+	generateHexagonalTestMap(&state);
 
 	// This starts the turn of player 0
 	turn(&state);
