@@ -20,34 +20,69 @@
 #include <stdlib.h>
 
 #define PI 3.14159265359
-
+#define MAXBUF 1000
 // NOTE(filip): Don't define DEBUG when releasing
 #define DEBUG
 
 // NOTE(filip): Everything has to be simplified to be re-written in ASM
-// TODO(filip): Save shaders in files and read them
+// NOTE(filip): Maybe move these structs in header file?
+typedef struct unit
+{
+	float health; 			// from 0.0 to 1.0
+	int position_x;			// map position
+	int position_y;
+	int type; 				// 1, 2 or 3
+	int team; 				// from 0 to number of players
+	int mp_current;			// points left this turn
+	int mp_stat;			// total mp
+	struct unit *next;		// next unit
+} unit;
 
-// Vertex Shader source code
-const char* vertexShaderSource = "#version 330 core\n"
-"layout (location = 0) in vec3 aPos;\n"
-"layout (location = 1) in vec3 aCol;\n"
-"out vec3 ourColor;\n"
-"void main()\n"
-"{\n"
-"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-"   ourColor = vec3(aCol.x, aCol.y, aCol.z);\n"
-"}\0";
-//Fragment Shader sou7ce code
-const char* fragmentShaderSource = "#version 330 core\n"
-"out vec4 FragColor;\n"
-"in vec3 ourColor;\n"
-"void main()\n"
-"{\n"
-"   FragColor = vec4(ourColor, 1.0f);\n"
-"}\n\0";
+void create_unit(unit **u, int position_x, int position_y, int type, int team, int mp_stat){
+	*u = malloc(sizeof(unit));
+	(*u)->position_x = position_x;
+	(*u)->position_y = position_y;
+	(*u)->type = type;
+	(*u)->team = team;
+	(*u)->mp_stat = mp_stat;
+	(*u)->next = NULL;
+}
 
+void add_unit(unit *src, unit **dst){
+	if(*dst == NULL){
+		*dst = src;		
+	}else if((*dst)->next == NULL)
+	{
+		(*dst)->next = src;
+	}
+	else
+	{
+		add_unit(src, &(*dst)->next);
+	}
+}
 
-// NOTE(filip): Maybe move this struct in header file?
+void remove_unit(unit **iter, unit *first, int position_x, int position_y){
+	if(*iter == NULL){	
+	}
+	else if(first->next == first){
+		free(*iter);
+		iter = NULL;
+	}
+	else if((*iter)->next->position_x == position_x && (*iter)->next->position_y == position_y)
+	{
+		free((*iter)->next);
+		(*iter)->next = (*iter)->next->next;	
+	}
+	else if((*iter)->next == first)
+	{
+		//DIDN'T FIND UNIT
+	}
+	else
+	{
+		remove_unit(&(*iter)->next, first, position_x, position_y);
+	}
+}
+
 
 // NOTE(filip): Make these unsigned char* instead of unsigned char** for ASM?
 // NOTE(filip): Consider splitting game_state into persistent game data and 
@@ -57,15 +92,15 @@ typedef struct game_state
 {
 
 	unsigned char **terrain_map;
-	unsigned char **unit_map;
+	unsigned char **unit_map; // NOTE(filip): This will be for rendering,
+							  //			  unit data will be saved elsewhere 
 	unsigned char **ui_map;
+
 	int size_x;
 	int size_y;
 
 	int player_number; // Number of players in game
 	int turn; // Active player index
-	// NOTE(filip): Make this flag clearer or find a way to remove it
-	int started; // Flag for seeing if the step function was called once already
 
 	// Selected unit data
 	int selected_x; 
@@ -74,23 +109,51 @@ typedef struct game_state
 	
 	// Move cursor data
 	// NOTE(filip): Make this flag clearer or find a way to remove it
-	int move_started; // Flag for seeing if move cursor moved once already
 	int move_cursor_x;
 	int move_cursor_y;
 
+	unit *unit_list;
+	
 	// NOTE(ionut): Every third element belongs to the same map to compress all
 	// 				3 into one vector
 	GLfloat *colors;
-
-	//
-	unsigned char selected_code;
 } game_state;
+
+char* loadFile(const char* file_name)
+{
+	char *dest = NULL;
+	FILE *fp = fopen(file_name, "r");
+	if (fp != NULL) {
+		// Go to the end of the file. 
+		if (fseek(fp, 0L, SEEK_END) == 0) {
+			// Get the size of the file. 
+			long bufsize = ftell(fp);
+			if (bufsize == -1) {   }
+
+			// Allocate our buffer to that size. 
+			dest = malloc(sizeof(char) * (bufsize + 1));
+
+			// Go back to the start of the file. 
+			if (fseek(fp, 0L, SEEK_SET) != 0) { }
+
+			//Read the entire file into memory. 
+			size_t newLen = fread(dest, sizeof(char), bufsize, fp);
+			if ( ferror( fp ) != 0 ) {
+				fputs("Error reading file", stderr);
+			} else {
+				dest[newLen++] = '\0'; // Just to be safe. 
+			}
+		}
+		fclose(fp);
+	}
+	return dest;
+}
 
 // Generates vertices for a single hexagon + color
 // Vertex in memory: (pos_x, pos_y, pos_z, col_x, col_y, col_z)
 GLfloat* buildHexagonVertices(float offset_x, float offset_y, 
-						 	 float color_r, float color_b, float color_g, 
-						 	 float side_len, GLfloat* dest)
+			 			 	  float color_r, float color_b, float color_g, 
+						 	  float side_len, GLfloat* dest)
 {
 	*(dest++) = offset_x;
 	*(dest++) = offset_y + side_len;
@@ -159,7 +222,7 @@ GLuint* buildHexagonIndices(GLuint offset, GLuint* dest)
 }
 
 
-// This generates vertices and indices for map
+// This enerates vertices and indices for map
 void buildHexagonMapGL(int size_x, int size_y, 
 					   float side_len, 
 				       float offset_x, float offset_y, 
@@ -174,8 +237,10 @@ void buildHexagonMapGL(int size_x, int size_y,
 	for(i = 0; i < size_y; i++){
 		for(j = 0; j < size_x; j++){
 			// NOTE(filip): Organize this to be more readable
-			iter_v = buildHexagonVertices(offset_x + (j + i*0.5) * sqrt(3) * side_len, 
-										  offset_y + i * (sqrt(3)/2) * sqrt(3) *  side_len, 
+			iter_v = buildHexagonVertices(offset_x + 
+										  (j + i * 0.5) * sqrt(3) * side_len, 
+										  offset_y + 
+										  i * side_len * 3 / 2 , 
 									      0.0f, 0.0f, 0.0f,
 									      side_len, iter_v);
 			
@@ -213,7 +278,6 @@ void freeMapIndices(GLuint* indices)
 	free(indices);
 }
 
-// TODO(filip): Create freeMap function
 void allocMap(int size_x, int size_y, unsigned char ***mapPtr)
 {
 	int i, j;
@@ -227,6 +291,16 @@ void allocMap(int size_x, int size_y, unsigned char ***mapPtr)
 			*(*(*mapPtr + i) + j) = 0;
 		}
 	}
+}
+
+void freeMap(int size_x, int size_y, unsigned char **map)
+{
+	int i;
+	for(i = 0; i < size_y; i++)
+	{
+		free(*map + i); 
+	}
+	free(map);
 }
 
 void printMap(int size_x, int size_y, 
@@ -275,7 +349,7 @@ void setMoveCursor(int new_move_x, int new_move_y,
 // FIXME(filip): Jump to next unit only if it hasn't moved yet
 void step(game_state* state)
 {
-	if(state->started == 1)
+	if(state->selected_x != -9999 || state->selected_y != -9999)
 	{
 		// TODO(filip): Check selected_cursor in map range, so we can remove
 		// 				started flag
@@ -283,30 +357,31 @@ void step(game_state* state)
 		// 				in map range.
 		state->ui_map[state->selected_y][state->selected_x++] = 0;
 	}
-	else
-	{
-		state->started = 1;
+	else{
+		state->selected_x = 0; 
+		state->selected_y = 0;
 	}
 
+	// TODO(filip): The step system needs to be changed so we don't select the 
+	// 				same unit twice in a turn.
 	for(;state->selected_y < state->size_y;state->selected_y++)
 	{
 		for(;state->selected_x < state->size_x;state->selected_x++)
 		{
 			if(state->unit_map[state->selected_y][state->selected_x] == 
-				state->selected_unit)
+			   state->selected_unit)
 			{
-				state->ui_map[state->selected_y][state->selected_x] =
-				   	state->selected_code; 
-				state->move_started = 0;
+				state->ui_map[state->selected_y][state->selected_x] = 1; 
 				// TODO(filip): Get rid of hard coded range value
 				setMoveCursor(state->selected_x, state->selected_y, 4, state);
 				return;
+
 			}
 		}
 		state->selected_x = 0;
 	}
 	state->selected_y = 0;
-	state->started = 0;
+
 	turn(state);
 }
 
@@ -314,13 +389,14 @@ void setMoveCursor(int new_move_x, int new_move_y,
 				   int range, game_state *state)
 {
 	int cost = 0, i, j;
-	if(state->move_started && 
-			(state->move_cursor_x != state->selected_x || 
-			 state->move_cursor_y != state->selected_y))
-		state->ui_map[state->move_cursor_y][state->move_cursor_x] = 0;
-	else 
-		state->move_started = 1;
+	if((state->move_cursor_x != -9999 || 
+	    state->move_cursor_y != -9999)&& 
+	   (state->move_cursor_x != state->selected_x || 
+	    state->move_cursor_y != state->selected_y))
 
+	{
+		state->ui_map[state->move_cursor_y][state->move_cursor_x] = 0;
+	}
 
 	state->move_cursor_x = new_move_x;
 	state->move_cursor_y = new_move_y;
@@ -333,15 +409,15 @@ void setMoveCursor(int new_move_x, int new_move_y,
 	{	
 		if(cost > range)
 		{
-			state->ui_map[new_move_y][new_move_x] = 9;
+			state->ui_map[new_move_y][new_move_x] = 4;
 		}
 		if(cost == range)
 		{
-			state->ui_map[new_move_y][new_move_x] = 8;
+			state->ui_map[new_move_y][new_move_x] = 3;
 		}
 		if(cost < range)
 		{
-			state->ui_map[new_move_y][new_move_x] = 7;
+			state->ui_map[new_move_y][new_move_x] = 2;
 		}
 	}
 
@@ -352,7 +428,7 @@ void setMoveCursor(int new_move_x, int new_move_y,
 void moveSelectedUnit(game_state *state)
 {
 	state->unit_map[state->selected_y][state->selected_x] 
-		= 1;
+		= 0;
 	state->unit_map[state->move_cursor_y][state->move_cursor_x] 
 		= state->selected_unit;
 
@@ -450,10 +526,6 @@ void key_callback(GLFWwindow* window,
 
 int main()
 {
-	//
-	
-
-
 	// GENERAL START SETUP -----------------------------------------------------
 	// Initialize GLFW
 	glfwInit();
@@ -477,6 +549,7 @@ int main()
 	}
 	// Introduce the window into the current context
 	glfwMakeContextCurrent(window);
+	glfwSetInputMode(window, GLFW_STICKY_KEYS, GLFW_TRUE);
 
 	//Load GLAD so it configures OpenGL
 	gladLoadGL();
@@ -484,33 +557,37 @@ int main()
 	// In this case the viewport goes from x = 0, y = 0, to x = 800, y = 800
 	glViewport(0, 0, 800, 800);
 
+	const char* vertex_shader_src = loadFile("shader.vert");
+	const char* fragment_shader_src = loadFile("shader.frag");
 
-
+	printf("FRAGMENT:\n%s\n\nVERTEX:\n%s", fragment_shader_src, vertex_shader_src);
+	//loadFile("shader.vert", vertex_shader_source);
+	//loadFile("shader.frag", fragment_shader_source);
 	// Create Vertex Shader Object and get its reference
-	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
 	// Attach Vertex Shader source to the Vertex Shader Object
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+	glShaderSource(vertex_shader, 1, &vertex_shader_src, NULL);
 	// Compile the Vertex Shader into machine code
-	glCompileShader(vertexShader);
+	glCompileShader(vertex_shader);
 
 	// Create Fragment Shader Object and get its reference
-	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
 	// Attach Fragment Shader source to the Fragment Shader Object
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+	glShaderSource(fragment_shader, 1, &fragment_shader_src, NULL);
 	// Compile the Vertex Shader into machine code
-	glCompileShader(fragmentShader);
+	glCompileShader(fragment_shader);
 
 	// Create Shader Program Object and get its reference
-	GLuint shaderProgram = glCreateProgram();
+	GLuint shader_program = glCreateProgram();
 	// Attach the Vertex and Fragment Shaders to the Shader Program
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
+	glAttachShader(shader_program, vertex_shader);
+	glAttachShader(shader_program, fragment_shader);
 	// Wrap-up/Link all the shaders together into the Shader Program
-	glLinkProgram(shaderProgram);
+	glLinkProgram(shader_program);
 
 	// Delete the now useless Vertex and Fragment Shader objects
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
+	glDeleteShader(vertex_shader);
+	glDeleteShader(fragment_shader);
 
 
 
@@ -530,10 +607,10 @@ int main()
 	// Initialize values for game state
 	state.player_number = 2;
 	state.turn = 0;
-	state.selected_x = 0;
-	state.selected_y = 0;	
-	state.started = 0;
-	state.selected_code = 6;
+	state.selected_x = -9999;
+	state.selected_y = -9999;	
+	state.move_cursor_x = -9999;
+	state.move_cursor_y = -9999;
 	state.turn = -1;
 
 	// This starts the turn of player 0
@@ -542,9 +619,9 @@ int main()
 	// TODO(filip): Add way to render things other than the map
 	// Build vertices and indices for the map
 	buildHexagonMapGL(state.size_x, state.size_y, 
-			   0.04f, 
-			   -0.8f, -0.5f, 
-			   &vertices, &indices);
+				      0.04f, 
+				      -0.8f, -0.5f, 
+				      &vertices, &indices);
 
 	// Create reference containers for the Vartex Array Object, 
 	// the Vertex Buffer Object, and the Element Buffer Object
@@ -598,13 +675,13 @@ int main()
 	
 
 	// Input
-	glfwSetKeyCallback(window, key_callback);
+	// glfwSetKeyCallback(window, key_callback);
 
 	// GAME --------------------------------------------------------------------
 
 	// TODO(filip): Move this somewhere else
 	// List of colors  
-	GLfloat colors[] = {0.7f, 0.95f, 0.65f,  //T0. Dark grey
+	GLfloat colors[] = {0.65f, 0.65f, 0.55f, //T0. Dark grey
 						0.0f, 0.0f, 0.0f,	 //U0. 
 						0.0f, 0.0f, 0.0f,    //I0. Dark blue: Blue ase
 						0.55f, 0.4f, 0.05f,	 //T1. Blue: Blue unit
@@ -613,9 +690,16 @@ int main()
 						0.9f, 0.9f, 0.0f,    //T2. Yellow: Selected
 						0.15f, 0.9f, 0.6f,	 //U2. Green
 						0.6f, 0.6f, 0.0f,	 //I2. Dark Yellow
-						0.7f, 0.4f, 0.0f};	 //T3. Dark Orange
+						0.7f, 0.4f, 0.0f,	 //T3. Dark Orange
+						0.0f, 0.0f, 0.0f,	 //U3.
+						0.8f, 0.5f, 0.0f,	 //I3.
+						0.0f, 0.0f, 0.0f,	 //T4.
+						0.0f, 0.0f, 0.0f,	 //U4.
+						0.8f, 0.2f, 0.2f};	 //I4.
+
 	state.colors = colors;
 	// Main while loop
+	// TODO(filip): Store flags somewhere else
 	int prev_p = 0, prev_a = 0, prev_b = 0, prev_c=0, prev_d=0, prev_e=0;
 	while (!glfwWindowShouldClose(window))
 	{
@@ -725,7 +809,7 @@ int main()
 		updateHexagonMapGL(&state, colors, vertices, VBO);		
 
 		// Tell OpenGL which Shader Program we want to use
-		glUseProgram(shaderProgram);
+		glUseProgram(shader_program);
 		
 		// Draw primitives
 		glDrawElements(GL_TRIANGLES, state.size_x * state.size_y * 4 * 3, 
@@ -742,6 +826,9 @@ int main()
 
 
 	// EXIT SETUP --------------------------------------------------------------
+	freeMap(state.size_x, state.size_y, state.terrain_map);
+	freeMap(state.size_x, state.size_y, state.unit_map);
+	freeMap(state.size_x, state.size_y, state.ui_map);
 	// Free allocated memory
 	freeMapIndices(indices);
 	freeMapVertices(vertices);
@@ -749,7 +836,7 @@ int main()
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteBuffers(1, &EBO);
-	glDeleteProgram(shaderProgram);
+	glDeleteProgram(shader_program);
 	// Delete window before ending the program
 	glfwDestroyWindow(window);
 	// Terminate GLFW before ending the program
