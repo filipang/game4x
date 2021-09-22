@@ -40,7 +40,7 @@ typedef struct unit
 	struct unit *next;		// next unit
 } unit;
 
-void create_unit(unit **u, int position_x, int position_y, int type, int team, int mp_stat){
+void createUnit(unit **u, int position_x, int position_y, int type, int team, int mp_stat){
 	*u = malloc(sizeof(unit));
 	(*u)->position_x = position_x;
 	(*u)->position_y = position_y;
@@ -50,23 +50,45 @@ void create_unit(unit **u, int position_x, int position_y, int type, int team, i
 	(*u)->next = NULL;
 }
 
-void add_unit(unit *src, unit **dst){
-	if((*dst)->next == NULL)
+void addUnit(unit *src, unit **dst){
+	if((*dst) == NULL)
+	{
+		(*dst) = src;
+	}
+	else if((*dst)->next == NULL)
 	{
 		(*dst)->next = src;
 	}
 	else
 	{
-		add_unit(src, &(*dst)->next);
+		addUnit(src, &(*dst)->next);
 	}
 }
 
 // ACICLIC
-void remove_unit(unit **base, unit **iter){
+void removeUnit(unit **base, unit *target){
+	if((*base) == target)
+	{
+		unit *u = (*base)->next;
+		free(*base);
+		(*base) = u;
+	}
+	unit *iter = (*base);
+	while(iter->next != NULL)
+	{
+		if(iter->next == target)
+		{
+			iter->next = target->next;
+			free(target);
+		}
+		iter = iter->next;
+		
+	}
+
 
 }
 
-unit* find_unit(unit *iter, int position_x, int position_y){
+unit* findUnit(unit *iter, int position_x, int position_y){
 	if(iter == NULL){	
 		return NULL;
 	}
@@ -76,7 +98,7 @@ unit* find_unit(unit *iter, int position_x, int position_y){
 	}
 	else
 	{
-		return find_unit(iter->next, position_x, position_y);
+		return findUnit(iter->next, position_x, position_y);
 	}
 }
 
@@ -100,9 +122,7 @@ typedef struct game_state
 	int turn; // Active player index
 
 	// Selected unit data
-	int selected_x; 
-	int selected_y;
-	unsigned char selected_unit; // What unit is selected
+	unit *selected_unit; // What unit is selected
 	
 	// Move cursor data
 	// NOTE(filip): Make this flag clearer or find a way to remove it
@@ -321,18 +341,18 @@ void step(game_state* state);
 // Starts first turn on next turn
 void turn(game_state* state)
 {
+
 	//state-> turn is -1 when the game starts
 	state->turn = (state->turn + 1)%state->player_number;
+
+	unit *iter = state->units[state->turn];
 	// NOTE(filip): Hardcoded turns for 2 players
 	// TODO(filip): Dynamic turns for variable number of players
 	// TODO(filip): Remove hard coded unit codes
-	if(state->turn == 0)
+	while(iter != NULL)
 	{
-		state -> selected_unit = 1;
-	}
-	if(state->turn == 1)
-	{
-		state -> selected_unit = 2;
+		iter->mp_current = iter->mp_stat;
+		iter = iter->next;
 	}
 
 	step(state);
@@ -344,65 +364,58 @@ void setMoveCursor(int new_move_x, int new_move_y,
 
 // Jump to the next unit (or first if state->started == 0)
 // FIXME(filip): Jump to next unit only if it hasn't moved yet
-void step(game_state* state)
+void step (game_state* state)
 {
-	if(state->selected_x != -9999 || state->selected_y != -9999)
+	if(state->selected_unit == NULL)
 	{
-		// TODO(filip): Check selected_cursor in map range, so we can remove
-		// 				started flag
-		// TODO(filip): Implement function that checks if coordinates are
-		// 				in map range.
-		state->ui_map[state->selected_y][state->selected_x++] = 0;
+		state->selected_unit = state->units[state->turn];	
+		setMoveCursor(state->selected_unit->position_x, state->selected_unit->position_y, state->selected_unit->mp_current, state);
 	}
-	else{
-		state->selected_x = 0; 
-		state->selected_y = 0;
-	}
-
-	// TODO(filip): The step system needs to be changed so we don't select the 
-	// 				same unit twice in a turn.
-	for(;state->selected_y < state->size_y;state->selected_y++)
+	else	
 	{
-		for(;state->selected_x < state->size_x;state->selected_x++)
-		{
-			if(state->unit_map[state->selected_y][state->selected_x] == 
-			   state->selected_unit)
-			{
-				state->ui_map[state->selected_y][state->selected_x] = 1; 
-				// TODO(filip): Get rid of hard coded range value
-				setMoveCursor(state->selected_x, state->selected_y, 4, state);
-				return;
+	unsigned char looped = 0;
+       	if(state->selected_unit->next !=NULL)
+		state->selected_unit = state->selected_unit->next;
+	else	
+		state->selected_unit = state->units[state->turn];	
 
-			}
-		}
-		state->selected_x = 0;
-	}
-	state->selected_y = 0;
+	while(state->selected_unit->next != NULL && state->selected_unit->mp_current == 0){ 
 
+        state->selected_unit = state->selected_unit->next;
+        if(state->selected_unit->next == NULL){
+            if(looped==0){
+                state->selected_unit = state->units[state->turn];
+            }
+            looped = 1;
+        }
+    }
+
+state->ui_map[state->selected_unit->position_y][state->selected_unit->position_x] = 1;
+setMoveCursor(state->selected_unit->position_x, state->selected_unit->position_y, state->selected_unit->mp_current, state);
+
+if(looped == 1 && state->selected_unit->next == NULL)
+{
 	turn(state);
+}
+}
 }
 
 void setMoveCursor(int new_move_x, int new_move_y, 
 				   int range, game_state *state)
 {
 	int cost = 0, i, j;
-	if((state->move_cursor_x != -9999 || 
-	    state->move_cursor_y != -9999)&& 
-	   (state->move_cursor_x != state->selected_x || 
-	    state->move_cursor_y != state->selected_y))
 
-	{
-		state->ui_map[state->move_cursor_y][state->move_cursor_x] = 0;
-	}
+	if(state->move_cursor_x != -9999)
+	state->ui_map[state->move_cursor_y][state->move_cursor_x] = 0;
 
 	state->move_cursor_x = new_move_x;
 	state->move_cursor_y = new_move_y;
 
 	// NOTE(filip): Clarify this
-	cost = abs(state->selected_x - state->move_cursor_x) + 
-		   abs(state->selected_y - state->move_cursor_y);
+	cost = abs(state->selected_unit->position_x - state->move_cursor_x) + 
+		   abs(state->selected_unit->position_y - state->move_cursor_y);
 	
-	if(new_move_x != state->selected_x || new_move_y != state->selected_y)
+	if(new_move_x != state->selected_unit->position_x || new_move_y != state->selected_unit->position_y)
 	{	
 		if(cost > range)
 		{
@@ -424,10 +437,14 @@ void setMoveCursor(int new_move_x, int new_move_y,
 // Confirms move, moving unit from cursor to move_cursor
 void moveSelectedUnit(game_state *state)
 {
-	state->unit_map[state->selected_y][state->selected_x] 
+	state->unit_map[state->selected_unit->position_y][state->selected_unit->position_x] 
 		= 0;
 	state->unit_map[state->move_cursor_y][state->move_cursor_x] 
-		= state->selected_unit;
+		= 1;
+	printf("%d turn nr\n", state->turn);
+	// for(int i = 0 ; i < state->player_number ; i++)
+	state->selected_unit->position_x = state->move_cursor_x;
+	state->selected_unit->position_y = state->move_cursor_y;
 
 	state->ui_map[state->move_cursor_y][state->move_cursor_x] = 0;
 	step(state);
@@ -447,33 +464,34 @@ void generateHexagonalTestMap(game_state *state)
 
 	for(i = 0; i < 3; i++){
 		unit *u;
-		create_unit(&u, 0, 0, 0, 0, 3);
-		add_unit(u, &state->units[0]);
+		createUnit(&u, 0, 0, 1, 0, 3);
+		addUnit(u, &state->units[0]);
 	}
 
 	for(i = 0; i < 3; i++){
 		unit *u;
-		create_unit(&u, 0, 0, 0, 1, 3);
-		add_unit(u, &state->units[1]);
+		createUnit(&u, 0, 0, 2, 1, 3);
+		addUnit(u, &state->units[1]);
 	}
 
 	state->unit_map[2][1] = 1; 
-	find_unit(state->units[0], state->units[0], 1, 2);
-
+	state->units[0]->position_x = 1;
+	state->units[0]->position_y = 2;
 	state->unit_map[1][3] = 1;
-	find_unit(state->units[0], state->units[0], 3, 1);
-
+	state->units[0]->next->position_x = 3;
+	state->units[0]->next->position_y = 1;
 	state->unit_map[6][6] = 1;	
-	find_unit(state->units[0], state->units[0], 6, 6);
-
+	state->units[0]->next->next->position_x = 6;
+	state->units[0]->next->next->position_y = 6;
 	state->unit_map[13][10] = 1;
-	find_unit(state->units[0], state->units[0], 10, 13);
-
+	state->units[1]->position_x = 10;
+	state->units[1]->position_y = 13;
 	state->unit_map[13][6] = 1;	
-	find_unit(state->units[0], state->units[0], 6, 13);
-
+	state->units[1]->next->position_x = 6;
+	state->units[1]->next->position_y = 13;
 	state->unit_map[12][9] = 1;	
-	find_unit(state->units[0], state->units[0], 9, 12);
+	state->units[1]->next->next->position_x = 9;
+	state->units[1]->next->next->position_y = 12;
 }
 
 // Called everytime the map needs to be rendered
@@ -503,7 +521,7 @@ void updateHexagonMapGL(game_state *state,
 				{
 					unit* u;
 					for(int l = 0; l < state->player_number; l++){
-						unit* temp = find_unit(state->units[l], state->units[l], j, i);
+						unit* temp = findUnit(state->units[l], j, i);
 						if(temp != NULL)
 							u = temp;
 					}
@@ -628,8 +646,6 @@ int main()
 	// Initialize values for game state
 	state.player_number = 2;
 	state.turn = 0;
-	state.selected_x = -9999;
-	state.selected_y = -9999;	
 	state.move_cursor_x = -9999;
 	state.move_cursor_y = -9999;
 	state.turn = -1;
@@ -637,6 +653,7 @@ int main()
 	{
 		state.units[i] = NULL;
 	}
+	state.selected_unit = NULL;
 
 	generateHexagonalTestMap(&state);
 
