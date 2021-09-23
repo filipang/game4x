@@ -17,6 +17,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <math.h>
+#include <string.h>
 #include <stdlib.h>
 
 #define PI 3.14159265359
@@ -25,6 +26,10 @@
 
 // NOTE(filip): Don't define DEBUG when releasing
 #define DEBUG
+
+#define MODE_NORMAL 0
+#define MODE_MOVE 1
+#define MODE_ATTACK 2
 
 // NOTE(filip): Everything has to be simplified to be re-written in ASM
 // NOTE(filip): Maybe move these structs in header file?
@@ -65,7 +70,7 @@ void addUnit(unit *src, unit **dst){
 	}
 }
 
-// ACICLIC
+// TODO(filip): Free unit list function
 void removeUnit(unit **base, unit *target){
 	if((*base) == target)
 	{
@@ -126,8 +131,12 @@ typedef struct game_state
 	
 	// Move cursor data
 	// NOTE(filip): Make this flag clearer or find a way to remove it
-	int move_cursor_x;
-	int move_cursor_y;
+	unsigned char cursor_color;
+	int cursor_x;
+	int cursor_y;
+	int move_cost;
+
+	int mode; // Cursor mode 0, 1, 2
 
 	unit* units[MAX_PLAYERS];
 	
@@ -135,6 +144,32 @@ typedef struct game_state
 	// 				3 into one vector
 	GLfloat *colors;
 } game_state;
+
+typedef struct input_pressed
+{
+	unsigned char key_pressed_W;
+	unsigned char key_pressed_A;
+	unsigned char key_pressed_S;
+	unsigned char key_pressed_D;
+	unsigned char key_pressed_TAB;
+	unsigned char key_pressed_ENTER;
+	unsigned char key_pressed_SPACE;
+	unsigned char key_pressed_ESCAPE;
+	unsigned char key_pressed_T;
+	unsigned char key_pressed_M;
+
+	unsigned char button_W;
+	unsigned char button_A;
+	unsigned char button_S;
+	unsigned char button_D;
+	unsigned char button_TAB;
+	unsigned char button_ENTER;
+	unsigned char button_SPACE;
+	unsigned char button_ESCAPE;
+	unsigned char button_T;
+	unsigned char button_M;
+
+} input_pressed;
 
 char* loadFile(const char* file_name)
 {
@@ -346,16 +381,14 @@ void turn(game_state* state)
 	state->turn = (state->turn + 1)%state->player_number;
 
 	unit *iter = state->units[state->turn];
-	// NOTE(filip): Hardcoded turns for 2 players
-	// TODO(filip): Dynamic turns for variable number of players
-	// TODO(filip): Remove hard coded unit codes
+
 	while(iter != NULL)
 	{
 		iter->mp_current = iter->mp_stat;
 		iter = iter->next;
 	}
 
-	step(state);
+	state->selected_unit = NULL;
 }
 
 // NOTE(filip): Function header
@@ -363,91 +396,106 @@ void setMoveCursor(int new_move_x, int new_move_y,
 				   int range, game_state *state);
 
 // Jump to the next unit (or first if state->started == 0)
-// FIXME(filip): Jump to next unit only if it hasn't moved yet
 void step (game_state* state)
 {
 	if(state->selected_unit == NULL)
 	{
 		state->selected_unit = state->units[state->turn];	
-		setMoveCursor(state->selected_unit->position_x, state->selected_unit->position_y, state->selected_unit->mp_current, state);
+		setMoveCursor(state->selected_unit->position_x, 
+					  state->selected_unit->position_y, 
+					  state->selected_unit->mp_current, 
+					  state);
 	}
 	else	
 	{
-	unsigned char looped = 0;
+		unsigned char looped = 0;
+		state->ui_map[state->selected_unit->position_y][state->selected_unit->position_x] = 0;
        	if(state->selected_unit->next !=NULL)
-		state->selected_unit = state->selected_unit->next;
-	else	
-		state->selected_unit = state->units[state->turn];	
+			state->selected_unit = state->selected_unit->next;
+		else	
+			state->selected_unit = state->units[state->turn];	
 
-	while(state->selected_unit->next != NULL && state->selected_unit->mp_current == 0){ 
+		while(state->selected_unit->next != NULL && state->selected_unit->mp_current == 0)
+		{ 
+			state->selected_unit = state->selected_unit->next;
+			if(state->selected_unit->next == NULL)
+			{
+				if(looped==0)
+				{
+					state->selected_unit = state->units[state->turn];
+				}
+				looped = 1;
+			}
+		}
 
-        state->selected_unit = state->selected_unit->next;
-        if(state->selected_unit->next == NULL){
-            if(looped==0){
-                state->selected_unit = state->units[state->turn];
-            }
-            looped = 1;
-        }
-    }
+		setMoveCursor(state->selected_unit->position_x, 
+				state->selected_unit->position_y, 
+				state->selected_unit->mp_current, state);
 
-state->ui_map[state->selected_unit->position_y][state->selected_unit->position_x] = 1;
-setMoveCursor(state->selected_unit->position_x, state->selected_unit->position_y, state->selected_unit->mp_current, state);
-
-if(looped == 1 && state->selected_unit->next == NULL)
-{
-	turn(state);
-}
-}
+		// NOTE(filip): Uncomment this for turns ending when all units with 
+		// MP have been cycled
+		/*if(looped == 1 && state->selected_unit->next == NULL)
+		{
+			turn(state);
+		}*/
+	}
 }
 
 void setMoveCursor(int new_move_x, int new_move_y, 
 				   int range, game_state *state)
 {
-	int cost = 0, i, j;
-
-	if(state->move_cursor_x != -9999)
-	state->ui_map[state->move_cursor_y][state->move_cursor_x] = 0;
-
-	state->move_cursor_x = new_move_x;
-	state->move_cursor_y = new_move_y;
+	state->cursor_x = new_move_x;
+	state->cursor_y = new_move_y;
 
 	// NOTE(filip): Clarify this
-	cost = abs(state->selected_unit->position_x - state->move_cursor_x) + 
-		   abs(state->selected_unit->position_y - state->move_cursor_y);
+	state->move_cost = abs(state->selected_unit->position_x - state->cursor_x) + 
+		   abs(state->selected_unit->position_y - state->cursor_y);
 	
-	if(new_move_x != state->selected_unit->position_x || new_move_y != state->selected_unit->position_y)
-	{	
-		if(cost > range)
-		{
-			state->ui_map[new_move_y][new_move_x] = 4;
-		}
-		if(cost == range)
-		{
-			state->ui_map[new_move_y][new_move_x] = 3;
-		}
-		if(cost < range)
-		{
-			state->ui_map[new_move_y][new_move_x] = 2;
-		}
+	//if(new_move_x != state->selected_unit->position_x || new_move_y != state->selected_unit->position_y)
+	if(state->move_cost > state->selected_unit->mp_current)
+	{
+		// NOTE(filip): Cursor color outside move range 
+		state->cursor_color = 4;
 	}
-
+	if(state->move_cost == state->selected_unit->mp_current)
+	{
+		// NOTE(filip): Cursor color at the edge of  move range 
+		state->cursor_color = 3;
+	}
+	if(state->move_cost < state->selected_unit->mp_current)
+	{
+		// NOTE(filip): Cursor color inside move range 
+		state->cursor_color = 2;
+	}
 
 }
 
-// Confirms move, moving unit from cursor to move_cursor
+// Confirms move, moving unit from cursor to cursor
 void moveSelectedUnit(game_state *state)
 {
-	state->unit_map[state->selected_unit->position_y][state->selected_unit->position_x] 
-		= 0;
-	state->unit_map[state->move_cursor_y][state->move_cursor_x] 
-		= 1;
-	printf("%d turn nr\n", state->turn);
-	// for(int i = 0 ; i < state->player_number ; i++)
-	state->selected_unit->position_x = state->move_cursor_x;
-	state->selected_unit->position_y = state->move_cursor_y;
+	if(state->unit_map[state->cursor_y][state->cursor_x] == 0)
+	{
+		if(state->move_cost<=state->selected_unit->mp_current){
+			state->selected_unit->mp_current-=state->move_cost;
+			// for(int i = 0 ; i < state->player_number ; i++)
+			
+			state->unit_map[state->selected_unit->position_y][state->selected_unit->position_x] = 0;
+			state->unit_map[state->cursor_y][state->cursor_x] = 1;
 
-	state->ui_map[state->move_cursor_y][state->move_cursor_x] = 0;
-	step(state);
+			state->selected_unit->position_x = state->cursor_x;
+			state->selected_unit->position_y = state->cursor_y;
+
+			
+			//step(state);
+		} else 
+		{
+			printf("Not enough MP!\n");
+		}
+	}
+	else
+	{
+		printf("Can't move there!\n");
+	}
 }
 
 // Generates a hard coded hexagonal test map
@@ -501,9 +549,24 @@ void updateHexagonMapGL(game_state *state,
 					   GLuint VBO)
 {
 	int i, j, k;
-	glBindBuffer(GL_ARRAY_BUFFER, VBO); // Binds GL_ARRAY_BUFFER to our VBO
 
 	GLfloat *iter = mapVertices;
+	GLfloat *beginWrite=NULL, *endWrite=NULL;
+	
+	// NOTE(filip): This could be pleaced better somewhere else
+	// NOTE(filip): This wipes ui map and sets it according to move_cursor and
+	// 				selected unit.
+	
+	for(i = 0; i < state->size_y; i++)
+		memset(state->ui_map[i], 0, state->size_x);
+
+	if(state->cursor_y != -9999 )
+		state->ui_map[state->cursor_y][state->cursor_x] = state->cursor_color;
+
+	if(state->selected_unit != NULL)
+		state->ui_map[state->selected_unit->position_y][state->selected_unit->position_x] = 1;
+
+	// TODO(filip): Optimize this
 	for(i = 0; i < state->size_y; i++)
 	{
 		for(j = 0; j < state->size_x; j++)
@@ -513,8 +576,25 @@ void updateHexagonMapGL(game_state *state,
 				iter += 3;	
 				if(state -> ui_map[i][j] != 0)
 				{
+					if(*iter!=state->colors[state->ui_map[i][j] * 9 + 6])
+					{
+						endWrite = iter+1;
+						beginWrite = beginWrite != NULL ? beginWrite : iter;
+					}
 					*(iter++) = state->colors[state->ui_map[i][j] * 9 + 6];
+
+					if(*iter!=state->colors[state->ui_map[i][j] * 9 + 7])
+					{
+						endWrite = iter+1;
+						beginWrite = beginWrite != NULL ? beginWrite : iter;
+					}
 					*(iter++) = state->colors[state->ui_map[i][j] * 9 + 7];
+
+					if(*iter!=state->colors[state->ui_map[i][j] * 9 + 8])
+					{
+						endWrite = iter+1;
+						beginWrite = beginWrite != NULL ? beginWrite : iter;
+					}
 					*(iter++) = state->colors[state->ui_map[i][j] * 9 + 8];
 				}
 				else if(state->unit_map[i][j] != 0)
@@ -526,31 +606,100 @@ void updateHexagonMapGL(game_state *state,
 							u = temp;
 					}
 					
+					if(*iter!=state->colors[u->type * 9 + 3])
+					{
+						endWrite = iter+1;
+						beginWrite = beginWrite != NULL ? beginWrite : iter;
+					}
 					*(iter++) = state->colors[u->type * 9 + 3];
+
+					if(*iter!=state->colors[u->type * 9 + 4])
+					{
+						endWrite = iter+1;
+						beginWrite = beginWrite != NULL ? beginWrite : iter;
+					}
 					*(iter++) = state->colors[u->type * 9 + 4];
+
+					if(*iter!=state->colors[u->type * 9 + 5])
+					{
+						endWrite = iter+1;
+						beginWrite = beginWrite != NULL ? beginWrite : iter;
+					}
 					*(iter++) = state->colors[u->type * 9 + 5];
 				}
 				else
 				{
+
+					if(*iter!=state->colors[state->terrain_map[i][j] * 9 + 0])
+					{
+						endWrite = iter+1;
+						beginWrite = beginWrite != NULL ? beginWrite : iter;
+					}
 					*(iter++) = state->colors[state->terrain_map[i][j] * 9 + 0];
+
+					if(*iter!=state->colors[state->terrain_map[i][j] * 9 + 1])
+					{
+						endWrite = iter+1;
+						beginWrite = beginWrite != NULL ? beginWrite : iter;
+					}
 					*(iter++) = state->colors[state->terrain_map[i][j] * 9 + 1];
+
+					if(*iter!=state->colors[state->terrain_map[i][j] * 9 + 2])
+					{
+						endWrite = iter+1;
+						beginWrite = beginWrite != NULL ? beginWrite : iter;
+					}
 					*(iter++) = state->colors[state->terrain_map[i][j] * 9 + 2];
 				}
 			}
 		}
 	}
 
-	glBufferSubData(GL_ARRAY_BUFFER, 0, // Writes new data to GL_ARRAY_BUFFER
-					getHexagonMapVertexBufferSize(state), // Size of new data 
-					mapVertices); // New data to render
-	
-	glBindBuffer(GL_ARRAY_BUFFER, 0);	
+	if(beginWrite!=NULL)
+	{
+		#ifdef DEBUG
+		printf("Writing %ld bytes of data to be rendered\nbeginWrite: %ld\nendWrite: %ld\nmapVertices: %ld\nmap size: %ld\n", 
+				(long long)endWrite-(long long)beginWrite, 
+				beginWrite, 
+				endWrite, 
+				mapVertices, 
+				getHexagonMapVertexBufferSize(state));
+		#endif
+		glBindBuffer(GL_ARRAY_BUFFER, VBO); // Binds GL_ARRAY_BUFFER to our VBO
+		glBufferSubData(GL_ARRAY_BUFFER,
+						((long long)beginWrite-(long long)mapVertices),
+						((long long)endWrite-(long long)beginWrite), // Size of new data 
+						beginWrite); // New data to render
+		
+		glBindBuffer(GL_ARRAY_BUFFER, 0);	
+	}
 }
 
-// NOTE(filip): Not used
-void setSquare(unsigned char c,int x, int y, unsigned char **mapBuffer)
-{
-	*(*(mapBuffer+y)+x) = c;
+// NOTE(filip): This needs to be called every frame to work
+void processInput(struct GLFWwindow *window, input_pressed *input){
+	#define PROCESS_BUTTON_INPUT(button) 							\
+	if(glfwGetKey(window, GLFW_KEY_##button) == GLFW_PRESS)			\
+	{																\
+		if(input->key_pressed_##button == 0)  						\
+			input->button_##button = 1;								\
+		else														\
+			input->button_##button = 0;								\
+		input->key_pressed_##button = 1;							\
+	}else 															\
+	{input->button_##button = 0;input->key_pressed_##button = 0;}
+
+	//if(glfwGetKey(window, GLFW_KEY_##button == GLFW_RELEASE)) 
+	PROCESS_BUTTON_INPUT(W);
+	PROCESS_BUTTON_INPUT(A);
+	PROCESS_BUTTON_INPUT(S);
+	PROCESS_BUTTON_INPUT(D);
+	PROCESS_BUTTON_INPUT(TAB);
+	PROCESS_BUTTON_INPUT(SPACE);
+	PROCESS_BUTTON_INPUT(ESCAPE);
+	PROCESS_BUTTON_INPUT(ENTER);
+	PROCESS_BUTTON_INPUT(T);
+	PROCESS_BUTTON_INPUT(M);
+
 }
 
 // Callback for every key pressed
@@ -591,8 +740,9 @@ int main()
 	// Introduce the window into the current context
 	glfwMakeContextCurrent(window);
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GLFW_TRUE);
-
-	//Load GLAD so it configures OpenGL
+	// TODO(filip): fix mouse lag
+	// glfwSwapInterval(1);
+	// Load GLAD so it configures OpenGL
 	gladLoadGL();
 	// Specify the viewport of OpenGL in the Window
 	// In this case the viewport goes from x = 0, y = 0, to x = 800, y = 800
@@ -640,15 +790,17 @@ int main()
 
 	// SPECIFIC START SETUP ----------------------------------------------------
 
+	input_pressed input = {0};
 	game_state state;
 
 	// NOTE(filip): Consider moving these somewhere else
 	// Initialize values for game state
 	state.player_number = 2;
 	state.turn = 0;
-	state.move_cursor_x = -9999;
-	state.move_cursor_y = -9999;
+	state.cursor_x = -9999;
+	state.cursor_y = -9999;
 	state.turn = -1;
+	state.mode = MODE_NORMAL;
 	for(int i = 0; i < MAX_PLAYERS; i++)
 	{
 		state.units[i] = NULL;
@@ -725,16 +877,16 @@ int main()
 
 	// TODO(filip): Move this somewhere else
 	// List of colors  
-	GLfloat colors[] = {0.65f, 0.65f, 0.55f, //T0. Dark grey
+	GLfloat colors[] = {0.65f, 0.65f, 0.55f, //T0.
 						0.0f, 0.0f, 0.0f,	 //U0. 
-						0.0f, 0.0f, 0.0f,    //I0. Dark blue: Blue ase
-						0.55f, 0.4f, 0.05f,	 //T1. Blue: Blue unit
-						0.55f, 0.15f, 0.5f,  //U1. Dark red: Red base
-						0.9f, 0.9f, 0.3f,	 //I1. Red: Red unit
-						0.9f, 0.9f, 0.0f,    //T2. Yellow: Selected
-						0.15f, 0.9f, 0.6f,	 //U2. Green
-						0.6f, 0.6f, 0.0f,	 //I2. Dark Yellow
-						0.7f, 0.4f, 0.0f,	 //T3. Dark Orange
+						0.0f, 0.0f, 0.0f,    //I0. 
+						0.55f, 0.4f, 0.05f,	 //T1. 
+						0.55f, 0.15f, 0.5f,  //U1.
+						0.9f, 0.9f, 0.3f,	 //I1. 
+						0.9f, 0.9f, 0.0f,    //T2.
+						0.15f, 0.9f, 0.6f,	 //U2.
+						0.6f, 0.6f, 0.0f,	 //I2.
+						0.7f, 0.4f, 0.0f,	 //T3.
 						0.0f, 0.0f, 0.0f,	 //U3.
 						0.8f, 0.5f, 0.0f,	 //I3.
 						0.0f, 0.0f, 0.0f,	 //T4.
@@ -743,104 +895,59 @@ int main()
 
 	state.colors = colors;
 	// Main while loop
-	// TODO(filip): Store flags somewhere else
-	int prev_p = 0, prev_a = 0, prev_b = 0, prev_c=0, prev_d=0, prev_e=0;
 	while (!glfwWindowShouldClose(window))
 	{
-		// TODO(filip): Find better way to handle input
-		if(glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+	
+		processInput(window, &input);
+		if(state.mode == MODE_NORMAL)
 		{
-			if(prev_p == 0)
-			{
+			if(input.button_TAB){
+				state.mode = MODE_MOVE;
 				step(&state);
-				printMap(state.size_x, state.size_y, 
-						 state.terrain_map);	
 			}
-			prev_p = 1;
-		}
-		else
+		} else if(state.mode == MODE_MOVE) 
 		{
-			prev_p = 0;
-		}
+			// NOTE(filip): move
+			if(input.button_ENTER)
+				turn(&state);
 
-		// NOTE(filip): This block needs to be rewritten
-		{
-			// NOTE(filip): moves move_cursor up
+			if(input.button_TAB)
+				step(&state);
+
+			if(input.button_SPACE)
+				moveSelectedUnit(&state);
+
+			// NOTE(filip): moves cursor up
 			// TODO(filip): Implement pathfinding
 			// TODO(filip): Highlight path from unit to move cursor
-			if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-			{
-				if(prev_a == 0)
-				{
-					// TODO(filip): Get rid of hard coded range value
-					setMoveCursor(state.move_cursor_x, state.move_cursor_y + 1, 
-							      4, &state);
-				}
-				prev_a = 1;
-			}
-			else{
-				prev_a = 0;
-			}
 			
+			// NOTE(filip): moves cursor down
+			if(input.button_W)	
+				setMoveCursor(state.cursor_x, state.cursor_y + 1, 4, &state);
 			// NOTE(filip): moves cursor up
-			if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-			{
-				if(prev_b == 0)
-				{
-					// TODO(filip): Get rid of hard coded range value
-					setMoveCursor(state.move_cursor_x, state.move_cursor_y - 1, 
-							      4, &state);
-				}
-				prev_b = 1;
-			}
-			else{
-				prev_b = 0;
-			}
-
+			if(input.button_S)			
+				setMoveCursor(state.cursor_x, state.cursor_y - 1, 4, &state);
 			// NOTE(filip): moves cursor left
-			if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-			{
-				if(prev_c == 0)
-				{
-					// TODO(filip): Get rid of hard coded range value
-					setMoveCursor(state.move_cursor_x - 1, state.move_cursor_y, 
-							      4, &state);
-				}
-				prev_c = 1;
-			}
-			else{
-				prev_c = 0;
-			}
-
+			if(input.button_A)			
+				setMoveCursor(state.cursor_x - 1, state.cursor_y, 4, &state);
 			// NOTE(filip): moves cursor right
-			if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-			{
-				if(prev_d == 0)
-				{
-					// TODO(filip): Get rid of hard coded range value
-					setMoveCursor(state.move_cursor_x + 1, state.move_cursor_y, 
-								  4, &state);
-				}
-				prev_d = 1;
-			}
-			else{
-				prev_d = 0;
+			if(input.button_D)
+				setMoveCursor(state.cursor_x + 1, state.cursor_y, 4, &state);
+
+			if(input.button_ESCAPE){
+				state.mode = MODE_NORMAL;
+				state.selected_unit = NULL;
+				state.cursor_y = -9999;
+				state.cursor_x = -9999;
 			}
 
-			// NOTE(filip): move
-			if(glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
-			{
-				if(prev_e == 0)
-				{
-					moveSelectedUnit(&state);
-				}
-				prev_e = 1;
-			}
-			else{
-				prev_e = 0;
-			}
+			if(input.button_T)
+				state.mode = MODE_ATTACK;
+
+		} else if(state.mode == MODE_ATTACK){
+			if(input.button_ESCAPE)
+				state.mode = MODE_NORMAL;
 		}
-
 		// Specify the color of the background
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 		// Clean the back buffer and assign the new color to it
@@ -864,8 +971,7 @@ int main()
 		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);
 		// Take care of all GLFW events
-		// TODO(filip): Consider freezing main thread when there is no input
-		glfwPollEvents();
+		glfwWaitEvents();
 	}
 
 
