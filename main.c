@@ -19,8 +19,10 @@
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
-#include "units.c"
-#include "outposts.c"
+#include "unit.c"
+#include "outpost.c"
+#include "gl_object.c"
+#include "gl_data.c"
 
 #define PI 3.14159265359
 #define MAXBUF 1000
@@ -81,7 +83,9 @@ typedef struct game_state
 	int golem_cooldown; // number of turns until next golem spawns
 
 	unit* units[MAX_PLAYERS];
-	
+
+	gl_data *gl_state;	
+	gl_object *gl_objects;
 	// NOTE(ionut): Every third element belongs to the same map to compress all
 	// 				3 into one vector
 	GLfloat *colors;
@@ -198,7 +202,7 @@ GLfloat* buildHexagonVertices(float offset_x, float offset_y,
 	return dest;
 }
 
-GLuint* buildHexagonIndices(GLuint offset, GLuint* dest)
+GLuint* buildIndices(GLuint offset, GLuint* dest)
 {
 	*(dest ++) = offset;
 	*(dest ++) = offset + 1;
@@ -221,16 +225,16 @@ GLuint* buildHexagonIndices(GLuint offset, GLuint* dest)
 
 
 // This enerates vertices and indices for map
-void buildHexagonMapGL(int size_x, int size_y, 
+void buildMapGL(int size_x, int size_y, 
 					   float side_len, 
 				       float offset_x, float offset_y, 
-					   GLfloat** vertices, GLuint** indices)
+					   GLfloat* vertices, GLuint* indices)
 {
 	int i, j;
-	*vertices = (GLfloat *) malloc(6 * 6 * size_x * size_y * sizeof (GLfloat));
-	*indices = (GLuint *) malloc(4 * 3 * size_x * size_y * sizeof (GLuint));
-	GLfloat *iter_v = *vertices;
-	GLuint *iter_i = *indices;
+	//*vertices = (GLfloat *) malloc(6 * 6 * size_x * size_y * sizeof (GLfloat));
+	//*indices = (GLuint *) malloc(4 * 3 * size_x * size_y * sizeof (GLuint));
+	GLfloat *iter_v = vertices;
+	GLuint *iter_i = indices;
 	uint index_cnt = 0;
 	for(i = 0; i < size_y; i++){
 		for(j = 0; j < size_x; j++){
@@ -242,7 +246,7 @@ void buildHexagonMapGL(int size_x, int size_y,
 									      0.0f, 0.0f, 0.0f,
 									      side_len, iter_v);
 			
-			iter_i = buildHexagonIndices(index_cnt, iter_i);
+			iter_i = buildIndices(index_cnt, iter_i);
 			index_cnt += 6;	
 			#ifdef DEBUG
 			printf("(%.2f,%.2f) ", (float)j*0.08f, (float)i*0.08f);
@@ -254,16 +258,16 @@ void buildHexagonMapGL(int size_x, int size_y,
 	}
 }
 
-int getHexagonMapVertexBufferSize(game_state *state)
+int getMapVertexBufferSize(game_state *state)
 {
 	// 6 GLfloats for each of the 6 vertices of the hexagon
-	return state->size_x*state->size_y*6*6*sizeof(GLfloat);
+	return state->size_x*state->size_y*6*6;
 }
 
-int getHexagonMapIndexBufferSize(game_state *state)
+int getMapIndexBufferSize(game_state *state)
 {
 	// 3 points for each of the 4 triangles that make up a hexagon
-	return state->size_x*state->size_y*4*3*sizeof(GLuint);
+	return state->size_x*state->size_y*4*3;
 }
 
 void freeMapVertices(GLfloat* vertices)
@@ -508,7 +512,7 @@ void build(game_state *state)
 // Generates a hard coded hexagonal test map
 // TODO(filip): Free memory allocated by initializeMap() and initializeUIState()
 // 				Create freeMap and freeUIState functions
-void generateHexagonalTestMap(game_state *state)
+void generatealTestMap(game_state *state)
 {
 	int i, j;
 	state->size_x = 15;
@@ -551,7 +555,7 @@ void generateHexagonalTestMap(game_state *state)
 }
 
 // Called everytime the map needs to be rendered
-void updateHexagonMapGL(game_state *state,
+void updateMapGL(game_state *state,
 					   float *colors, 
 					   GLfloat *mapVertices, 
 					   GLuint VBO)
@@ -673,7 +677,7 @@ void updateHexagonMapGL(game_state *state,
 				beginWrite, 
 				endWrite, 
 				mapVertices, 
-				getHexagonMapVertexBufferSize(state));
+				getMapVertexBufferSize(state));
 		#endif
 		glBindBuffer(GL_ARRAY_BUFFER, VBO); // Binds GL_ARRAY_BUFFER to our VBO
 		glBufferSubData(GL_ARRAY_BUFFER,
@@ -713,6 +717,8 @@ void processInput(struct GLFWwindow *window, input_pressed *input){
 	PROCESS_BUTTON_INPUT(B);
 
 }
+
+
 
 // Callback for every key pressed
 void key_callback(GLFWwindow* window, 
@@ -792,14 +798,6 @@ int main()
 	glDeleteShader(vertex_shader);
 	glDeleteShader(fragment_shader);
 
-
-
-	// Vertices coordinates
-	GLfloat *vertices;
-
-	// Indices for vertices order
-	GLuint *indices;
-
 	// SPECIFIC START SETUP ----------------------------------------------------
 
 	input_pressed input = {0};
@@ -819,17 +817,23 @@ int main()
 	}
 	state.selected_unit = NULL;
 
-	generateHexagonalTestMap(&state);
+	generatealTestMap(&state);
 
 	// This starts the turn of player 0
 	turn(&state);
 
 	// TODO(filip): Add way to render things other than the map
 	// Build vertices and indices for the map
-	buildHexagonMapGL(state.size_x, state.size_y, 
+	
+	state.gl_state = (gl_data *) malloc(sizeof(gl_data));
+	state.gl_state->indices = NULL;
+	state.gl_state->vertices = NULL;
+	prepareAddGLData(state.gl_state, getMapVertexBufferSize(&state), getMapIndexBufferSize(&state));
+
+	buildMapGL(state.size_x, state.size_y, 
 				      0.04f, 
 				      -0.8f, -0.5f, 
-				      &vertices, &indices);
+				      state.gl_state->vertices, state.gl_state->indices);
 
 	// Create reference containers for the Vartex Array Object, 
 	// the Vertex Buffer Object, and the Element Buffer Object
@@ -846,16 +850,16 @@ int main()
 	// Bind the VBO specifying it's a GL_ARRAY_BUFFER
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	// Introduce the vertices into the VBO
-	glBufferData(GL_ARRAY_BUFFER, getHexagonMapVertexBufferSize(&state), 
-				 vertices, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, getMapVertexBufferSize(&state), 
+				 state.gl_state->vertices, GL_DYNAMIC_DRAW);
 
 
 	// Bind the EBO specifying it's a GL_ELEMENT_ARRAY_BUFFER
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	// Introduce the indices into the EBO
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
-				 getHexagonMapIndexBufferSize(&state), 
-				 indices, GL_DYNAMIC_DRAW);
+				 getMapIndexBufferSize(&state), 
+				 state.gl_state->indices, GL_DYNAMIC_DRAW);
 
 	// Configure the Vertex Attributes so that OpenGL knows how to read the VBO
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 
@@ -1034,7 +1038,7 @@ int main()
 		// Bind the VAO so OpenGL knows to use it
 		glBindVertexArray(VAO);
 		// Render map
-		updateHexagonMapGL(&state, colors, vertices, VBO);		
+		updateMapGL(&state, colors, state.gl_state->vertices, VBO);		
 
 		// Tell OpenGL which Shader Program we want to use
 		glUseProgram(shader_program);
@@ -1057,8 +1061,8 @@ int main()
 	freeMap(state.size_x, state.size_y, state.unit_map);
 	freeMap(state.size_x, state.size_y, state.ui_map);
 	// Free allocated memory
-	freeMapIndices(indices);
-	freeMapVertices(vertices);
+	freeMapIndices(state.gl_state->indices);
+	freeMapVertices(state.gl_state->vertices);
 	// Delete all the objects we've created
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
