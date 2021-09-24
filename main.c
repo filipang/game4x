@@ -38,19 +38,24 @@ typedef struct unit
 	float health; 			// from 0.0 to 1.0
 	int position_x;			// map position
 	int position_y;
-	int type; 				// 1, 2 or 3
-	int team; 				// from 0 to number of players
+	int type; 			// 1, 2 or 3
+	int team; 			// from 0 to number of players
+	int attack_range;		// attack range
+       	float attack_damage;		// attack damage from 0.0 to 1.0
 	int mp_current;			// points left this turn
 	int mp_stat;			// total mp
 	struct unit *next;		// next unit
 } unit;
 
-void createUnit(unit **u, int position_x, int position_y, int type, int team, int mp_stat){
+void createUnit(unit **u, int position_x, int position_y, int type, int team, int attack_range, float attack_damage, int mp_stat){
 	*u = malloc(sizeof(unit));
+	(*u)->health = 1.0;
 	(*u)->position_x = position_x;
 	(*u)->position_y = position_y;
 	(*u)->type = type;
 	(*u)->team = team;
+	(*u)->attack_range = attack_range;
+	(*u)->attack_damage = attack_damage;
 	(*u)->mp_stat = mp_stat;
 	(*u)->next = NULL;
 }
@@ -72,23 +77,24 @@ void addUnit(unit *src, unit **dst){
 
 // TODO(filip): Free unit list function
 void removeUnit(unit **base, unit *target){
+	unit *iter = (*base);
 	if((*base) == target)
 	{
 		unit *u = (*base)->next;
 		free(*base);
 		(*base) = u;
 	}
-	unit *iter = (*base);
-	while(iter->next != NULL)
-	{
-		if(iter->next == target)
+	if(iter  != NULL)
+		while(iter->next != NULL)
 		{
-			iter->next = target->next;
-			free(target);
+			if(iter->next == target)
+			{
+				iter->next = target->next;
+				free(target);
+			}
+			if(iter->next != NULL)
+				iter = iter->next;	
 		}
-		iter = iter->next;
-		
-	}
 
 
 }
@@ -134,7 +140,7 @@ typedef struct game_state
 	unsigned char cursor_color;
 	int cursor_x;
 	int cursor_y;
-	int move_cost;
+	int cursor_distance;
 
 	int mode; // Cursor mode 0, 1, 2
 
@@ -157,6 +163,7 @@ typedef struct input_pressed
 	unsigned char key_pressed_ESCAPE;
 	unsigned char key_pressed_T;
 	unsigned char key_pressed_M;
+	unsigned char key_pressed_V;
 
 	unsigned char button_W;
 	unsigned char button_A;
@@ -168,6 +175,7 @@ typedef struct input_pressed
 	unsigned char button_ESCAPE;
 	unsigned char button_T;
 	unsigned char button_M;
+	unsigned char button_V;
 
 } input_pressed;
 
@@ -389,11 +397,14 @@ void turn(game_state* state)
 	}
 
 	state->selected_unit = NULL;
+	// TODO(ionut): change -9999 to check for normal cursor mode
+	state->cursor_x = -9999;
+	state->cursor_y = -9999;
+	state->mode = MODE_NORMAL;
 }
 
 // NOTE(filip): Function header
-void setMoveCursor(int new_move_x, int new_move_y, 
-				   int range, game_state *state);
+void setMoveCursor(int new_move_x, int new_move_y, game_state *state);
 
 // Jump to the next unit (or first if state->started == 0)
 void step (game_state* state)
@@ -403,7 +414,6 @@ void step (game_state* state)
 		state->selected_unit = state->units[state->turn];	
 		setMoveCursor(state->selected_unit->position_x, 
 					  state->selected_unit->position_y, 
-					  state->selected_unit->mp_current, 
 					  state);
 	}
 	else	
@@ -418,7 +428,7 @@ void step (game_state* state)
 		while(state->selected_unit->next != NULL && state->selected_unit->mp_current == 0)
 		{ 
 			state->selected_unit = state->selected_unit->next;
-			if(state->selected_unit->next == NULL)
+			if(state->selected_unit->next == NULL && state->selected_unit->mp_current == 0)
 			{
 				if(looped==0)
 				{
@@ -430,7 +440,7 @@ void step (game_state* state)
 
 		setMoveCursor(state->selected_unit->position_x, 
 				state->selected_unit->position_y, 
-				state->selected_unit->mp_current, state);
+				state);
 
 		// NOTE(filip): Uncomment this for turns ending when all units with 
 		// MP have been cycled
@@ -441,33 +451,47 @@ void step (game_state* state)
 	}
 }
 
-void setMoveCursor(int new_move_x, int new_move_y, 
-				   int range, game_state *state)
+void setMoveCursor(int new_move_x, int new_move_y, game_state *state)
 {
 	state->cursor_x = new_move_x;
 	state->cursor_y = new_move_y;
 
 	// NOTE(filip): Clarify this
-	state->move_cost = abs(state->selected_unit->position_x - state->cursor_x) + 
-		   abs(state->selected_unit->position_y - state->cursor_y);
-	
+	if(state->selected_unit != NULL)
+		state->cursor_distance = (abs(state->selected_unit->position_x - state->cursor_x) + 
+		abs(state->selected_unit->position_y - state->cursor_y ) +
+		abs(state->selected_unit->position_x + state->selected_unit->position_y -
+		state->cursor_x - state->cursor_y)) / 2;
+	else
+		state->cursor_distance = 0;
 	//if(new_move_x != state->selected_unit->position_x || new_move_y != state->selected_unit->position_y)
-	if(state->move_cost > state->selected_unit->mp_current)
+	if(state->mode == MODE_MOVE)
 	{
-		// NOTE(filip): Cursor color outside move range 
-		state->cursor_color = 4;
+		if(state->cursor_distance > state->selected_unit->mp_current)
+		{
+			// NOTE(filip): Cursor color outside move range 
+			state->cursor_color = 4;
+		}
+		if(state->cursor_distance == state->selected_unit->mp_current)
+		{
+			// NOTE(filip): Cursor color at the edge of  move range 
+			state->cursor_color = 3;
+		}
+		if(state->cursor_distance < state->selected_unit->mp_current)
+		{
+			// NOTE(filip): Cursor color inside move range 
+			state->cursor_color = 2;
+		}
 	}
-	if(state->move_cost == state->selected_unit->mp_current)
+	if(state->mode == MODE_ATTACK)
 	{
-		// NOTE(filip): Cursor color at the edge of  move range 
-		state->cursor_color = 3;
-	}
-	if(state->move_cost < state->selected_unit->mp_current)
-	{
-		// NOTE(filip): Cursor color inside move range 
-		state->cursor_color = 2;
-	}
-
+		if(state->unit_map[state->cursor_y][state->cursor_x] == 0)
+			state->cursor_color = 5;
+		else if(state->cursor_distance > state->selected_unit->attack_range || findUnit(state->units[state->turn], state->cursor_x, state->cursor_y) != NULL)
+			state->cursor_color = 4;
+		else
+			state->cursor_color = 6;
+		}
 }
 
 // Confirms move, moving unit from cursor to cursor
@@ -475,8 +499,8 @@ void moveSelectedUnit(game_state *state)
 {
 	if(state->unit_map[state->cursor_y][state->cursor_x] == 0)
 	{
-		if(state->move_cost<=state->selected_unit->mp_current){
-			state->selected_unit->mp_current-=state->move_cost;
+		if(state->cursor_distance<=state->selected_unit->mp_current){
+			state->selected_unit->mp_current-=state->cursor_distance;
 			// for(int i = 0 ; i < state->player_number ; i++)
 			
 			state->unit_map[state->selected_unit->position_y][state->selected_unit->position_x] = 0;
@@ -498,6 +522,38 @@ void moveSelectedUnit(game_state *state)
 	}
 }
 
+void attackSelectedUnit(game_state *state)
+{
+	if(state->unit_map[state->cursor_y][state->cursor_x] != 0)
+	{
+		if(findUnit(state->units[state->turn], state->cursor_x, state->cursor_y) == NULL)
+		{
+			unit *target = NULL;
+			int k;
+			for(int i = 0 ; i < state->player_number ; i++)
+			{
+				unit *v = findUnit(state->units[i], state->cursor_x, state->cursor_y);
+				if(v != NULL)
+				{
+					target = v;
+					k = i;
+				}
+			}
+			if(state->cursor_distance <= state->selected_unit->attack_range)
+			{
+				target->health -= state->selected_unit->attack_damage;
+				if(target->health <= 0)
+				{
+					removeUnit(&state->units[k], target);
+					state->unit_map[state->cursor_y][state->cursor_x] = 0;
+				}
+				state->selected_unit->mp_current = 0;
+				step(state);
+			}
+		}
+	}
+}
+
 // Generates a hard coded hexagonal test map
 // TODO(filip): Free memory allocated by initializeMap() and initializeUIState()
 // 				Create freeMap and freeUIState functions
@@ -512,13 +568,13 @@ void generateHexagonalTestMap(game_state *state)
 
 	for(i = 0; i < 3; i++){
 		unit *u;
-		createUnit(&u, 0, 0, 1, 0, 3);
+		createUnit(&u, 0, 0, 1, 0, 2, 1, 3);
 		addUnit(u, &state->units[0]);
 	}
 
 	for(i = 0; i < 3; i++){
 		unit *u;
-		createUnit(&u, 0, 0, 2, 1, 3);
+		createUnit(&u, 0, 0, 2, 1, 2, 1, 3);
 		addUnit(u, &state->units[1]);
 	}
 
@@ -699,6 +755,7 @@ void processInput(struct GLFWwindow *window, input_pressed *input){
 	PROCESS_BUTTON_INPUT(ENTER);
 	PROCESS_BUTTON_INPUT(T);
 	PROCESS_BUTTON_INPUT(M);
+	PROCESS_BUTTON_INPUT(V);
 
 }
 
@@ -885,13 +942,20 @@ int main()
 						0.9f, 0.9f, 0.3f,	 //I1. 
 						0.9f, 0.9f, 0.0f,    //T2.
 						0.15f, 0.9f, 0.6f,	 //U2.
-						0.6f, 0.6f, 0.0f,	 //I2.
+						0.4f, 0.4f, 0.8f,	 //I2.
 						0.7f, 0.4f, 0.0f,	 //T3.
 						0.0f, 0.0f, 0.0f,	 //U3.
-						0.8f, 0.5f, 0.0f,	 //I3.
+						0.8f, 0.6f, 0.0f,	 //I3.
 						0.0f, 0.0f, 0.0f,	 //T4.
 						0.0f, 0.0f, 0.0f,	 //U4.
-						0.8f, 0.2f, 0.2f};	 //I4.
+						0.8f, 0.2f, 0.2f,	 //I4.
+						0.0f, 0.0f, 0.0f,	 //T5,
+						0.0f, 0.0f, 0.0f, 	 //U5,
+						0.5f, 0.5f, 0.5f, 	 //I5,
+						0.0f, 0.0f, 0.0f, 	 //T6,
+						0.0f, 0.0f, 0.0f, 	 //U6,
+						0.1f, 0.66f, 0.1f 	 //I6,
+						};
 
 	state.colors = colors;
 	// Main while loop
@@ -901,15 +965,25 @@ int main()
 		processInput(window, &input);
 		if(state.mode == MODE_NORMAL)
 		{
+			if(input.button_ESCAPE){
+				state.selected_unit = NULL;
+				state.cursor_x = -9999;
+				state.cursor_y = -9999;	
+			}
 			if(input.button_TAB){
-				state.mode = MODE_MOVE;
 				step(&state);
 			}
+			if(input.button_V){
+				state.mode = MODE_MOVE;
+			}
+			if(input.button_T){
+				state.mode = MODE_ATTACK;
+			}
+			if(input.button_ENTER)
+				turn(&state);
 		} else if(state.mode == MODE_MOVE) 
 		{
 			// NOTE(filip): move
-			if(input.button_ENTER)
-				turn(&state);
 
 			if(input.button_TAB)
 				step(&state);
@@ -921,18 +995,18 @@ int main()
 			// TODO(filip): Implement pathfinding
 			// TODO(filip): Highlight path from unit to move cursor
 			
-			// NOTE(filip): moves cursor down
-			if(input.button_W)	
-				setMoveCursor(state.cursor_x, state.cursor_y + 1, 4, &state);
 			// NOTE(filip): moves cursor up
+			if(input.button_W)	
+				setMoveCursor(state.cursor_x - (state.cursor_y + 1) % 2, state.cursor_y + 1, &state);
+			// NOTE(filip): moves cursor down
 			if(input.button_S)			
-				setMoveCursor(state.cursor_x, state.cursor_y - 1, 4, &state);
+				setMoveCursor(state.cursor_x + state.cursor_y % 2, state.cursor_y - 1, &state);
 			// NOTE(filip): moves cursor left
 			if(input.button_A)			
-				setMoveCursor(state.cursor_x - 1, state.cursor_y, 4, &state);
+				setMoveCursor(state.cursor_x - 1, state.cursor_y, &state);
 			// NOTE(filip): moves cursor right
 			if(input.button_D)
-				setMoveCursor(state.cursor_x + 1, state.cursor_y, 4, &state);
+				setMoveCursor(state.cursor_x + 1, state.cursor_y, &state);
 
 			if(input.button_ESCAPE){
 				state.mode = MODE_NORMAL;
@@ -942,11 +1016,41 @@ int main()
 			}
 
 			if(input.button_T)
+			{
 				state.mode = MODE_ATTACK;
+				setMoveCursor(state.cursor_x, state.cursor_y, &state);
+			}
 
 		} else if(state.mode == MODE_ATTACK){
 			if(input.button_ESCAPE)
+			{
 				state.mode = MODE_NORMAL;
+				state.selected_unit = NULL;
+				state.cursor_y = -9999;
+				state.cursor_x = -9999;
+			}
+			if(input.button_TAB){
+				step(&state);
+			}
+			if(input.button_V){
+				state.mode = MODE_MOVE;
+				setMoveCursor(state.cursor_x, state.cursor_y, &state);
+			}
+			if(input.button_SPACE){
+				attackSelectedUnit(&state);
+			}
+			// NOTE(filip): moves cursor up
+			if(input.button_W)	
+				setMoveCursor(state.cursor_x - (state.cursor_y + 1) % 2, state.cursor_y + 1, &state);
+			// NOTE(filip): moves cursor down
+			if(input.button_S)			
+				setMoveCursor(state.cursor_x + state.cursor_y % 2, state.cursor_y - 1, &state);
+			// NOTE(filip): moves cursor left
+			if(input.button_A)			
+				setMoveCursor(state.cursor_x - 1, state.cursor_y, &state);
+			// NOTE(filip): moves cursor right
+			if(input.button_D)
+				setMoveCursor(state.cursor_x + 1, state.cursor_y, &state);
 		}
 		// Specify the color of the background
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
