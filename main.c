@@ -82,9 +82,9 @@ typedef struct game_state
 
 	int golem_cooldown; // number of turns until next golem spawns
 
-	unit* units[MAX_PLAYERS];
+	player_state players[MAX_PLAYERS];
 
-	gl_data *gl_state;	
+	gl_data *gl_state;
 	gl_object *gl_objects;
 	// NOTE(ionut): Every third element belongs to the same map to compress all
 	// 				3 into one vector
@@ -202,7 +202,7 @@ GLfloat* buildHexagonVertices(float offset_x, float offset_y,
 	return dest;
 }
 
-GLuint* buildIndices(GLuint offset, GLuint* dest)
+GLuint* buildHexagonIndices(GLuint offset, GLuint* dest)
 {
 	*(dest ++) = offset;
 	*(dest ++) = offset + 1;
@@ -223,41 +223,6 @@ GLuint* buildIndices(GLuint offset, GLuint* dest)
 	return dest;
 }
 
-
-// This enerates vertices and indices for map
-void buildMapGL(int size_x, int size_y, 
-					   float side_len, 
-				       float offset_x, float offset_y, 
-					   GLfloat* vertices, GLuint* indices)
-{
-	int i, j;
-	//*vertices = (GLfloat *) malloc(6 * 6 * size_x * size_y * sizeof (GLfloat));
-	//*indices = (GLuint *) malloc(4 * 3 * size_x * size_y * sizeof (GLuint));
-	GLfloat *iter_v = vertices;
-	GLuint *iter_i = indices;
-	uint index_cnt = 0;
-	for(i = 0; i < size_y; i++){
-		for(j = 0; j < size_x; j++){
-			// NOTE(filip): Organize this to be more readable
-			iter_v = buildHexagonVertices(offset_x + 
-										  (j + i * 0.5) * sqrt(3) * side_len, 
-										  offset_y + 
-										  i * side_len * 3 / 2 , 
-									      0.0f, 0.0f, 0.0f,
-									      side_len, iter_v);
-			
-			iter_i = buildIndices(index_cnt, iter_i);
-			index_cnt += 6;	
-			#ifdef DEBUG
-			printf("(%.2f,%.2f) ", (float)j*0.08f, (float)i*0.08f);
-			#endif
-		}
-		#ifdef DEBUG
-		printf("\n");
-		#endif
-	}
-}
-
 int getMapVertexBufferSize(game_state *state)
 {
 	// 6 GLfloats for each of the 6 vertices of the hexagon
@@ -268,6 +233,47 @@ int getMapIndexBufferSize(game_state *state)
 {
 	// 3 points for each of the 4 triangles that make up a hexagon
 	return state->size_x*state->size_y*4*3;
+}
+
+
+// This enerates vertices and indices for map
+void buildMapGL(float side_len, 
+				float offset_x, float offset_y,
+				game_state *state)
+{
+	prepareAddGLData(state->gl_state, getMapVertexBufferSize(state), getMapIndexBufferSize(state));
+	int i, j;
+	//*vertices = (GLfloat *) malloc(6 * 6 * size_x * size_y * sizeof (GLfloat));
+	//*indices = (GLuint *) malloc(4 * 3 * size_x * size_y * sizeof (GLuint));
+	GLfloat *iter_v = state->gl_state->vertices;
+	GLuint *iter_i = state->gl_state->indices;
+	uint index_cnt = 0;
+	for(i = 0; i < state->size_y; i++){
+		for(j = 0; j < state->size_x; j++){
+			// NOTE(filip): Organize this to be more readable
+			iter_v = 
+				buildHexagonVertices(offset_x + 
+								    (j + i * 0.5) * sqrt(3) * side_len, 
+								    offset_y + 
+								    i * side_len * 3 / 2 , 
+								    0.0f, 0.0f, 0.0f,
+								    side_len, iter_v);
+			
+			iter_i = 
+				buildHexagonIndices(index_cnt, iter_i);
+
+			index_cnt += 6;	
+			#ifdef DEBUG
+			printf("(%.2f,%.2f) ", (float)j*0.08f, (float)i*0.08f);
+			#endif
+		}
+		#ifdef DEBUG
+		printf("\n");
+		#endif
+	}
+
+	state->gl_state->indices_size += getMapIndexBufferSize(state);
+	state->gl_state->vertices_size += getMapVertexBufferSize(state);
 }
 
 void freeMapVertices(GLfloat* vertices)
@@ -330,7 +336,7 @@ void turn(game_state* state)
 	//state-> turn is -1 when the game starts
 	state->turn = (state->turn + 1)%state->player_number;
 
-	unit *iter = state->units[state->turn];
+	unit *iter = state->players[state->turn].units;
 
 	while(iter != NULL)
 	{
@@ -353,7 +359,7 @@ void step (game_state* state)
 {
 	if(state->selected_unit == NULL)
 	{
-		state->selected_unit = state->units[state->turn];	
+		state->selected_unit = state->players[state->turn].units;	
 		setMoveCursor(state->selected_unit->position_x, 
 					  state->selected_unit->position_y, 
 					  state);
@@ -365,7 +371,7 @@ void step (game_state* state)
        	if(state->selected_unit->next !=NULL)
 			state->selected_unit = state->selected_unit->next;
 		else	
-			state->selected_unit = state->units[state->turn];	
+			state->selected_unit = state->players[state->turn].units;	
 
 		while(state->selected_unit->next != NULL && state->selected_unit->mp_current == 0)
 		{ 
@@ -374,7 +380,7 @@ void step (game_state* state)
 			{
 				if(looped==0)
 				{
-					state->selected_unit = state->units[state->turn];
+					state->selected_unit = state->players[state->turn].units;
 				}
 				looped = 1;
 			}
@@ -430,7 +436,7 @@ void setMoveCursor(int new_move_x, int new_move_y, game_state *state)
 	{
 		if(state->unit_map[state->cursor_y][state->cursor_x] == 0)
 			state->cursor_color = 5;
-		else if(state->cursor_distance > state->selected_unit->attack_range || findUnit(state->units[state->turn], state->cursor_x, state->cursor_y) != NULL)
+		else if(state->cursor_distance > state->selected_unit->attack_range || findUnit(state->players[state->turn].units, state->cursor_x, state->cursor_y) != NULL)
 			state->cursor_color = 4;
 		else
 			state->cursor_color = 6;
@@ -469,13 +475,14 @@ void attackSelectedUnit(game_state *state)
 {
 	if(state->unit_map[state->cursor_y][state->cursor_x] != 0)
 	{
-		if(findUnit(state->units[state->turn], state->cursor_x, state->cursor_y) == NULL)
+		if(findUnit(state->players[state->turn].units, state->cursor_x, state->cursor_y) == NULL)
 		{
 			unit *target = NULL;
 			int k;
 			for(int i = 0 ; i < state->player_number ; i++)
 			{
-				unit *v = findUnit(state->units[i], state->cursor_x, state->cursor_y);
+				unit *v = findUnit(state->players[i].units, state->cursor_x, state->cursor_y);
+	unit* units[MAX_PLAYERS];
 				if(v != NULL)
 				{
 					target = v;
@@ -487,7 +494,7 @@ void attackSelectedUnit(game_state *state)
 				target->health -= state->selected_unit->attack_damage;
 				if(target->health <= 0)
 				{
-					removeUnit(&state->units[k], target);
+					removeUnit(&state->players[k].units, target);
 					state->unit_map[state->cursor_y][state->cursor_x] = 0;
 				}
 				state->selected_unit->mp_current = 0;
@@ -515,8 +522,8 @@ void build(game_state *state)
 void generatealTestMap(game_state *state)
 {
 	int i, j;
-	state->size_x = 15;
-   	state->size_y = 20;	
+	state->size_x = 20;
+   	state->size_y = 25;	
 	allocMap(state->size_x, state->size_y, &state->terrain_map);
 	allocMap(state->size_x, state->size_y, &state->unit_map);
 	allocMap(state->size_x, state->size_y, &state->ui_map);
@@ -525,33 +532,33 @@ void generatealTestMap(game_state *state)
 	for(i = 0; i < 3; i++){
 		unit *u;
 		createUnit(&u, 0, 0, 1, 0, 2, 1, 3);
-		addUnit(u, &state->units[0]);
+		addUnit(u, &state->players[0].units);
 	}
 
 	for(i = 0; i < 3; i++){
 		unit *u;
 		createUnit(&u, 0, 0, 1, 1, 2, 1, 3);
-		addUnit(u, &state->units[1]);
+		addUnit(u, &state->players[1].units);
 	}
 
 	state->unit_map[2][1] = 1; 
-	state->units[0]->position_x = 1;
-	state->units[0]->position_y = 2;
+	state->players[0].units->position_x = 1;
+	state->players[0].units->position_y = 2;
 	state->unit_map[1][3] = 1;
-	state->units[0]->next->position_x = 3;
-	state->units[0]->next->position_y = 1;
+	state->players[0].units->next->position_x = 3;
+	state->players[0].units->next->position_y = 1;
 	state->unit_map[6][6] = 1;	
-	state->units[0]->next->next->position_x = 6;
-	state->units[0]->next->next->position_y = 6;
+	state->players[0].units->next->next->position_x = 6;
+	state->players[0].units->next->next->position_y = 6;
 	state->unit_map[13][10] = 1;
-	state->units[1]->position_x = 10;
-	state->units[1]->position_y = 13;
+	state->players[1].units->position_x = 10;
+	state->players[1].units->position_y = 13;
 	state->unit_map[13][6] = 1;	
-	state->units[1]->next->position_x = 6;
-	state->units[1]->next->position_y = 13;
+	state->players[1].units->next->position_x = 6;
+	state->players[1].units->next->position_y = 13;
 	state->unit_map[12][9] = 1;	
-	state->units[1]->next->next->position_x = 9;
-	state->units[1]->next->next->position_y = 12;
+	state->players[1].units->next->next->position_x = 9;
+	state->players[1].units->next->next->position_y = 12;
 }
 
 // Called everytime the map needs to be rendered
@@ -613,7 +620,7 @@ void updateMapGL(game_state *state,
 				{
 					unit* u;
 					for(int l = 0; l < state->player_number; l++){
-						unit* temp = findUnit(state->units[l], j, i);
+						unit* temp = findUnit(state->players[l].units, j, i);
 						if(temp != NULL)
 						{
 							u = temp;
@@ -813,7 +820,7 @@ int main()
 	state.mode = MODE_NORMAL;
 	for(int i = 0; i < MAX_PLAYERS; i++)
 	{
-		state.units[i] = NULL;
+		state.players[i].units = NULL;
 	}
 	state.selected_unit = NULL;
 
@@ -827,15 +834,13 @@ int main()
 	
 	state.gl_state = (gl_data *) malloc(sizeof(gl_data));
 	state.gl_state->indices = NULL;
+	state.gl_state->indices_size = 0;
 	state.gl_state->vertices = NULL;
-	prepareAddGLData(state.gl_state, getMapVertexBufferSize(&state), getMapIndexBufferSize(&state));
+	state.gl_state->vertices_size = 0;
 
-	buildMapGL(state.size_x, state.size_y, 
-				      0.04f, 
-				      -0.8f, -0.5f, 
-				      state.gl_state->vertices, state.gl_state->indices);
+	buildMapGL(0.04f, -0.94f, -0.8f, &state);
 
-	// Create reference containers for the Vartex Array Object, 
+	// Create reference containers for the Vertex Array Object, 
 	// the Vertex Buffer Object, and the Element Buffer Object
 	GLuint VAO, VBO, EBO;
 
@@ -850,15 +855,14 @@ int main()
 	// Bind the VBO specifying it's a GL_ARRAY_BUFFER
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	// Introduce the vertices into the VBO
-	glBufferData(GL_ARRAY_BUFFER, getMapVertexBufferSize(&state), 
+	glBufferData(GL_ARRAY_BUFFER, getMapVertexBufferSize(&state) * sizeof(GLfloat), 
 				 state.gl_state->vertices, GL_DYNAMIC_DRAW);
 
 
 	// Bind the EBO specifying it's a GL_ELEMENT_ARRAY_BUFFER
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	// Introduce the indices into the EBO
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
-				 getMapIndexBufferSize(&state), 
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, getMapIndexBufferSize(&state) * sizeof(GLuint), 
 				 state.gl_state->indices, GL_DYNAMIC_DRAW);
 
 	// Configure the Vertex Attributes so that OpenGL knows how to read the VBO
@@ -934,7 +938,7 @@ int main()
 			{
 				step(&state);
 			}
-			if(input.button_V)
+			if(input.button_V && state.selected_unit != NULL)
 			{
 				state.mode = MODE_MOVE;
 			}
@@ -992,7 +996,7 @@ int main()
 				state.cursor_x = -9999;
 			}
 
-			if(input.button_T)
+			if(input.button_T && state.selected_unit != NULL)
 			{
 				state.mode = MODE_ATTACK;
 				setMoveCursor(state.cursor_x, state.cursor_y, &state);
@@ -1009,7 +1013,7 @@ int main()
 			if(input.button_TAB){
 				step(&state);
 			}
-			if(input.button_V){
+			if(input.button_V && state.selected_unit != NULL){
 				state.mode = MODE_MOVE;
 				setMoveCursor(state.cursor_x, state.cursor_y, &state);
 			}
@@ -1044,7 +1048,8 @@ int main()
 		glUseProgram(shader_program);
 		
 		// Draw primitives
-		glDrawElements(GL_TRIANGLES, state.size_x * state.size_y * 4 * 3, 
+		// TODO(ionut): this needs to be changed
+		glDrawElements(GL_TRIANGLES, state.gl_state->indices_size, 
 					   GL_UNSIGNED_INT, 0);
 
 		glBindVertexArray(0);
