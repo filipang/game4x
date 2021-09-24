@@ -19,6 +19,8 @@
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
+#include "units.c"
+#include "outposts.c"
 
 #define PI 3.14159265359
 #define MAXBUF 1000
@@ -31,88 +33,20 @@
 #define MODE_MOVE 1
 #define MODE_ATTACK 2
 
-// NOTE(filip): Everything has to be simplified to be re-written in ASM
-// NOTE(filip): Maybe move these structs in header file?
-typedef struct unit
+typedef struct player_state
 {
-	float health; 			// from 0.0 to 1.0
-	int position_x;			// map position
-	int position_y;
-	int type; 			// 1, 2 or 3
-	int team; 			// from 0 to number of players
-	int attack_range;		// attack range
-       	float attack_damage;		// attack damage from 0.0 to 1.0
-	int mp_current;			// points left this turn
-	int mp_stat;			// total mp
-	struct unit *next;		// next unit
-} unit;
+	float workshop_health;
+	int workshop_x;
+	int workshop_y;	
 
-void createUnit(unit **u, int position_x, int position_y, int type, int team, int attack_range, float attack_damage, int mp_stat){
-	*u = malloc(sizeof(unit));
-	(*u)->health = 1.0;
-	(*u)->position_x = position_x;
-	(*u)->position_y = position_y;
-	(*u)->type = type;
-	(*u)->team = team;
-	(*u)->attack_range = attack_range;
-	(*u)->attack_damage = attack_damage;
-	(*u)->mp_stat = mp_stat;
-	(*u)->next = NULL;
-}
+	int essence_total;
+	int essence_generation;
+	int runes;
+	unsigned char team;
 
-void addUnit(unit *src, unit **dst){
-	if((*dst) == NULL)
-	{
-		(*dst) = src;
-	}
-	else if((*dst)->next == NULL)
-	{
-		(*dst)->next = src;
-	}
-	else
-	{
-		addUnit(src, &(*dst)->next);
-	}
-}
-
-// TODO(filip): Free unit list function
-void removeUnit(unit **base, unit *target){
-	unit *iter = (*base);
-	if((*base) == target)
-	{
-		unit *u = (*base)->next;
-		free(*base);
-		(*base) = u;
-	}
-	if(iter  != NULL)
-		while(iter->next != NULL)
-		{
-			if(iter->next == target)
-			{
-				iter->next = target->next;
-				free(target);
-			}
-			if(iter->next != NULL)
-				iter = iter->next;	
-		}
-
-
-}
-
-unit* findUnit(unit *iter, int position_x, int position_y){
-	if(iter == NULL){	
-		return NULL;
-	}
-	else if(iter->position_x == position_x && iter->position_y == position_y)
-	{
-		return iter;
-	}
-	else
-	{
-		return findUnit(iter->next, position_x, position_y);
-	}
-}
-
+	unit *units;
+	outpost *outposts;
+} player_state;
 
 // NOTE(filip): Make these unsigned char* instead of unsigned char** for ASM?
 // NOTE(filip): Consider splitting game_state into persistent game data and 
@@ -144,6 +78,8 @@ typedef struct game_state
 
 	int mode; // Cursor mode 0, 1, 2
 
+	int golem_cooldown; // number of turns until next golem spawns
+
 	unit* units[MAX_PLAYERS];
 	
 	// NOTE(ionut): Every third element belongs to the same map to compress all
@@ -164,6 +100,7 @@ typedef struct input_pressed
 	unsigned char key_pressed_T;
 	unsigned char key_pressed_M;
 	unsigned char key_pressed_V;
+	unsigned char key_pressed_B;
 
 	unsigned char button_W;
 	unsigned char button_A;
@@ -176,6 +113,7 @@ typedef struct input_pressed
 	unsigned char button_T;
 	unsigned char button_M;
 	unsigned char button_V;
+	unsigned char button_B;
 
 } input_pressed;
 
@@ -437,6 +375,7 @@ void step (game_state* state)
 				looped = 1;
 			}
 		}
+		state->mode = MODE_NORMAL;
 
 		setMoveCursor(state->selected_unit->position_x, 
 				state->selected_unit->position_y, 
@@ -554,6 +493,18 @@ void attackSelectedUnit(game_state *state)
 	}
 }
 
+
+//Building construction function
+/*
+void build(game_state *state)
+{
+	if(state->selected_unit != NULL && state->selected_unit->type = 1)
+	{
+		if(state->terrain_map[state->selected_unit->position_y][state->selected_unit->position_x] % 3 != 0)
+	}
+}
+*/
+
 // Generates a hard coded hexagonal test map
 // TODO(filip): Free memory allocated by initializeMap() and initializeUIState()
 // 				Create freeMap and freeUIState functions
@@ -565,7 +516,8 @@ void generateHexagonalTestMap(game_state *state)
 	allocMap(state->size_x, state->size_y, &state->terrain_map);
 	allocMap(state->size_x, state->size_y, &state->unit_map);
 	allocMap(state->size_x, state->size_y, &state->ui_map);
-
+	state->terrain_map[3][4] = 4;
+	state->terrain_map[15][12] = 4;
 	for(i = 0; i < 3; i++){
 		unit *u;
 		createUnit(&u, 0, 0, 1, 0, 2, 1, 3);
@@ -574,7 +526,7 @@ void generateHexagonalTestMap(game_state *state)
 
 	for(i = 0; i < 3; i++){
 		unit *u;
-		createUnit(&u, 0, 0, 2, 1, 2, 1, 3);
+		createUnit(&u, 0, 0, 1, 1, 2, 1, 3);
 		addUnit(u, &state->units[1]);
 	}
 
@@ -659,29 +611,31 @@ void updateHexagonMapGL(game_state *state,
 					for(int l = 0; l < state->player_number; l++){
 						unit* temp = findUnit(state->units[l], j, i);
 						if(temp != NULL)
+						{
 							u = temp;
+						}
 					}
 					
-					if(*iter!=state->colors[u->type * 9 + 3])
+					if(*iter!=state->colors[u->type * u->team * 9 + 3])
 					{
 						endWrite = iter+1;
 						beginWrite = beginWrite != NULL ? beginWrite : iter;
 					}
-					*(iter++) = state->colors[u->type * 9 + 3];
+					*(iter++) = state->colors[u->type * u->team * 9 + 3];
 
-					if(*iter!=state->colors[u->type * 9 + 4])
+					if(*iter!=state->colors[u->type * u->team * 9 + 4])
 					{
 						endWrite = iter+1;
 						beginWrite = beginWrite != NULL ? beginWrite : iter;
 					}
-					*(iter++) = state->colors[u->type * 9 + 4];
+					*(iter++) = state->colors[u->type * u->team * 9 + 4];
 
-					if(*iter!=state->colors[u->type * 9 + 5])
+					if(*iter!=state->colors[u->type * u->team * 9 + 5])
 					{
 						endWrite = iter+1;
 						beginWrite = beginWrite != NULL ? beginWrite : iter;
 					}
-					*(iter++) = state->colors[u->type * 9 + 5];
+					*(iter++) = state->colors[u->type * u->team * 9 + 5];
 				}
 				else
 				{
@@ -756,6 +710,7 @@ void processInput(struct GLFWwindow *window, input_pressed *input){
 	PROCESS_BUTTON_INPUT(T);
 	PROCESS_BUTTON_INPUT(M);
 	PROCESS_BUTTON_INPUT(V);
+	PROCESS_BUTTON_INPUT(B);
 
 }
 
@@ -935,18 +890,18 @@ int main()
 	// TODO(filip): Move this somewhere else
 	// List of colors  
 	GLfloat colors[] = {0.65f, 0.65f, 0.55f, //T0.
-						0.0f, 0.0f, 0.0f,	 //U0. 
+						0.55f, 0.15f, 0.5f,  //U0.
 						0.0f, 0.0f, 0.0f,    //I0. 
 						0.55f, 0.4f, 0.05f,	 //T1. 
-						0.55f, 0.15f, 0.5f,  //U1.
-						0.9f, 0.9f, 0.3f,	 //I1. 
+						0.8f, 0.4f, 0.2f,	 //U1.
+						0.9f, 0.9f, 0.9f,	 //I1. 
 						0.9f, 0.9f, 0.0f,    //T2.
-						0.15f, 0.9f, 0.6f,	 //U2.
-						0.4f, 0.4f, 0.8f,	 //I2.
+						0.3f, 0.1f, 0.0f,	 //U2.
+						0.55f, 0.55f, 1.0f,	 //I2.
 						0.7f, 0.4f, 0.0f,	 //T3.
 						0.0f, 0.0f, 0.0f,	 //U3.
-						0.8f, 0.6f, 0.0f,	 //I3.
-						0.0f, 0.0f, 0.0f,	 //T4.
+						0.9f, 0.9f, 0.3f,	 //I3.
+						0.15f, 0.9f, 0.6f,	 //T4.
 						0.0f, 0.0f, 0.0f,	 //U4.
 						0.8f, 0.2f, 0.2f,	 //I4.
 						0.0f, 0.0f, 0.0f,	 //T5,
@@ -965,22 +920,37 @@ int main()
 		processInput(window, &input);
 		if(state.mode == MODE_NORMAL)
 		{
-			if(input.button_ESCAPE){
+			if(input.button_ESCAPE)
+			{
 				state.selected_unit = NULL;
 				state.cursor_x = -9999;
 				state.cursor_y = -9999;	
 			}
-			if(input.button_TAB){
+			if(input.button_TAB)
+			{
 				step(&state);
 			}
-			if(input.button_V){
+			if(input.button_V)
+			{
 				state.mode = MODE_MOVE;
 			}
-			if(input.button_T){
+			if(input.button_T)
+			{
 				state.mode = MODE_ATTACK;
 			}
 			if(input.button_ENTER)
+			{
 				turn(&state);
+			}
+			
+
+			//Building Construction
+			/*
+			if(input.button_B){
+				build(&state);	
+			}
+			*/
+
 		} else if(state.mode == MODE_MOVE) 
 		{
 			// NOTE(filip): move
@@ -989,8 +959,11 @@ int main()
 				step(&state);
 
 			if(input.button_SPACE)
+			{
 				moveSelectedUnit(&state);
-
+				if(state.selected_unit->mp_current == 0)
+					step(&state);
+			}
 			// NOTE(filip): moves cursor up
 			// TODO(filip): Implement pathfinding
 			// TODO(filip): Highlight path from unit to move cursor
