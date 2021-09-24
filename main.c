@@ -237,16 +237,16 @@ int getMapIndexBufferSize(game_state *state)
 
 
 // This enerates vertices and indices for map
-void buildMapGL(float side_len, 
-				float offset_x, float offset_y,
+void buildMapGL(float offset_x, float offset_y,
+				float side_len,
 				game_state *state)
 {
 	prepareAddGLData(state->gl_state, getMapVertexBufferSize(state), getMapIndexBufferSize(state));
 	int i, j;
 	//*vertices = (GLfloat *) malloc(6 * 6 * size_x * size_y * sizeof (GLfloat));
 	//*indices = (GLuint *) malloc(4 * 3 * size_x * size_y * sizeof (GLuint));
-	GLfloat *iter_v = state->gl_state->vertices;
-	GLuint *iter_i = state->gl_state->indices;
+	GLfloat *iter_v = state->gl_state->vertices + state->gl_state->vertices_size;
+	GLuint *iter_i = state->gl_state->indices + state->gl_state->indices_size;
 	uint index_cnt = 0;
 	for(i = 0; i < state->size_y; i++){
 		for(j = 0; j < state->size_x; j++){
@@ -272,8 +272,33 @@ void buildMapGL(float side_len,
 		#endif
 	}
 
-	state->gl_state->indices_size += getMapIndexBufferSize(state);
+	/*gl_object *temp;
+	createGLObject(&temp, 
+				   state->gl_state->vertices + state->gl_state->vertices_size,
+				   getMapVertexBufferSize(state),
+				   state->gl_state->indices  + state->gl_state->indices_size,
+				   getMapIndexBufferSize(state));
+	addGLObject(temp, &state->gl_objects);*/
 	state->gl_state->vertices_size += getMapVertexBufferSize(state);
+	state->gl_state->indices_size += getMapIndexBufferSize(state);
+}
+
+void buildHexagonGL(float offset_x, float offset_y, float side_len, game_state *state)
+{
+	prepareAddGLData(state->gl_state, 6*6, 3*4);
+	GLfloat *iter_v = state->gl_state->vertices + state->gl_state->vertices_size;
+	GLuint *iter_i = state->gl_state->indices + state->gl_state->indices_size;
+	buildHexagonVertices(offset_x, offset_y, 1.0f, 1.0f, 1.0f, 0.8f, iter_v);
+	buildHexagonIndices(state->gl_state->vertices_size/6, iter_i);
+	/*gl_object *temp;
+	createGLObject(&temp, 
+				   state->gl_state->vertices + state->gl_state->vertices_size,
+				   6*6,
+				   state->gl_state->indices  + state->gl_state->indices_size,
+				   3*4);
+	addGLObject(temp, &state->gl_objects);*/
+	state->gl_state->vertices_size += 6*6;
+	state->gl_state->indices_size += 3*4;
 }
 
 void freeMapVertices(GLfloat* vertices)
@@ -838,7 +863,8 @@ int main()
 	state.gl_state->vertices = NULL;
 	state.gl_state->vertices_size = 0;
 
-	buildMapGL(0.04f, -0.94f, -0.8f, &state);
+	buildMapGL(-0.94f, -0.8f, 0.0004f, &state);
+	buildHexagonGL(0.0f, +0.0f, 0.9f, &state);
 
 	// Create reference containers for the Vertex Array Object, 
 	// the Vertex Buffer Object, and the Element Buffer Object
@@ -855,14 +881,14 @@ int main()
 	// Bind the VBO specifying it's a GL_ARRAY_BUFFER
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	// Introduce the vertices into the VBO
-	glBufferData(GL_ARRAY_BUFFER, getMapVertexBufferSize(&state) * sizeof(GLfloat), 
+	glBufferData(GL_ARRAY_BUFFER, state.gl_state->vertices_size * sizeof(GLfloat), 
 				 state.gl_state->vertices, GL_DYNAMIC_DRAW);
 
 
 	// Bind the EBO specifying it's a GL_ELEMENT_ARRAY_BUFFER
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	// Introduce the indices into the EBO
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, getMapIndexBufferSize(&state) * sizeof(GLuint), 
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, state.gl_state->indices_size * sizeof(GLuint), 
 				 state.gl_state->indices, GL_DYNAMIC_DRAW);
 
 	// Configure the Vertex Attributes so that OpenGL knows how to read the VBO
@@ -1042,14 +1068,14 @@ int main()
 		// Bind the VAO so OpenGL knows to use it
 		glBindVertexArray(VAO);
 		// Render map
-		updateMapGL(&state, colors, state.gl_state->vertices, VBO);		
+		//updateMapGL(&state, colors, state.gl_state->vertices, VBO);		
 
 		// Tell OpenGL which Shader Program we want to use
 		glUseProgram(shader_program);
 		
 		// Draw primitives
 		// TODO(ionut): this needs to be changed
-		glDrawElements(GL_TRIANGLES, state.gl_state->indices_size, 
+		glDrawElements(GL_TRIANGLES, state.gl_state->indices_size * sizeof(GLuint), 
 					   GL_UNSIGNED_INT, 0);
 
 		glBindVertexArray(0);
