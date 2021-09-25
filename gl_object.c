@@ -1,17 +1,23 @@
 typedef struct gl_object
 {
-	GLfloat *vertex_ptr;
+	struct gl_data_buffers *gl_data;
+	int vertex_offset;
 	int vertex_size;
-	GLuint *index_ptr;
+	int index_offset;
 	int index_size;
 	struct gl_object *next;	
 } gl_object;
 
-void createGLObject(gl_object **o, GLfloat *vertex_ptr, int vertex_size, GLuint *index_ptr, int index_size){
+// NOTE(filip): problem with holding address related information in ints and not
+// long long?
+void createGLObject(gl_object **o, struct gl_data_buffers *gl_data, 
+					int vertex_offset, int vertex_size, 
+					int index_offset, int index_size){
 	*o = malloc(sizeof(gl_object));
-	(*o)->vertex_ptr = vertex_ptr;
+	(*o)->gl_data = gl_data;
+	(*o)->vertex_offset = vertex_offset;
 	(*o)->vertex_size = vertex_size;
-	(*o)->index_ptr = index_ptr;
+	(*o)->index_offset = index_offset;
 	(*o)->index_size = index_size;
 	(*o)->next = NULL;
 }

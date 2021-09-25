@@ -5,6 +5,9 @@ typedef struct outpost
 	int position_y;
 	int type;
 	int team;
+	
+	struct gl_object *object; // unit gl_object
+
 	struct outpost *next;
 } outpost;
 

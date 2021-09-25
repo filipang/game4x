@@ -10,6 +10,9 @@ typedef struct unit
     float attack_damage;		// attack damage from 0.0 to 1.0
 	int mp_current;			// points left this turn
 	int mp_stat;			// total mp
+
+	struct gl_object *object; // unit gl_object
+
 	struct unit *next;		// next unit
 } unit;
 

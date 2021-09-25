@@ -22,7 +22,7 @@
 #include "unit.c"
 #include "outpost.c"
 #include "gl_object.c"
-#include "gl_data.c"
+#include "gl_data_buffers.c"
 
 #define PI 3.14159265359
 #define MAXBUF 1000
@@ -58,12 +58,12 @@ typedef struct game_state
 {
 
 	unsigned char **terrain_map;
-	unsigned char **unit_map; // NOTE(filip): This will be for rendering,
-							  //			  unit data will be saved elsewhere 
+	unsigned char **unit_map;
 	unsigned char **ui_map;
 
 	int size_x;
 	int size_y;
+	gl_object *map_object;
 
 	int player_number; // Number of players in game
 	int turn; // Active player index
@@ -84,7 +84,7 @@ typedef struct game_state
 
 	player_state players[MAX_PLAYERS];
 
-	gl_data *gl_state;
+	gl_data_buffers *gl_data;
 	gl_object *gl_objects;
 	// NOTE(ionut): Every third element belongs to the same map to compress all
 	// 				3 into one vector
@@ -153,48 +153,48 @@ char* loadFile(const char* file_name)
 
 // Generates vertices for a single hexagon + color
 // Vertex in memory: (pos_x, pos_y, pos_z, col_x, col_y, col_z)
-GLfloat* buildHexagonVertices(float offset_x, float offset_y, 
+GLfloat* buildHexagonVertices(float offset_x, float offset_y, float z_index, 
 			 			 	  float color_r, float color_b, float color_g, 
 						 	  float side_len, GLfloat* dest)
 {
 	*(dest++) = offset_x;
 	*(dest++) = offset_y + side_len;
-	*(dest++) = 0.0f;
+	*(dest++) = z_index;
 	*(dest++) = color_r;
 	*(dest++) = color_b;
 	*(dest++) = color_g;
 
 	*(dest++) = offset_x + sqrt(3)/2*side_len;
 	*(dest++) = offset_y + side_len/2;
-	*(dest++) = 0.0f;
+	*(dest++) = z_index;
 	*(dest++) = color_r;
 	*(dest++) = color_b;
 	*(dest++) = color_g;
 	
 	*(dest++) = offset_x + sqrt(3)/2*side_len;
 	*(dest++) = offset_y - side_len/2;
-	*(dest++) = 0.0f;
+	*(dest++) = z_index;
 	*(dest++) = color_r;
 	*(dest++) = color_b;
 	*(dest++) = color_g;
 
 	*(dest++) = offset_x;
 	*(dest++) = offset_y - side_len;
-	*(dest++) = 0.0f;
+	*(dest++) = z_index;
 	*(dest++) = color_r;
 	*(dest++) = color_b;
 	*(dest++) = color_g;
 
 	*(dest++) = offset_x - sqrt(3)/2*side_len;
 	*(dest++) = offset_y - side_len/2;
-	*(dest++) = 0.0f;
+	*(dest++) = z_index;
 	*(dest++) = color_r;
 	*(dest++) = color_b;
 	*(dest++) = color_g;
 	
 	*(dest++) = offset_x - sqrt(3)/2*side_len;
 	*(dest++) = offset_y + side_len/2;
-	*(dest++) = 0.0f;
+	*(dest++) = z_index;
 	*(dest++) = color_r;
 	*(dest++) = color_b;
 	*(dest++) = color_g;
@@ -223,30 +223,20 @@ GLuint* buildHexagonIndices(GLuint offset, GLuint* dest)
 	return dest;
 }
 
-int getMapVertexBufferSize(game_state *state)
-{
-	// 6 GLfloats for each of the 6 vertices of the hexagon
-	return state->size_x*state->size_y*6*6;
-}
-
-int getMapIndexBufferSize(game_state *state)
-{
-	// 3 points for each of the 4 triangles that make up a hexagon
-	return state->size_x*state->size_y*4*3;
-}
-
-
 // This enerates vertices and indices for map
-void buildMapGL(float offset_x, float offset_y,
+gl_object* buildMapGL(float offset_x, float offset_y, float z_index,
 				float side_len,
 				game_state *state)
 {
-	prepareAddGLData(state->gl_state, getMapVertexBufferSize(state), getMapIndexBufferSize(state));
 	int i, j;
+	int vertices_size = state->size_x * state->size_y * 6 * 6;
+	int indices_size = state->size_x * state->size_y * 4 * 3;
+
+	prepareAddGLData(state->gl_data, vertices_size, indices_size);
 	//*vertices = (GLfloat *) malloc(6 * 6 * size_x * size_y * sizeof (GLfloat));
 	//*indices = (GLuint *) malloc(4 * 3 * size_x * size_y * sizeof (GLuint));
-	GLfloat *iter_v = state->gl_state->vertices + state->gl_state->vertices_size;
-	GLuint *iter_i = state->gl_state->indices + state->gl_state->indices_size;
+	GLfloat *iter_v = state->gl_data->vertices + state->gl_data->vertices_size;
+	GLuint *iter_i = state->gl_data->indices + state->gl_data->indices_size;
 	uint index_cnt = 0;
 	for(i = 0; i < state->size_y; i++){
 		for(j = 0; j < state->size_x; j++){
@@ -256,6 +246,7 @@ void buildMapGL(float offset_x, float offset_y,
 								    (j + i * 0.5) * sqrt(3) * side_len, 
 								    offset_y + 
 								    i * side_len * 3 / 2 , 
+									z_index,
 								    0.0f, 0.0f, 0.0f,
 								    side_len, iter_v);
 			
@@ -263,42 +254,50 @@ void buildMapGL(float offset_x, float offset_y,
 				buildHexagonIndices(index_cnt, iter_i);
 
 			index_cnt += 6;	
-			#ifdef DEBUG
-			printf("(%.2f,%.2f) ", (float)j*0.08f, (float)i*0.08f);
-			#endif
 		}
-		#ifdef DEBUG
-		printf("\n");
-		#endif
 	}
 
-	/*gl_object *temp;
+	// Add object to the object list
+	gl_object *temp;
 	createGLObject(&temp, 
-				   state->gl_state->vertices + state->gl_state->vertices_size,
-				   getMapVertexBufferSize(state),
-				   state->gl_state->indices  + state->gl_state->indices_size,
-				   getMapIndexBufferSize(state));
-	addGLObject(temp, &state->gl_objects);*/
-	state->gl_state->vertices_size += getMapVertexBufferSize(state);
-	state->gl_state->indices_size += getMapIndexBufferSize(state);
+				   state->gl_data,
+				   state->gl_data->vertices_size,
+				   vertices_size,
+				   state->gl_data->indices_size,
+				   indices_size);
+	addGLObject(temp, &state->gl_objects);
+	
+	state->gl_data->vertices_size += vertices_size;
+	state->gl_data->indices_size += indices_size;
+
+	return temp;
 }
 
-void buildHexagonGL(float offset_x, float offset_y, float side_len, game_state *state)
+gl_object* buildHexagonGL(float offset_x, float offset_y, float z_index,
+					float color_r, float color_g, float color_b, 
+					float side_len, game_state *state)
 {
-	prepareAddGLData(state->gl_state, 6*6, 3*4);
-	GLfloat *iter_v = state->gl_state->vertices + state->gl_state->vertices_size;
-	GLuint *iter_i = state->gl_state->indices + state->gl_state->indices_size;
-	buildHexagonVertices(offset_x, offset_y, 1.0f, 1.0f, 1.0f, 0.8f, iter_v);
-	buildHexagonIndices(state->gl_state->vertices_size/6, iter_i);
-	/*gl_object *temp;
-	createGLObject(&temp, 
-				   state->gl_state->vertices + state->gl_state->vertices_size,
-				   6*6,
-				   state->gl_state->indices  + state->gl_state->indices_size,
-				   3*4);
-	addGLObject(temp, &state->gl_objects);*/
-	state->gl_state->vertices_size += 6*6;
-	state->gl_state->indices_size += 3*4;
+	int vertices_size = 6 * 6; // Hexagon has 6 vertices, each with 6 float values
+	int indices_size = 3 * 4; // Hexagon has 4 triangles, each with 3 vertex indices
+
+	prepareAddGLData(state->gl_data, vertices_size, indices_size);
+	GLfloat *iter_v = state->gl_data->vertices + state->gl_data->vertices_size;
+	GLuint *iter_i = state->gl_data->indices + state->gl_data->indices_size;
+	buildHexagonVertices(offset_x, offset_y, z_index, color_r, color_g, color_b, side_len, iter_v);
+	buildHexagonIndices(state->gl_data->vertices_size/6, iter_i);
+
+	// Add object to the object list
+	gl_object *temp;
+	createGLObject(&temp,
+		   		   state->gl_data,	
+				   state->gl_data->vertices_size,
+				   vertices_size,
+				   state->gl_data->indices_size,
+				   indices_size);
+	addGLObject(temp, &state->gl_objects);
+
+	state->gl_data->vertices_size += vertices_size;
+	state->gl_data->indices_size += indices_size;
 }
 
 void freeMapVertices(GLfloat* vertices)
@@ -544,7 +543,7 @@ void build(game_state *state)
 // Generates a hard coded hexagonal test map
 // TODO(filip): Free memory allocated by initializeMap() and initializeUIState()
 // 				Create freeMap and freeUIState functions
-void generatealTestMap(game_state *state)
+void generateTestMap(game_state *state)
 {
 	int i, j;
 	state->size_x = 20;
@@ -587,14 +586,12 @@ void generatealTestMap(game_state *state)
 }
 
 // Called everytime the map needs to be rendered
-void updateMapGL(game_state *state,
-					   float *colors, 
-					   GLfloat *mapVertices, 
-					   GLuint VBO)
+void updateMapGL(game_state *state, GLuint VBO)
 {
 	int i, j, k;
 
-	GLfloat *iter = mapVertices;
+	GLfloat *vertices = state->gl_data->vertices + state->map_object->vertex_offset;
+	GLfloat *iter = vertices;
 	GLfloat *beginWrite=NULL, *endWrite=NULL;
 	
 	// NOTE(filip): This could be pleaced better somewhere else
@@ -618,6 +615,7 @@ void updateMapGL(game_state *state,
 			for (k = 0; k < 6; k++)
 			{
 				iter += 3;	
+				/*
 				if(state -> ui_map[i][j] != 0)
 				{
 					if(*iter!=state->colors[state->ui_map[i][j] * 9 + 6])
@@ -674,29 +672,28 @@ void updateMapGL(game_state *state,
 					*(iter++) = state->colors[u->type * u->team * 9 + 5];
 				}
 				else
+				{*/
+
+				if(*iter!=state->colors[state->terrain_map[i][j] * 9 + 0])
 				{
-
-					if(*iter!=state->colors[state->terrain_map[i][j] * 9 + 0])
-					{
-						endWrite = iter+1;
-						beginWrite = beginWrite != NULL ? beginWrite : iter;
-					}
-					*(iter++) = state->colors[state->terrain_map[i][j] * 9 + 0];
-
-					if(*iter!=state->colors[state->terrain_map[i][j] * 9 + 1])
-					{
-						endWrite = iter+1;
-						beginWrite = beginWrite != NULL ? beginWrite : iter;
-					}
-					*(iter++) = state->colors[state->terrain_map[i][j] * 9 + 1];
-
-					if(*iter!=state->colors[state->terrain_map[i][j] * 9 + 2])
-					{
-						endWrite = iter+1;
-						beginWrite = beginWrite != NULL ? beginWrite : iter;
-					}
-					*(iter++) = state->colors[state->terrain_map[i][j] * 9 + 2];
+					endWrite = iter+1;
+					beginWrite = beginWrite != NULL ? beginWrite : iter;
 				}
+				*(iter++) = state->colors[state->terrain_map[i][j] * 9 + 0];
+
+				if(*iter!=state->colors[state->terrain_map[i][j] * 9 + 1])
+				{
+					endWrite = iter+1;
+					beginWrite = beginWrite != NULL ? beginWrite : iter;
+				}
+				*(iter++) = state->colors[state->terrain_map[i][j] * 9 + 1];
+
+				if(*iter!=state->colors[state->terrain_map[i][j] * 9 + 2])
+				{
+					endWrite = iter+1;
+					beginWrite = beginWrite != NULL ? beginWrite : iter;
+				}
+				*(iter++) = state->colors[state->terrain_map[i][j] * 9 + 2];
 			}
 		}
 	}
@@ -704,20 +701,30 @@ void updateMapGL(game_state *state,
 	if(beginWrite!=NULL)
 	{
 		#ifdef DEBUG
-		printf("Writing %ld bytes of data to be rendered\nbeginWrite: %ld\nendWrite: %ld\nmapVertices: %ld\nmap size: %ld\n", 
+		printf("Writing %ld bytes of data to be rendered\nbeginWrite: %ld\nendWrite: %ld\n", 
 				(long long)endWrite-(long long)beginWrite, 
 				beginWrite, 
-				endWrite, 
-				mapVertices, 
-				getMapVertexBufferSize(state));
+				endWrite);
 		#endif
 		glBindBuffer(GL_ARRAY_BUFFER, VBO); // Binds GL_ARRAY_BUFFER to our VBO
 		glBufferSubData(GL_ARRAY_BUFFER,
-						((long long)beginWrite-(long long)mapVertices),
+						((long long)beginWrite-(long long)vertices),
 						((long long)endWrite-(long long)beginWrite), // Size of new data 
 						beginWrite); // New data to render
 		
 		glBindBuffer(GL_ARRAY_BUFFER, 0);	
+	}
+}
+
+void updateUnitGL(game_state *state, unit* u){
+	// TODO(filip): change vertices to match unit position color etc	
+	if(u->object != NULL)
+	{
+		GLfloat *vertices = state->gl_data->vertices + u->object->vertex_offset;
+	}
+	else
+	{
+		u->object = buildHexagonGL(0.0f,0.0f,1.0f,1.0f,1.0f,1.0f,0.08f,state);
 	}
 }
 
@@ -748,20 +755,6 @@ void processInput(struct GLFWwindow *window, input_pressed *input){
 	PROCESS_BUTTON_INPUT(V);
 	PROCESS_BUTTON_INPUT(B);
 
-}
-
-
-
-// Callback for every key pressed
-void key_callback(GLFWwindow* window, 
-				  int key, 
-				  int scancode, 
-				  int action, 
-				  int mods)
-{
-	// Closes window when pressing ESCAPE
-	if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
 int main()
@@ -801,9 +794,6 @@ int main()
 	const char* vertex_shader_src = loadFile("shader.vert");
 	const char* fragment_shader_src = loadFile("shader.frag");
 
-	printf("FRAGMENT:\n%s\n\nVERTEX:\n%s", fragment_shader_src, vertex_shader_src);
-	//loadFile("shader.vert", vertex_shader_source);
-	//loadFile("shader.frag", fragment_shader_source);
 	// Create Vertex Shader Object and get its reference
 	GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
 	// Attach Vertex Shader source to the Vertex Shader Object
@@ -849,22 +839,24 @@ int main()
 	}
 	state.selected_unit = NULL;
 
-	generatealTestMap(&state);
+	generateTestMap(&state);
 
 	// This starts the turn of player 0
 	turn(&state);
 
-	// TODO(filip): Add way to render things other than the map
 	// Build vertices and indices for the map
 	
-	state.gl_state = (gl_data *) malloc(sizeof(gl_data));
-	state.gl_state->indices = NULL;
-	state.gl_state->indices_size = 0;
-	state.gl_state->vertices = NULL;
-	state.gl_state->vertices_size = 0;
+	state.gl_data = (gl_data_buffers *) malloc(sizeof(gl_data_buffers));
+	state.gl_data->indices = NULL;
+	state.gl_data->indices_size = 0;
+	state.gl_data->vertices = NULL;
+	state.gl_data->vertices_size = 0;
+	state.gl_objects = NULL;
 
-	buildMapGL(-0.94f, -0.8f, 0.0004f, &state);
-	buildHexagonGL(0.0f, +0.0f, 0.9f, &state);
+	state.map_object = buildMapGL(-0.94f, -0.8f, 0.0f, 0.04f, &state);
+	buildHexagonGL(-0.9f, 0.8f, 1.0f, 1.0f, 0.0f, 0.0f, 0.08f, &state);
+	buildHexagonGL(-0.75f, 0.8f, 1.0f, 1.0f, 1.0f, 1.0f, 0.08f, &state);
+	buildHexagonGL(-0.60f, 0.8f, 1.0f, 0.0f, 0.0f, 1.0f, 0.08f, &state);
 
 	// Create reference containers for the Vertex Array Object, 
 	// the Vertex Buffer Object, and the Element Buffer Object
@@ -881,15 +873,15 @@ int main()
 	// Bind the VBO specifying it's a GL_ARRAY_BUFFER
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	// Introduce the vertices into the VBO
-	glBufferData(GL_ARRAY_BUFFER, state.gl_state->vertices_size * sizeof(GLfloat), 
-				 state.gl_state->vertices, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, state.gl_data->vertices_size * sizeof(GLfloat), 
+				 state.gl_data->vertices, GL_DYNAMIC_DRAW);
 
 
 	// Bind the EBO specifying it's a GL_ELEMENT_ARRAY_BUFFER
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	// Introduce the indices into the EBO
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, state.gl_state->indices_size * sizeof(GLuint), 
-				 state.gl_state->indices, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, state.gl_data->indices_size * sizeof(GLuint), 
+				 state.gl_data->indices, GL_DYNAMIC_DRAW);
 
 	// Configure the Vertex Attributes so that OpenGL knows how to read the VBO
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 
@@ -914,10 +906,6 @@ int main()
 	// This does not apply to the VBO because the VBO is already linked to the 
 	// VAO during glVertexAttribPointer
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	
-
-	// Input
-	// glfwSetKeyCallback(window, key_callback);
 
 	// GAME --------------------------------------------------------------------
 
@@ -976,8 +964,6 @@ int main()
 			{
 				turn(&state);
 			}
-			
-
 			//Building Construction
 			/*
 			if(input.button_B){
@@ -987,8 +973,6 @@ int main()
 
 		} else if(state.mode == MODE_MOVE) 
 		{
-			// NOTE(filip): move
-
 			if(input.button_TAB)
 				step(&state);
 
@@ -998,7 +982,6 @@ int main()
 				if(state.selected_unit->mp_current == 0)
 					step(&state);
 			}
-			// NOTE(filip): moves cursor up
 			// TODO(filip): Implement pathfinding
 			// TODO(filip): Highlight path from unit to move cursor
 			
@@ -1068,14 +1051,13 @@ int main()
 		// Bind the VAO so OpenGL knows to use it
 		glBindVertexArray(VAO);
 		// Render map
-		//updateMapGL(&state, colors, state.gl_state->vertices, VBO);		
+		updateMapGL(&state, VBO);		
 
 		// Tell OpenGL which Shader Program we want to use
 		glUseProgram(shader_program);
 		
 		// Draw primitives
-		// TODO(ionut): this needs to be changed
-		glDrawElements(GL_TRIANGLES, state.gl_state->indices_size * sizeof(GLuint), 
+		glDrawElements(GL_TRIANGLES, state.gl_data->indices_size * sizeof(GLuint), 
 					   GL_UNSIGNED_INT, 0);
 
 		glBindVertexArray(0);
@@ -1092,8 +1074,8 @@ int main()
 	freeMap(state.size_x, state.size_y, state.unit_map);
 	freeMap(state.size_x, state.size_y, state.ui_map);
 	// Free allocated memory
-	freeMapIndices(state.gl_state->indices);
-	freeMapVertices(state.gl_state->vertices);
+	freeMapIndices(state.gl_data->indices);
+	freeMapVertices(state.gl_data->vertices);
 	// Delete all the objects we've created
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
