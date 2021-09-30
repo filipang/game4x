@@ -1,3 +1,18 @@
+/*******************************************************************************
+* 
+* FILENAME : unit.c
+*
+* DESCRIPTION :
+*       Main file for game4x. This is a short game development project which
+*       will eventually be re-written in Assembly to be handed in as college
+*       homework. 
+*
+* AUTHORS : filipang, ciobanuradu           
+* 
+* START DATE :    25/09/2021
+*
+*******************************************************************************/
+
 // NOTE(filip): Everything has to be simplified to be re-written in ASM
 typedef struct unit
 {
@@ -26,6 +41,7 @@ void createUnit(unit **u, int position_x, int position_y, int type, int team, in
 	(*u)->attack_range = attack_range;
 	(*u)->attack_damage = attack_damage;
 	(*u)->mp_stat = mp_stat;
+	(*u)->object = NULL;
 	(*u)->next = NULL;
 }
 
