@@ -530,7 +530,8 @@ void attackSelectedUnit(game_state *state)
 				target->health -= state->selected_unit->attack_damage;
 				if(target->health <= 0)
 				{
-					removeUnit(&state->players[k].units, target);
+					//removeUnit(&state->players[k].units, target);
+					//target->object->deleted = 1;
 					state->unit_map[state->cursor_y][state->cursor_x] = 0;
 				}
 				state->selected_unit->mp_current = 0;
@@ -567,13 +568,13 @@ void generateTestMap(game_state *state)
 	state->terrain_map[13][10] = 4;
 	for(i = 0; i < 3; i++){
 		unit *u;
-		createUnit(&u, 0, 0, 1, 0, 2, 1, 3);
+		createUnit(&u, 0, 0, 1, 0, 2, 2, 3);
 		addUnit(u, &state->players[0].units);
 	}
 
 	for(i = 0; i < 3; i++){
 		unit *u;
-		createUnit(&u, 0, 0, 1, 1, 2, 1, 3);
+		createUnit(&u, 0, 0, 1, 1, 2, 2, 3);
 		addUnit(u, &state->players[1].units);
 	}
 
@@ -659,30 +660,37 @@ void updateMapGL(game_state *state)
 
 void updateUnitGL(game_state *state, unit* u)
 {
-	float position_x = state->map_offset_x + (u->position_x + u->position_y * 0.5) * sqrt(3) * state->map_hex_size;
-	float position_y = state->map_offset_y + u->position_y * state->map_hex_size * 3/2;
-	float color_r = state->colors[u->type * u->team * 9 + 3];
-	float color_g = state->colors[u->type * u->team * 9 + 4];
-	float color_b = state->colors[u->type * u->team * 9 + 5];
-	if(u->object != NULL)
+	if(u->health>=0)
 	{
-		buildHexagonVertices(position_x, position_y, 0.2f,
-							 color_r, color_g, color_b,
-							 0.55 * state->map_hex_size,
-							 u->object->vertices);
-		
+		float position_x = state->map_offset_x + (u->position_x + u->position_y * 0.5) * sqrt(3) * state->map_hex_size;
+		float position_y = state->map_offset_y + u->position_y * state->map_hex_size * 3/2;
+		float color_r = state->colors[u->type * u->team * 9 + 3];
+		float color_g = state->colors[u->type * u->team * 9 + 4];
+		float color_b = state->colors[u->type * u->team * 9 + 5];
+		if(u->object != NULL)
+		{
+			buildHexagonVertices(position_x, position_y, 0.2f,
+								 color_r, color_g, color_b,
+								 0.55 * state->map_hex_size,
+								 u->object->vertices);
+			
+		}
+		else
+		{
+			u->object = buildHexagonGL(position_x, position_y, 0.2f, 
+									   color_r, 
+									   color_g, 
+									   color_b,
+									   0.55 * state->map_hex_size, state);
+			state->vertices_size+= u->object->vertices_size;
+			state->indices_size+= u->object->indices_size;
+		}
+		u->object->modified = 1;
 	}
-	else
-	{
-		u->object = buildHexagonGL(position_x, position_y, 0.2f, 
-								   color_r, 
-								   color_g, 
-								   color_b,
-								   0.55 * state->map_hex_size, state);
-		state->vertices_size+= u->object->vertices_size;
-		state->indices_size+= u->object->indices_size;
+	else{
+		u->object->deleted = 1;
+		removeUnit(&state->players[u->team].units, u);	
 	}
-	u->object->modified = 1;
 }
 
 void updateUnitListGL(game_state *state)
@@ -1073,13 +1081,14 @@ int main()
 			{
 				state.mode = MODE_MOVE;
 			}
-			if(input.button_T)
+			if(input.button_T && state.selected_unit != NULL)
 			{
 				state.mode = MODE_ATTACK;
 			}
 			if(input.button_ENTER)
 			{
 				turn(&state);
+
 			}
 			//Building Construction
 			/*

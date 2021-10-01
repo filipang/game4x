@@ -63,25 +63,24 @@ void addUnit(unit *src, unit **dst){
 // TODO(filip): Free unit list function
 void removeUnit(unit **base, unit *target){
 	unit *iter = (*base);
-	if((*base) == target)
+	if(iter == target)
 	{
 		unit *u = (*base)->next;
 		free(*base);
 		(*base) = u;
 	}
-	if(iter  != NULL)
-		while(iter->next != NULL)
+	else
+	{
+		while(iter != NULL)
 		{
 			if(iter->next == target)
 			{
 				iter->next = target->next;
 				free(target);
 			}
-			if(iter->next != NULL)
-				iter = iter->next;	
+			iter = iter->next;	
 		}
-
-
+	}
 }
 
 unit* findUnit(unit *iter, int position_x, int position_y){
