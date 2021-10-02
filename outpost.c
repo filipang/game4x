@@ -1,3 +1,18 @@
+/*******************************************************************************
+* 
+* FILENAME : outpost.c
+*
+* DESCRIPTION :
+*       This is a short game development project which
+*       will eventually be re-written in Assembly to be handed in as college
+*       homework. 
+*
+* AUTHORS : filipang, ciobanuradu           
+* 
+* START DATE :    2/10/2021
+*
+*******************************************************************************/
+
 typedef struct outpost
 {
 	float health;

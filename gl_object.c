@@ -21,11 +21,6 @@ typedef struct gl_object
 	int vertices_offset;
 	int indices_size;
 	int indices_offset;
-//	struct gl_data_buffers *gl_data;
-//	int vertex_offset;
-//	int vertex_size;
-//	int index_offset;
-//	int index_size;
 	struct gl_object *next;	
 	int modified; // NOTE(filip): This turns to 1 when it needs to be updated
 	int deleted; // NOTE(filip): This turns to 1 when it needs to be deleted
