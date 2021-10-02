@@ -13,6 +13,8 @@
 *
 *******************************************************************************/
 
+// FIXME(filip): Visual glitch when changing turns sometimes
+
 void initializeGL(GLFWwindow **window, GLuint *VAO, GLuint *VBO, GLuint *EBO, GLuint *shader_program)
 {
 	// GENERAL START SETUP -----------------------------------------------------
@@ -322,8 +324,12 @@ void updateUnitGL(game_state *state, unit* u)
 {
 	if(u->health>=0)
 	{
-		float position_x = state->map_offset_x + (u->position_x + u->position_y * 0.5) * sqrt(3) * state->map_hex_size;
-		float position_y = state->map_offset_y + u->position_y * state->map_hex_size * 3/2;
+		float position_x; 
+		float position_y;
+		hexGridToViewport(u->position_x, u->position_y, 
+						  state->map_offset_x, state->map_offset_y,
+						  state->map_hex_size, 
+						  &position_x, &position_y);
 		float color_r = state->colors[u->type * u->team * 9 + 3];
 		float color_g = state->colors[u->type * u->team * 9 + 4];
 		float color_b = state->colors[u->type * u->team * 9 + 5];
@@ -462,8 +468,124 @@ void updateCursor(game_state *state)
 	}
 }
 
+void updateFogOfWar(game_state *state)
+{
+	int i, j;
+	gl_object *object;
+	if(state->fog_of_war_object == NULL)
+	{
+		createGLObjectEmpty(&object);
+		int vertices_size = state->size_x * state->size_y * 6 * 6;
+		int indices_size = state->size_x * state->size_y * 4 * 3;
+
+		// NOTE(filip): We don't know the exact size of the fog object, so we alloc
+		// 				max size.
+		int index_cnt = state->vertices_size/6;
+		object->vertices = malloc(vertices_size * sizeof(GLfloat));
+		object->indices = malloc(indices_size * sizeof(GLuint));
+		GLfloat *iter_v = object->vertices;
+		GLuint *iter_i = object->indices;
+		for(i = 0; i < state->size_y; i++)
+		{
+			for(j = 0; j < state->size_x; j++)
+			{
+				int is_fog = 1;
+				struct unit *iter = state->players[state->turn].units;
+				float x, y;
+				while(iter!=NULL)
+				{
+					if(hexDistance(iter->position_x, iter->position_y, j, i) <= 2)
+					{
+						is_fog = 0;			
+					}
+					iter = iter->next;
+				}
+				if(is_fog)
+				{
+					hexGridToViewport(j, i, 
+									  state->map_offset_x, state->map_offset_y, 
+									  state->map_hex_size, 
+									  &x, &y);
+					object->vertices_size+= 6*6;
+					object->indices_size+= 3*4;
+					iter_v = 
+						buildHexagonVertices(x, y, 0.0f,
+											 0.1f, 0.1f, 0.1f,
+											 state->map_hex_size, iter_v);
+					
+					iter_i = 
+						buildHexagonIndices(index_cnt, iter_i);
+
+					index_cnt += 6;	
+				}
+					
+			}
+		}
+		addGLObject(object, &state->gl_objects);
+		state->fog_of_war_object = object;
+		computeListOffsets(state->gl_objects, NULL);
+		object->modified = 1;
+		getTotalSizes(state->gl_objects, &state->vertices_size, &state->indices_size);
+	}
+	else
+	{
+		object = state->fog_of_war_object;
+		computeListOffsets(state->gl_objects, NULL);
+		// NOTE(filip): every vertex has 6 floats, so we beed to divide by 6 to get the 
+		//				number of vertices)
+		int index_cnt = object->vertices_offset/6; 
+		GLfloat *iter_v = object->vertices;
+		GLuint *iter_i = object->indices;
+		int old_vertices_size = object->vertices_size;
+		object->vertices_size = 0;
+		object->indices_size = 0;	
+		for(i = 0; i < state->size_y; i++)
+		{
+			for(j = 0; j < state->size_x; j++)
+			{
+				int is_fog = 1;
+				struct unit *iter = state->players[state->turn].units;
+				float x, y;
+				while(iter!=NULL)
+				{
+					if(hexDistance(iter->position_x, iter->position_y, j, i) <= 2)
+					{
+						is_fog = 0;			
+					}
+					iter = iter->next;
+				}
+				if(is_fog)
+				{
+					hexGridToViewport(j, i, 
+									  state->map_offset_x, state->map_offset_y, 
+									  state->map_hex_size, 
+									  &x, &y);
+					object->vertices_size+= 6*6;
+					object->indices_size+= 3*4;
+					iter_v = 
+						buildHexagonVertices(x, y, 0.0f,
+											 0.2f, 0.2f, 0.2f,
+											 state->map_hex_size, iter_v);
+					
+					iter_i = 
+						buildHexagonIndices(index_cnt, iter_i);
+
+					index_cnt += 6;	
+				}
+					
+			}
+		}
+		//computeListOffsets(state->gl_objects, NULL);
+		decreaseIndices(object, (old_vertices_size-object->vertices_size)/6);
+		object->modified = 1;
+		getTotalSizes(state->gl_objects, &state->vertices_size, &state->indices_size);
+	}
+	markObjectsModified(object);
+}
+
 void updateUIGL(game_state *state)	
 {
+	updateFogOfWar(state);
 	updateCursor(state);
 	updateHighlight(state);
 }
@@ -489,7 +611,9 @@ void updateStoreSizeGL(game_state *state)
 		modified = 1;
 	}
 	if(modified)
+	{
 		markObjectsModified(state->gl_objects);	
+	}
 }
 
 void updateGL(game_state *state, GLuint VAO, GLuint VBO, GLuint EBO, GLuint shader_program)

@@ -38,10 +38,13 @@ typedef struct game_state
 	unsigned char **terrain_map;
 	unsigned char **unit_map;
 
+	struct gl_object **gl_object;
+
 	int size_x;
 	int size_y;
 	struct gl_object *map_object;
 	struct gl_object *highlight_object;
+	struct gl_object *fog_of_war_object;
 
 	float map_offset_x;
 	float map_offset_y;
@@ -140,6 +143,7 @@ void initializeGameState(game_state* state)
 	state->cursor_object = NULL;
 	state->map_object = NULL;
 	state->gl_objects = NULL;
+	state->fog_of_war_object = NULL;
 	state->vertices_size = 0;
 	state->indices_size = 0;
 	state->vertices_store_size = 0;
@@ -223,10 +227,10 @@ void setMoveCursor(int new_move_x, int new_move_y, struct game_state *state)
 
 	// NOTE(filip): Clarify this
 	if(state->selected_unit != NULL)
-		state->cursor_distance = (abs(state->selected_unit->position_x - state->cursor_x) + 
-		abs(state->selected_unit->position_y - state->cursor_y ) +
-		abs(state->selected_unit->position_x + state->selected_unit->position_y -
-		state->cursor_x - state->cursor_y)) / 2;
+		state->cursor_distance = hexDistance(state->selected_unit->position_x,
+											 state->selected_unit->position_y,
+											 state->cursor_x,
+											 state->cursor_y);
 	else
 		state->cursor_distance = 0;
 	//if(new_move_x != state->selected_unit->position_x || new_move_y != state->selected_unit->position_y)
@@ -324,12 +328,17 @@ void attackSelectedUnit(struct game_state *state)
 
 void processInput(struct input_pressed *input, struct game_state *state)
 {
+	if(state->fog_of_war_object != NULL)
+		state->fog_of_war_object->modified = 1;
 	if(state->mode == MODE_NORMAL)
 	{
 		if(input->button_ESCAPE)
 		{
 			state->selected_unit = NULL;
-			state->cursor_active = 0;	
+			state->cursor_active = 0;
+			printGLObjectList(state->gl_objects);
+			printf("Vertices size: %d\n", state->vertices_size);
+			printf("Store size: %d\n", state->vertices_store_size);
 		}
 		if(input->button_TAB)
 		{
@@ -447,21 +456,21 @@ void generateTestMap(struct game_state *state)
 		addUnit(u, &state->players[1].units);
 	}
 
-	state->unit_map[0][0] = 1; 
+	state->unit_map[1][0] = 1; 
 	state->players[0].units->position_x = 0;
-	state->players[0].units->position_y = 0;
-	state->unit_map[1][0] = 1;
-	state->players[0].units->next->position_x = 0;
-	state->players[0].units->next->position_y = 1;
-	state->unit_map[2][0] = 1;	
-	state->players[0].units->next->next->position_x = 0;
-	state->players[0].units->next->next->position_y = 2;
-	state->unit_map[0][10] = 1;
-	state->players[1].units->position_x = 10;
-	state->players[1].units->position_y = 0;
-	state->unit_map[0][2] = 1;	
+	state->players[0].units->position_y = 1;
+	state->unit_map[7][8] = 1;
+	state->players[0].units->next->position_x = 8;
+	state->players[0].units->next->position_y = 8;
+	state->unit_map[1][4] = 1;	
+	state->players[0].units->next->next->position_x = 4;
+	state->players[0].units->next->next->position_y = 1;
+	state->unit_map[2][4] = 1;
+	state->players[1].units->position_x = 4;
+	state->players[1].units->position_y = 2;
+	state->unit_map[5][2] = 1;	
 	state->players[1].units->next->position_x = 2;
-	state->players[1].units->next->position_y = 0;
+	state->players[1].units->next->position_y = 5;
 	state->unit_map[0][3] = 1;	
 	state->players[1].units->next->next->position_x = 3;
 	state->players[1].units->next->next->position_y = 0;

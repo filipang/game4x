@@ -42,6 +42,16 @@ void createGLObject(gl_object **o,
 	(*o)->next = NULL;
 }
 
+void createGLObjectEmpty(gl_object **o)
+{
+	*o = malloc(sizeof(gl_object));
+	(*o)->vertices_size = 0;
+	(*o)->indices_size = 0;
+	(*o)->modified = 0;
+	(*o)->deleted = 0;
+	(*o)->next = NULL;
+}
+
 void addGLObject(gl_object *src, gl_object **dst)
 {
 	if((*dst) == NULL)

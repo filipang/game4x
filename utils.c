@@ -55,4 +55,18 @@ int nextPowerOf2(int n)
     return k;
 }
 
+void hexGridToViewport(int grid_x, int grid_y, 
+					   float offset_x, float offset_y,
+					   float hex_size,
+					   float *viewport_x, float *viewport_y)
+{
+		*viewport_x = offset_x + (grid_x + grid_y * 0.5) * sqrt(3) * hex_size;
+		*viewport_y = offset_y + grid_y * hex_size * 3/2;	
+}
 
+int hexDistance(int x1, int y1, int x2, int y2)
+{
+	return (abs(x1 - x2) + 
+		abs(y1 - y2) +
+		abs(x1 + y1 - x2 - y2)) / 2;
+}
