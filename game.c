@@ -315,9 +315,11 @@ void attackSelectedUnit(struct game_state *state)
 				target->health -= state->selected_unit->attack_damage;
 				if(target->health <= 0)
 				{
-					//removeUnit(state->players[k].units, target);
-					//target->object->deleted = 1;
+					removeUnit(&state->players[k].units, target);
+					target->object->deleted = 1;
 					state->unit_map[state->cursor_y][state->cursor_x] = 0;
+					state->vertices_size-=target->object->vertices_size;
+					state->indices_size-=target->object->indices_size;
 				}
 				state->selected_unit->mp_current = 0;
 				step(state);
@@ -328,8 +330,6 @@ void attackSelectedUnit(struct game_state *state)
 
 void processInput(struct input_pressed *input, struct game_state *state)
 {
-	if(state->fog_of_war_object != NULL)
-		state->fog_of_war_object->modified = 1;
 	if(state->mode == MODE_NORMAL)
 	{
 		if(input->button_ESCAPE)
@@ -438,12 +438,12 @@ struct gl_object* buildMapGL(float offset_x, float offset_y, float z_index,
 void generateTestMap(struct game_state *state)
 {
 	int i, j;
-	state->size_x = 12;
-   	state->size_y = 16;	
+	state->size_x = 10;
+   	state->size_y = 10;	
 	allocMap(state->size_x, state->size_y, &state->terrain_map);
 	allocMap(state->size_x, state->size_y, &state->unit_map);
-	state->terrain_map[3][4] = 4;
-	state->terrain_map[13][10] = 4;
+	state->terrain_map[1][1] = 4;
+	state->terrain_map[8][8] = 4;
 	for(i = 0; i < 3; i++){
 		unit *u;
 		createUnit(&u, 0, 0, 1, 0, 2, 2, 3);
@@ -456,24 +456,24 @@ void generateTestMap(struct game_state *state)
 		addUnit(u, &state->players[1].units);
 	}
 
-	state->unit_map[1][0] = 1; 
+	state->unit_map[2][0] = 1; 
 	state->players[0].units->position_x = 0;
-	state->players[0].units->position_y = 1;
-	state->unit_map[7][8] = 1;
-	state->players[0].units->next->position_x = 8;
-	state->players[0].units->next->position_y = 8;
-	state->unit_map[1][4] = 1;	
-	state->players[0].units->next->next->position_x = 4;
-	state->players[0].units->next->next->position_y = 1;
-	state->unit_map[2][4] = 1;
-	state->players[1].units->position_x = 4;
-	state->players[1].units->position_y = 2;
-	state->unit_map[5][2] = 1;	
-	state->players[1].units->next->position_x = 2;
-	state->players[1].units->next->position_y = 5;
-	state->unit_map[0][3] = 1;	
-	state->players[1].units->next->next->position_x = 3;
-	state->players[1].units->next->next->position_y = 0;
+	state->players[0].units->position_y = 2;
+	state->unit_map[0][0] = 1;
+	state->players[0].units->next->position_x = 0;
+	state->players[0].units->next->position_y = 0;
+	state->unit_map[0][2] = 1;	
+	state->players[0].units->next->next->position_x = 2;
+	state->players[0].units->next->next->position_y = 0;
+	state->unit_map[8][9] = 1;
+	state->players[1].units->position_x = 9;
+	state->players[1].units->position_y = 8;
+	state->unit_map[9][9] = 1;	
+	state->players[1].units->next->position_x = 9;
+	state->players[1].units->next->position_y = 9;
+	state->unit_map[9][8] = 1;	
+	state->players[1].units->next->next->position_x = 8;
+	state->players[1].units->next->next->position_y = 9;
 
 	state->map_object = buildMapGL(state->map_offset_x, state->map_offset_y, 
 								   0.0f, state->map_hex_size, state);

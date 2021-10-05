@@ -204,7 +204,7 @@ gl_object* buildMapGL(float offset_x, float offset_y, float z_index,
 	GLfloat *iter_v = temp->vertices;
 	GLuint *iter_i = temp->indices; 
 	addGLObject(temp, &state->gl_objects);
-	computeListOffsets(state->gl_objects, NULL);
+	//computeListOffsets(state->gl_objects, NULL);
 	int index_cnt = temp->vertices_offset;
 	for(i = 0; i < state->size_y; i++){
 		for(j = 0; j < state->size_x; j++){
@@ -247,7 +247,7 @@ gl_object* buildHexagonGL(float offset_x, float offset_y, float z_index,
 	GLfloat *iter_v = temp->vertices;
 	GLuint *iter_i = temp->indices; 
 	addGLObject(temp, &state->gl_objects);
-	computeListOffsets(state->gl_objects, NULL);
+	//computeListOffsets(state->gl_objects, NULL);
 	buildHexagonVertices(offset_x, offset_y, z_index, color_r, color_g, color_b, side_len, iter_v);
 	buildHexagonIndices(temp->vertices_offset/6, iter_i);
 
@@ -402,7 +402,7 @@ void updateHighlight(game_state *state)
 			state->highlight_object = 
 				buildHexagonGL(position_x, position_y, 0.2f, 
 							   color_r, color_g, color_b,
-							   state->map_hex_size, state);
+							   0.55 * state->map_hex_size, state);
 			state->indices_size+= state->highlight_object->indices_size;
 			state->vertices_size+= state->highlight_object->vertices_size;
 		}
@@ -450,7 +450,7 @@ void updateCursor(game_state *state)
 			state->cursor_object = 
 				buildHexagonGL(position_x, position_y, 0.4f, 
 							   color_r, color_g, color_b,
-							   state->map_hex_size, state);
+							   0.55 * state->map_hex_size, state);
 			state->vertices_size+= state->cursor_object->vertices_size;
 			state->indices_size+= state->cursor_object->indices_size;
 		}
@@ -523,14 +523,14 @@ void updateFogOfWar(game_state *state)
 		}
 		addGLObject(object, &state->gl_objects);
 		state->fog_of_war_object = object;
-		computeListOffsets(state->gl_objects, NULL);
+		//computeListOffsets(state->gl_objects, NULL);
 		object->modified = 1;
 		getTotalSizes(state->gl_objects, &state->vertices_size, &state->indices_size);
 	}
 	else
 	{
 		object = state->fog_of_war_object;
-		computeListOffsets(state->gl_objects, NULL);
+		computeListOffsets(state->gl_objects);
 		// NOTE(filip): every vertex has 6 floats, so we beed to divide by 6 to get the 
 		//				number of vertices)
 		int index_cnt = object->vertices_offset/6; 
@@ -576,9 +576,10 @@ void updateFogOfWar(game_state *state)
 			}
 		}
 		//computeListOffsets(state->gl_objects, NULL);
-		decreaseIndices(object, (old_vertices_size-object->vertices_size)/6);
-		object->modified = 1;
-		getTotalSizes(state->gl_objects, &state->vertices_size, &state->indices_size);
+		if(old_vertices_size != object->vertices_size){
+			object->modified = 1;
+			object->resized =  object->vertices_size - old_vertices_size;
+		}
 	}
 	markObjectsModified(object);
 }
@@ -633,26 +634,42 @@ void updateGL(game_state *state, GLuint VAO, GLuint VBO, GLuint EBO, GLuint shad
 	{
 		if(iter->deleted)
 		{
-			state->vertices_size -= iter->vertices_size;
-			state->indices_size -= iter->indices_size;
-			removeGLObject(&state->gl_objects, iter);		
+			printf("Before deletion:\n");
+			printGLObjectList(state->gl_objects);
+			gl_object *temp = iter->next;
+			removeGLObject(&state->gl_objects, iter);	
+			iter = temp;	
+			getTotalSizes(state->gl_objects, &state->vertices_size, &state->indices_size);
+			printf("After deletion:\n");
+			printGLObjectList(state->gl_objects);
 		}
 		else if(iter->modified)
 		{
+			if(iter->resized)
+			{
+				markObjectsModified(iter->next);
+				getTotalSizes(state->gl_objects, &state->vertices_size, &state->indices_size);
+				computeListOffsets(state->gl_objects);
+				updateIndices(iter->next, iter->resized/6);
+				getTotalSizes(state->gl_objects, &state->vertices_size, &state->indices_size);
+				iter->resized = 0;
+			}
 			glBufferSubData(GL_ARRAY_BUFFER, 
 					iter->vertices_offset * sizeof(GLfloat), 
 					iter->vertices_size * sizeof(GLfloat), 
 					iter->vertices);
 
 			glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 
-					iter->indices_offset * sizeof(GLfloat), 
-					iter->indices_size * sizeof(GLfloat), 
+					iter->indices_offset * sizeof(GLuint), 
+					iter->indices_size * sizeof(GLuint), 
 					iter->indices);
 			
 			iter->modified = 0;
+			iter = iter->next;
 
 		}
-		iter = iter->next;
+		else
+			iter = iter->next;
 	}
 
 	glUseProgram(shader_program);

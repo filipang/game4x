@@ -23,6 +23,7 @@ typedef struct gl_object
 	int indices_offset;
 	struct gl_object *next;	
 	int modified; // NOTE(filip): This turns to 1 when it needs to be updated
+	int resized;
 	int deleted; // NOTE(filip): This turns to 1 when it needs to be deleted
 } gl_object;
 
@@ -39,6 +40,7 @@ void createGLObject(gl_object **o,
 	(*o)->indices = malloc(indices_size*sizeof(GLuint));
 	(*o)->modified = 0;
 	(*o)->deleted = 0;
+	(*o)->resized = 0;
 	(*o)->next = NULL;
 }
 
@@ -49,6 +51,7 @@ void createGLObjectEmpty(gl_object **o)
 	(*o)->indices_size = 0;
 	(*o)->modified = 0;
 	(*o)->deleted = 0;
+	(*o)->resized = 0;
 	(*o)->next = NULL;
 }
 
@@ -57,10 +60,14 @@ void addGLObject(gl_object *src, gl_object **dst)
 	if((*dst) == NULL)
 	{
 		(*dst) = src;
+		src->vertices_offset = 0;
+		src->indices_offset = 0;
 	}
 	else if((*dst)->next == NULL)
 	{
 		(*dst)->next = src;
+		src->vertices_offset = (*dst)->vertices_offset + (*dst)->vertices_size;
+		src->indices_offset = (*dst)->indices_offset + (*dst)->indices_size;
 	}
 	else
 	{
@@ -69,13 +76,13 @@ void addGLObject(gl_object *src, gl_object **dst)
 }
 
 // TODO(filip): Free unit list function
-void decreaseIndices(gl_object *iter, int amount)
+void updateIndices(gl_object *iter, int amount)
 {
 	int i;
 	while(iter != NULL)
 	{
 		for(i = 0; i < iter->indices_size; i++)
-			iter->indices[i] -= amount;
+			iter->indices[i] += amount;
 		iter = iter->next;
 	}
 }
@@ -89,46 +96,51 @@ void markObjectsModified(gl_object *start)
 	}
 }
 
-void removeGLObject(gl_object **base, gl_object *target)
-{
-	gl_object *iter = *base;
-	if(iter == target)
-	{
-		*base = target->next;
-		decreaseIndices(target->next, target->vertices_size);
-		markObjectsModified(target->next);
-		free(target);
-	}
-	else
-	{
-		while(iter != NULL)
-		{
-			if(iter->next == target)
-			{
-				iter->next = target->next;
-				decreaseIndices(target->next, target->vertices_size);
-				markObjectsModified(target->next);
-				free(target);
-			}
-			iter = iter->next;
-		}
-	}
-}
-
 // NOTE(filip): Computes offsets up to target without touching target (target 
 // 				can be NULL)
-void computeListOffsets(gl_object *list, gl_object *target)
+void computeListOffsets(gl_object *list)
 {
 	int vertices_offset = 0;
    	int indices_offset = 0;
 	gl_object *iter = list;
-	while(iter != target && iter != NULL)
+	while(iter != NULL)
 	{
 		iter->vertices_offset = vertices_offset;
 		iter->indices_offset = indices_offset;
 		vertices_offset += iter->vertices_size;
 		indices_offset += iter->indices_size;
 		iter = iter->next;
+	}
+}
+
+void removeGLObject(gl_object **base, gl_object *target)
+{
+	gl_object *iter = *base;
+	if(iter == target)
+	{
+		*base = target->next;
+		updateIndices(target->next, -target->vertices_size/6);
+		computeListOffsets(target->next);
+		markObjectsModified(target->next);
+		free(target);
+	}
+	else
+	{
+		printf("LOOKING FOR OBJ TO DELETE:\n");
+		while(iter != NULL)
+		{
+			if(iter->next == target)
+			{
+				printf("FOUND ONE!:\n");
+				iter->next = target->next;
+				updateIndices(target->next, -target->vertices_size/6);
+				computeListOffsets(*base);
+				markObjectsModified(target->next);
+				free(target);
+			}
+			iter = iter->next;
+		}
+		printf("DONE LOOKING..!\n");
 	}
 }
 
