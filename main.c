@@ -19,6 +19,8 @@
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 // NOTE(filip): Don't define DEBUG when releasing
 #define DEBUG
@@ -38,9 +40,11 @@
 #include "gl_object.c"
 #include "game.c"
 #include "gl_game.c"
+#include "text.c"
 
 int main()
 {
+	FT_Bitmap *testBitmap = testFreetype();
 	// SETUP -------------------------------------------------------------------
 	GLFWwindow* window;
 	GLuint VAO, VBO, EBO, shader_program;
@@ -97,6 +101,10 @@ int main()
 		updateUIGL(&state);
 		// Write all updates to the VBO and draw elements to the back buffer
 		updateGL(&state, VAO, VBO, EBO, shader_program);
+
+		glBitmap(testBitmap->width, testBitmap->rows, 0.0, 0.0, 0.0, 0.0, 
+				(GLubyte *) testBitmap->buffer);
+
 		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);
 		// Take care of all GLFW events

@@ -225,11 +225,6 @@ gl_object* buildMapGL(float offset_x, float offset_y, float z_index,
 		}
 	}
 
-	// Add object to the object list
-	#ifdef DEBUG
-	printGLObject(temp);
-	#endif
-
 	return temp;
 }
 
@@ -250,11 +245,6 @@ gl_object* buildHexagonGL(float offset_x, float offset_y, float z_index,
 	//computeListOffsets(state->gl_objects, NULL);
 	buildHexagonVertices(offset_x, offset_y, z_index, color_r, color_g, color_b, side_len, iter_v);
 	buildHexagonIndices(temp->vertices_offset/6, iter_i);
-
-	// Add object to the object list
-	#ifdef DEBUG
-	printGLObject(temp);
-	#endif
 
 	return temp;
 }
@@ -634,14 +624,10 @@ void updateGL(game_state *state, GLuint VAO, GLuint VBO, GLuint EBO, GLuint shad
 	{
 		if(iter->deleted)
 		{
-			printf("Before deletion:\n");
-			printGLObjectList(state->gl_objects);
 			gl_object *temp = iter->next;
 			removeGLObject(&state->gl_objects, iter);	
 			iter = temp;	
 			getTotalSizes(state->gl_objects, &state->vertices_size, &state->indices_size);
-			printf("After deletion:\n");
-			printGLObjectList(state->gl_objects);
 		}
 		else if(iter->modified)
 		{
