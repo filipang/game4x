@@ -78,8 +78,6 @@ typedef struct game_state
 
 	int vertices_store_size;
 	int vertices_size;
-	int indices_store_size;
-	int indices_size;
 } game_state;
 
 void allocMap(int size_x, int size_y, unsigned char ***mapPtr)
@@ -145,9 +143,7 @@ void initializeGameState(game_state* state)
 	state->gl_objects = NULL;
 	state->fog_of_war_object = NULL;
 	state->vertices_size = 0;
-	state->indices_size = 0;
 	state->vertices_store_size = 0;
-	state->indices_store_size = 0;
 }
 
 // End curent player turn and start next player turn
@@ -319,7 +315,6 @@ void attackSelectedUnit(struct game_state *state)
 					target->object->deleted = 1;
 					state->unit_map[state->cursor_y][state->cursor_x] = 0;
 					state->vertices_size-=target->object->vertices_size;
-					state->indices_size-=target->object->indices_size;
 				}
 				state->selected_unit->mp_current = 0;
 				step(state);

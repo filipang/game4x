@@ -13,6 +13,7 @@
 *
 *******************************************************************************/
 
+/*
 void render_text(const char *text, 
 				 float x, float y, 
 				 float sx, float sy, 
@@ -48,13 +49,14 @@ void render_text(const char *text,
         {x2 + w, -y2 - h, 1, 1},
     };
 
+
     //glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
     //glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     x += (g->advance.x/64) * sx;
     y += (g->advance.y/64) * sy;
   }
-}
+}*/
 
 FT_Bitmap* testFreetype()
 {
@@ -68,7 +70,7 @@ FT_Bitmap* testFreetype()
 	if (error)
 	{
 		printf("Freetype failed to initialize\n");
-	}
+		}
 	error = FT_New_Face( library,
                      "/usr/share/fonts/truetype/freefont/FreeSans.ttf",
                      0,

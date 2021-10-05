@@ -40,12 +40,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 17 - ((16 * winheight(0) + 26) / 53)
+let s:l = 51 - ((29 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 17
-normal! 022|
+keepjumps 51
+normal! 0
 tabnext
 edit utils.c
 set splitbelow splitright
@@ -67,11 +67,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 72 - ((52 * winheight(0) + 26) / 53)
+let s:l = 47 - ((37 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 72
+keepjumps 47
 normal! 0
 tabnext
 edit gl_game.c
@@ -94,12 +94,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 633 - ((16 * winheight(0) + 26) / 53)
+let s:l = 66 - ((15 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 633
-normal! 09|
+keepjumps 66
+normal! 0
 tabnext
 edit text.c
 set splitbelow splitright
@@ -121,12 +121,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 47 - ((21 * winheight(0) + 26) / 53)
+let s:l = 84 - ((25 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 47
-normal! 09|
+keepjumps 84
+normal! 0
 tabnext
 edit unit.c
 set splitbelow splitright
@@ -148,11 +148,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 96 - ((50 * winheight(0) + 26) / 53)
+let s:l = 67 - ((36 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 96
+keepjumps 67
 normal! 0
 tabnext
 edit game.c
@@ -175,12 +175,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 2 - ((1 * winheight(0) + 26) / 53)
+let s:l = 242 - ((30 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 2
-normal! 0
+keepjumps 242
+normal! 012|
 tabnext
 edit gl_object.c
 set splitbelow splitright
@@ -202,12 +202,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 55 - ((37 * winheight(0) + 26) / 53)
+let s:l = 30 - ((27 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 55
-normal! 022|
+keepjumps 30
+normal! 037|
 tabnext
 edit outpost.c
 set splitbelow splitright
@@ -235,7 +235,7 @@ keepjumps exe s:l
 normal! zt
 keepjumps 1
 normal! 0
-tabnext 3
+tabnext 6
 set stal=1
 badd +1 main.c
 badd +1 gl_game.c

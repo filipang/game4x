@@ -16,11 +16,8 @@
 typedef struct gl_object
 {
 	GLfloat* vertices;
-	GLuint* indices;
 	int vertices_size;
 	int vertices_offset;
-	int indices_size;
-	int indices_offset;
 	struct gl_object *next;	
 	int modified; // NOTE(filip): This turns to 1 when it needs to be updated
 	int resized;
@@ -30,14 +27,11 @@ typedef struct gl_object
 // NOTE(filip): problem with holding address related information in ints and not
 // long long?
 void createGLObject(gl_object **o, 
-					int vertices_size, 
-					int indices_size)
+					int vertices_size)
 {
 	*o = malloc(sizeof(gl_object));
 	(*o)->vertices_size = vertices_size;
 	(*o)->vertices = malloc(vertices_size*sizeof(GLfloat));
-	(*o)->indices_size = indices_size;
-	(*o)->indices = malloc(indices_size*sizeof(GLuint));
 	(*o)->modified = 0;
 	(*o)->deleted = 0;
 	(*o)->resized = 0;
@@ -48,7 +42,6 @@ void createGLObjectEmpty(gl_object **o)
 {
 	*o = malloc(sizeof(gl_object));
 	(*o)->vertices_size = 0;
-	(*o)->indices_size = 0;
 	(*o)->modified = 0;
 	(*o)->deleted = 0;
 	(*o)->resized = 0;
@@ -61,13 +54,11 @@ void addGLObject(gl_object *src, gl_object **dst)
 	{
 		(*dst) = src;
 		src->vertices_offset = 0;
-		src->indices_offset = 0;
 	}
 	else if((*dst)->next == NULL)
 	{
 		(*dst)->next = src;
 		src->vertices_offset = (*dst)->vertices_offset + (*dst)->vertices_size;
-		src->indices_offset = (*dst)->indices_offset + (*dst)->indices_size;
 	}
 	else
 	{
@@ -76,16 +67,6 @@ void addGLObject(gl_object *src, gl_object **dst)
 }
 
 // TODO(filip): Free unit list function
-void updateIndices(gl_object *iter, int amount)
-{
-	int i;
-	while(iter != NULL)
-	{
-		for(i = 0; i < iter->indices_size; i++)
-			iter->indices[i] += amount;
-		iter = iter->next;
-	}
-}
 
 void markObjectsModified(gl_object *start)
 {
@@ -101,14 +82,11 @@ void markObjectsModified(gl_object *start)
 void computeListOffsets(gl_object *list)
 {
 	int vertices_offset = 0;
-   	int indices_offset = 0;
 	gl_object *iter = list;
 	while(iter != NULL)
 	{
 		iter->vertices_offset = vertices_offset;
-		iter->indices_offset = indices_offset;
 		vertices_offset += iter->vertices_size;
-		indices_offset += iter->indices_size;
 		iter = iter->next;
 	}
 }
@@ -119,7 +97,6 @@ void removeGLObject(gl_object **base, gl_object *target)
 	if(iter == target)
 	{
 		*base = target->next;
-		updateIndices(target->next, -target->vertices_size/6);
 		computeListOffsets(target->next);
 		markObjectsModified(target->next);
 		free(target);
@@ -133,7 +110,6 @@ void removeGLObject(gl_object **base, gl_object *target)
 			{
 				printf("FOUND ONE!:\n");
 				iter->next = target->next;
-				updateIndices(target->next, -target->vertices_size/6);
 				computeListOffsets(*base);
 				markObjectsModified(target->next);
 				free(target);
@@ -144,28 +120,24 @@ void removeGLObject(gl_object **base, gl_object *target)
 	}
 }
 
-void getTotalSizes(gl_object *list, int *vertices_total, int *indices_total)
+void getTotalSizes(gl_object *list, int *vertices_total)
 {
 	*vertices_total = 0;
-   	*indices_total = 0;
 	gl_object *iter = list;
 	while(iter != NULL)
 	{
 		*vertices_total += iter->vertices_size;
-		*indices_total += iter->indices_size;
 		iter = iter->next;
 	}
 }
 
 void printGLObject(gl_object *object)
 {
-	printf("gl_object: %x\nvertex_size: %d\nvertex_offset: %d\nindex_size: %d\n"
-			"index_offset:%d\nmodified:%d\ndeleted:%d\nnext:%x\n",
+	printf("gl_object: %x\nvertex_size: %d\nvertex_offset: %d\n"
+			"modified:%d\ndeleted:%d\nnext:%x\n",
 			object,
 			object->vertices_size,
 			object->vertices_offset,
-			object->indices_size,
-			object->indices_offset,
 			object->modified,
 			object->deleted,
 			object->next);

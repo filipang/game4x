@@ -102,9 +102,6 @@ int main()
 		// Write all updates to the VBO and draw elements to the back buffer
 		updateGL(&state, VAO, VBO, EBO, shader_program);
 
-		glBitmap(testBitmap->width, testBitmap->rows, 0.0, 0.0, 0.0, 0.0, 
-				(GLubyte *) testBitmap->buffer);
-
 		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);
 		// Take care of all GLFW events
