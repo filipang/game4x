@@ -25,8 +25,8 @@ typedef struct gl_object
 	int modified; // NOTE(filip): This turns to 1 when it needs to be updated
 	int resized;
 	int deleted; // NOTE(filip): This turns to 1 when it needs to be deleted
+	char *text; //
 	
-	int type;
 } gl_object;
 
 // NOTE(filip): problem with holding address related information in ints and not
@@ -40,7 +40,7 @@ void createGLObject(gl_object **o,
 	(*o)->modified = 0;
 	(*o)->deleted = 0;
 	(*o)->resized = 0;
-	(*o)->type = SPRITE_OBJECT;
+	(*o)->text = NULL;
 	(*o)->next = NULL;
 }
 
@@ -51,7 +51,7 @@ void createGLObjectEmpty(gl_object **o)
 	(*o)->modified = 0;
 	(*o)->deleted = 0;
 	(*o)->resized = 0;
-	(*o)->type = SPRITE_OBJECT;
+	(*o)->text = NULL;
 	(*o)->next = NULL;
 }
 
@@ -100,6 +100,7 @@ void computeListOffsets(gl_object *list)
 
 void removeGLObject(gl_object **base, gl_object *target)
 {
+	if(base == NULL || target == NULL) return;
 	gl_object *iter = *base;
 	if(iter == target)
 	{

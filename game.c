@@ -72,6 +72,7 @@ typedef struct game_state
 
 	struct player_state players[MAX_PLAYERS];
 
+	struct gl_object *text_objects;
 	struct gl_object *gl_objects;
 	// NOTE(ionut): Every third element belongs to the same map to compress all
 	// 				3 into one vector
@@ -142,6 +143,7 @@ void initializeGameState(game_state* state)
 	state->cursor_object = NULL;
 	state->map_object = NULL;
 	state->gl_objects = NULL;
+	state->text_objects = NULL;
 	state->fog_of_war_object = NULL;
 	state->vertices_size = 0;
 	state->vertices_store_size = 0;

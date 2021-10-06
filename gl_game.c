@@ -18,7 +18,7 @@
 void initializeGL(GLFWwindow **window, 
 				  GLuint *VAO, GLuint *VBO, 
 				  GLuint *shader_program, 
-				  GLuint *text_texture, GLuint *sprite_texture)
+				  GLuint *sprite_texture)
 {
 	// GENERAL START SETUP -----------------------------------------------------
 	// Initialize GLFW
@@ -67,6 +67,7 @@ void initializeGL(GLFWwindow **window,
 	glShaderSource(vertex_shader, 1, &vertex_shader_src, NULL);
 	// Compile the Vertex Shader into machine code
 	glCompileShader(vertex_shader);
+	glEnable(GL_BLEND);
 
 	// Create Fragment Shader Object and get its reference
 	GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -642,12 +643,10 @@ void updateGL(game_state *state, GLuint VAO, GLuint VBO, GLuint shader_program, 
 				
 				iter->modified = 0;
 			}
-
 			for(int i = iter->vertices_offset/VERTEX_CHANNELS; 
 				i < (iter->vertices_offset + iter->vertices_size) / VERTEX_CHANNELS; 
 				i = i + 6)
 				glDrawArrays(GL_TRIANGLE_FAN, i, 6);
-			
 			iter = iter->next;
 
 		}

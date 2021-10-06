@@ -105,9 +105,13 @@ int main()
 		updateUnitListGL(&state);
 		// Update UI gl
 		updateUIGL(&state);
-		renderText("Lorem", 0, 0, 0.05, 0.05, &library, &face, &state.test_text, &state);
+
+		//renderText("Lorem", 0, 0, 0.05, 0.05, &library, &face, &state.test_text, &state);
 		// Write all updates to the VBO and draw elements to the back buffer
 		updateGL(&state, VAO, VBO, shader_program, texture);
+		updateSidebar(&state);
+		drawSidebar(VAO, VBO, shader_program, &face, &state);
+
 
 		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);
