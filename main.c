@@ -47,8 +47,8 @@ int main()
 	FT_Bitmap *testBitmap = testFreetype();
 	// SETUP -------------------------------------------------------------------
 	GLFWwindow* window;
-	GLuint VAO, VBO, EBO, shader_program;
-	initializeGL(&window, &VAO, &VBO, &EBO, &shader_program);
+	GLuint VAO, VBO, shader_program;
+	initializeGL(&window, &VAO, &VBO, &shader_program);
 
 	input_pressed input = {0};
 	game_state state;
@@ -100,7 +100,7 @@ int main()
 		// Update UI gl
 		updateUIGL(&state);
 		// Write all updates to the VBO and draw elements to the back buffer
-		updateGL(&state, VAO, VBO, EBO, shader_program);
+		updateGL(&state, VAO, VBO, shader_program);
 
 		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);
@@ -113,6 +113,6 @@ int main()
 	freeMap(state.size_x, state.size_y, state.terrain_map);
 	freeMap(state.size_x, state.size_y, state.unit_map);
 	// Free allocated memory
-	finalizeGL(window, VAO, VBO, EBO, shader_program);
+	finalizeGL(window, VAO, VBO, shader_program);
 	return 0;
 }

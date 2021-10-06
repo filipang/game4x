@@ -15,7 +15,7 @@
 
 // FIXME(filip): Visual glitch when changing turns sometimes
 
-void initializeGL(GLFWwindow **window, GLuint *VAO, GLuint *VBO, GLuint *EBO, GLuint *shader_program)
+void initializeGL(GLFWwindow **window, GLuint *VAO, GLuint *VBO, GLuint *shader_program)
 {
 	// GENERAL START SETUP -----------------------------------------------------
 	// Initialize GLFW
@@ -84,33 +84,33 @@ void initializeGL(GLFWwindow **window, GLuint *VAO, GLuint *VBO, GLuint *EBO, GL
 	// Generate the VAO, VBO, and EBO with only 1 object each
 	glGenVertexArrays(1, VAO);
 	glGenBuffers(1, VBO);
-	glGenBuffers(1, EBO);
 
 	glBindVertexArray(*VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, *VBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *EBO);
 	
 	// Configure the Vertex Attributes so that OpenGL knows how to read the VBO
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 
-						  6 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 
+						  9 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 
-						  6 * sizeof(float), (void*)(3 * sizeof(float)));
+						  9 * sizeof(float), (void*)(4 * sizeof(float)));
 	glEnableVertexAttribArray(1);
+
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 
+						  9 * sizeof(float), (void*)(7 * sizeof(float)));
+	glEnableVertexAttribArray(2);
 	
 	// Bind both the VBO and VAO to 0 so that we don't accidentally 
 	// modify the VAO and VBO we created
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void finalizeGL(GLFWwindow *window, GLuint VAO, GLuint VBO, GLuint EBO, GLuint shader_program)
+void finalizeGL(GLFWwindow *window, GLuint VAO, GLuint VBO, GLuint shader_program)
 {
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &EBO);
 	glDeleteProgram(shader_program);
 	glfwDestroyWindow(window);
 	glfwTerminate();
@@ -544,7 +544,7 @@ void updateStoreSizeGL(game_state *state)
 	}
 }
 
-void updateGL(game_state *state, GLuint VAO, GLuint VBO, GLuint EBO, GLuint shader_program)
+void updateGL(game_state *state, GLuint VAO, GLuint VBO, GLuint shader_program)
 {
 	// Specify the color of the background
 	glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
@@ -596,9 +596,6 @@ void updateGL(game_state *state, GLuint VAO, GLuint VBO, GLuint EBO, GLuint shad
 	}
 
 	glUseProgram(shader_program);
-	//glDrawElements(GL_TRIANGLES, state->indices_size, 
-			       //GL_UNSIGNED_INT, 0);
-
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }
