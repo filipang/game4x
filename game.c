@@ -131,7 +131,7 @@ void initializeGameState(game_state* state)
 
 	state->map_offset_x = -0.94f;
 	state->map_offset_y = -0.8f;
-	state->map_hex_size = 0.049;
+	state->map_hex_size = 0.08;
 	for(int i = 0; i < MAX_PLAYERS; i++)
 	{
 		state->players[i].units = NULL;
@@ -256,7 +256,7 @@ void setMoveCursor(int new_move_x, int new_move_y, struct game_state *state)
 			 || findUnit(state->players[state->turn].units, state->cursor_x, state->cursor_y) != NULL)
 			state->cursor_color = 4;
 		else
-			state->cursor_color = 6;
+			state->cursor_color =  6;
 		}
 }
 

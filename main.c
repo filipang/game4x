@@ -13,6 +13,7 @@
 *
 *******************************************************************************/
 
+#define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #include <stdio.h>
 #include <glad/glad.h>
@@ -33,6 +34,7 @@
 #define MODE_NORMAL 0
 #define MODE_MOVE 1
 #define MODE_ATTACK 2
+#define VERTEX_CHANNELS (3+4+3)
 
 #include "utils.c"
 #include "input.c"
@@ -48,8 +50,8 @@ int main()
 	FT_Bitmap *testBitmap = testFreetype();
 	// SETUP -------------------------------------------------------------------
 	GLFWwindow* window;
-	GLuint VAO, VBO, shader_program;
-	initializeGL(&window, &VAO, &VBO, &shader_program);
+	GLuint VAO, VBO, shader_program, texture;
+	initializeGL(&window, &VAO, &VBO, &shader_program, &texture);
 
 	input_pressed input = {0};
 	game_state state;
@@ -101,7 +103,7 @@ int main()
 		// Update UI gl
 		updateUIGL(&state);
 		// Write all updates to the VBO and draw elements to the back buffer
-		updateGL(&state, VAO, VBO, shader_program);
+		updateGL(&state, VAO, VBO, shader_program, texture);
 
 		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);

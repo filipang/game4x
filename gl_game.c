@@ -15,7 +15,7 @@
 
 // FIXME(filip): Visual glitch when changing turns sometimes
 
-void initializeGL(GLFWwindow **window, GLuint *VAO, GLuint *VBO, GLuint *shader_program)
+void initializeGL(GLFWwindow **window, GLuint *VAO, GLuint *VBO, GLuint *shader_program, GLuint *texture)
 {
 	// GENERAL START SETUP -----------------------------------------------------
 	// Initialize GLFW
@@ -49,6 +49,13 @@ void initializeGL(GLFWwindow **window, GLuint *VAO, GLuint *VBO, GLuint *shader_
 
 	const char* vertex_shader_src = loadFile("shader.vert");
 	const char* fragment_shader_src = loadFile("shader.frag");
+	int width, height, nr_channels;
+	const char* data = 
+		stbi_load("tex.bmp", &width, &height, &nr_channels, 0);
+
+	#ifdef DEBUG
+	printf("width: %d\nheight: %d\nnr_channels: %d\n", width, height, nr_channels);
+	#endif
 
 	// Create Vertex Shader Object and get its reference
 	GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
@@ -85,26 +92,38 @@ void initializeGL(GLFWwindow **window, GLuint *VAO, GLuint *VBO, GLuint *shader_
 	glGenVertexArrays(1, VAO);
 	glGenBuffers(1, VBO);
 
+	glGenTextures(1, texture);
+	glBindTexture(GL_TEXTURE_2D, *texture);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
 	glBindVertexArray(*VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, *VBO);
 	
 	// Configure the Vertex Attributes so that OpenGL knows how to read the VBO
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 
-						  9 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 
+						  10 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 
-						  9 * sizeof(float), (void*)(4 * sizeof(float)));
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 
+						  10 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 
-						  9 * sizeof(float), (void*)(7 * sizeof(float)));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 
+						  10 * sizeof(float), (void*)(7 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 	
 	// Bind both the VBO and VAO to 0 so that we don't accidentally 
 	// modify the VAO and VBO we created
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void finalizeGL(GLFWwindow *window, GLuint VAO, GLuint VBO, GLuint shader_program)
@@ -120,6 +139,7 @@ void finalizeGL(GLFWwindow *window, GLuint VAO, GLuint VBO, GLuint shader_progra
 // Vertex in memory: (pos_x, pos_y, pos_z, col_x, col_y, col_z)
 GLfloat* buildHexagonVertices(float offset_x, float offset_y, float z_index, 
 			 			 	  float color_r, float color_b, float color_g, 
+							  float tex_x, float tex_y, float tex_weight, 
 						 	  float side_len, GLfloat* dest)
 {
 	*(dest++) = offset_x;
@@ -128,6 +148,10 @@ GLfloat* buildHexagonVertices(float offset_x, float offset_y, float z_index,
 	*(dest++) = color_r;
 	*(dest++) = color_b;
 	*(dest++) = color_g;
+	*(dest++) = 1.0;
+	*(dest++) = tex_x + 0.5;
+	*(dest++) = tex_y + 1.0;
+	*(dest++) = tex_weight;
 
 	*(dest++) = offset_x + sqrt(3)/2*side_len;
 	*(dest++) = offset_y + side_len/2;
@@ -135,6 +159,10 @@ GLfloat* buildHexagonVertices(float offset_x, float offset_y, float z_index,
 	*(dest++) = color_r;
 	*(dest++) = color_b;
 	*(dest++) = color_g;
+	*(dest++) = 1.0;
+	*(dest++) = tex_x + 1.0;
+	*(dest++) = tex_y + sqrt(3)/2;
+	*(dest++) = tex_weight;
 	
 	*(dest++) = offset_x + sqrt(3)/2*side_len;
 	*(dest++) = offset_y - side_len/2;
@@ -142,6 +170,10 @@ GLfloat* buildHexagonVertices(float offset_x, float offset_y, float z_index,
 	*(dest++) = color_r;
 	*(dest++) = color_b;
 	*(dest++) = color_g;
+	*(dest++) = 1.0;
+	*(dest++) = tex_x + 1.0;
+	*(dest++) = tex_y + sqrt(3)/6;
+	*(dest++) = tex_weight;
 
 	*(dest++) = offset_x;
 	*(dest++) = offset_y - side_len;
@@ -149,6 +181,10 @@ GLfloat* buildHexagonVertices(float offset_x, float offset_y, float z_index,
 	*(dest++) = color_r;
 	*(dest++) = color_b;
 	*(dest++) = color_g;
+	*(dest++) = 1.0;
+	*(dest++) = tex_x + 0.5;
+	*(dest++) = tex_y + 0.0;
+	*(dest++) = tex_weight;
 
 	*(dest++) = offset_x - sqrt(3)/2*side_len;
 	*(dest++) = offset_y - side_len/2;
@@ -156,6 +192,10 @@ GLfloat* buildHexagonVertices(float offset_x, float offset_y, float z_index,
 	*(dest++) = color_r;
 	*(dest++) = color_b;
 	*(dest++) = color_g;
+	*(dest++) = 1.0;
+	*(dest++) = tex_x + 0.0;
+	*(dest++) = tex_y + sqrt(3)/6;
+	*(dest++) = tex_weight;
 	
 	*(dest++) = offset_x - sqrt(3)/2*side_len;
 	*(dest++) = offset_y + side_len/2;
@@ -163,6 +203,10 @@ GLfloat* buildHexagonVertices(float offset_x, float offset_y, float z_index,
 	*(dest++) = color_r;
 	*(dest++) = color_b;
 	*(dest++) = color_g;
+	*(dest++) = tex_x + 1.0;
+	*(dest++) = tex_y + 0.0;
+	*(dest++) = sqrt(3)/2;
+	*(dest++) = tex_weight;
 	
 	return dest;
 }
@@ -173,7 +217,7 @@ gl_object* buildMapGL(float offset_x, float offset_y, float z_index,
 				game_state *state)
 {
 	int i, j;
-	int vertices_size = state->size_x * state->size_y * 6 * 6;
+	int vertices_size = state->size_x * state->size_y * VERTEX_CHANNELS * 6;
 
 	gl_object *temp;
 	createGLObject(&temp, 
@@ -181,7 +225,6 @@ gl_object* buildMapGL(float offset_x, float offset_y, float z_index,
 	GLfloat *iter_v = temp->vertices;
 	addGLObject(temp, &state->gl_objects);
 	//computeListOffsets(state->gl_objects, NULL);
-	int index_cnt = temp->vertices_offset;
 	for(i = 0; i < state->size_y; i++){
 		for(j = 0; j < state->size_x; j++){
 			// NOTE(filip): Organize this to be more readable
@@ -191,10 +234,9 @@ gl_object* buildMapGL(float offset_x, float offset_y, float z_index,
 								    offset_y + 
 								    i * side_len * 3 / 2 , 
 									z_index,
-								    0.0f, 0.0f, 0.0f,
+								    0.0, 0.0, 0.0,
+									0.0, 0.0, 1.0,
 								    side_len * 0.9, iter_v);
-
-			index_cnt += 6;	
 		}
 	}
 
@@ -202,17 +244,21 @@ gl_object* buildMapGL(float offset_x, float offset_y, float z_index,
 }
 
 gl_object* buildHexagonGL(float offset_x, float offset_y, float z_index,
-					float color_r, float color_g, float color_b, 
+					float color_r, float color_g, float color_b,
+				   	float tex_x, float tex_y, float tex_weight,	
 					float side_len, game_state *state)
 {
-	int vertices_size = 6 * 6; // Hexagon has 6 vertices, each with 6 float values
+	int vertices_size = VERTEX_CHANNELS * 6; // Hexagon has 6 vertices, each with 10 float values
 
 	gl_object *temp;
 	createGLObject(&temp, 
 				   vertices_size);
 	GLfloat *iter_v = temp->vertices;
 	addGLObject(temp, &state->gl_objects);
-	buildHexagonVertices(offset_x, offset_y, z_index, color_r, color_g, color_b, side_len, iter_v);
+	buildHexagonVertices(offset_x, offset_y, z_index, 
+						 color_r, color_g, color_b,
+						 tex_x, tex_y, tex_weight, 
+						 side_len, iter_v);
 
 	return temp;
 }
@@ -263,6 +309,8 @@ void updateMapGL(game_state *state)
 					beginWrite = beginWrite != NULL ? beginWrite : iter;
 				}
 				*(iter++) = state->colors[state->terrain_map[i][j] * 9 + 2];
+
+				iter += 4;
 			}
 		}
 	}
@@ -290,6 +338,7 @@ void updateUnitGL(game_state *state, unit* u)
 		{
 			buildHexagonVertices(position_x, position_y, 0.2f,
 								 color_r, color_g, color_b,
+								 0.0, 0.0, 0.0,
 								 0.55 * state->map_hex_size,
 								 u->object->vertices);
 			
@@ -297,9 +346,8 @@ void updateUnitGL(game_state *state, unit* u)
 		else
 		{
 			u->object = buildHexagonGL(position_x, position_y, 0.2f, 
-									   color_r, 
-									   color_g, 
-									   color_b,
+									   color_r, color_g, color_b,
+								 	   0.0, 0.0, 0.0,
 									   0.55 * state->map_hex_size, state);
 			state->vertices_size+= u->object->vertices_size;
 		}
@@ -346,6 +394,7 @@ void updateHighlight(game_state *state)
 		{
 			buildHexagonVertices(position_x, position_y, 0.2f,
 								 color_r, color_g, color_b,
+								 0.0, 0.0, 0.0,
 								 0.55 * state->map_hex_size,
 								 state->highlight_object->vertices);
 		}
@@ -354,6 +403,7 @@ void updateHighlight(game_state *state)
 			state->highlight_object = 
 				buildHexagonGL(position_x, position_y, 0.2f, 
 							   color_r, color_g, color_b,
+						   	   0.0, 0.0, 0.0,
 							   0.55 * state->map_hex_size, state);
 			state->vertices_size+= state->highlight_object->vertices_size;
 		}
@@ -393,6 +443,7 @@ void updateCursor(game_state *state)
 		{
 			buildHexagonVertices(position_x, position_y, 0.4f,
 								 color_r, color_g, color_b,
+								 0.0, 0.0, 0.0,
 								 0.55 * state->map_hex_size,
 								 state->cursor_object->vertices);
 		}
@@ -401,6 +452,7 @@ void updateCursor(game_state *state)
 			state->cursor_object = 
 				buildHexagonGL(position_x, position_y, 0.4f, 
 							   color_r, color_g, color_b,
+							   0.0, 0.0, 0.0,
 							   0.55 * state->map_hex_size, state);
 			state->vertices_size+= state->cursor_object->vertices_size;
 		}
@@ -425,11 +477,10 @@ void updateFogOfWar(game_state *state)
 	if(state->fog_of_war_object == NULL)
 	{
 		createGLObjectEmpty(&object);
-		int vertices_size = state->size_x * state->size_y * 6 * 6;
+		int vertices_size = state->size_x * state->size_y * VERTEX_CHANNELS * 6;
 
 		// NOTE(filip): We don't know the exact size of the fog object, so we alloc
 		// 				max size.
-		int index_cnt = state->vertices_size/6;
 		object->vertices = malloc(vertices_size * sizeof(GLfloat));
 		GLfloat *iter_v = object->vertices;
 		for(i = 0; i < state->size_y; i++)
@@ -453,10 +504,11 @@ void updateFogOfWar(game_state *state)
 									  state->map_offset_x, state->map_offset_y, 
 									  state->map_hex_size, 
 									  &x, &y);
-					object->vertices_size+= 6*6;
+					object->vertices_size+= VERTEX_CHANNELS * 6;
 					iter_v = 
 						buildHexagonVertices(x, y, 0.0f,
 											 0.1f, 0.1f, 0.1f,
+								 			 0.0, 0.0, 0.0,
 											 state->map_hex_size, iter_v);
 				}
 					
@@ -474,7 +526,6 @@ void updateFogOfWar(game_state *state)
 		computeListOffsets(state->gl_objects);
 		// NOTE(filip): every vertex has 6 floats, so we beed to divide by 6 to get the 
 		//				number of vertices)
-		int index_cnt = object->vertices_offset/6; 
 		GLfloat *iter_v = object->vertices;
 		int old_vertices_size = object->vertices_size;
 		object->vertices_size = 0;
@@ -499,10 +550,11 @@ void updateFogOfWar(game_state *state)
 									  state->map_offset_x, state->map_offset_y, 
 									  state->map_hex_size, 
 									  &x, &y);
-					object->vertices_size+= 6*6;
+					object->vertices_size+= VERTEX_CHANNELS*6;
 					iter_v = 
 						buildHexagonVertices(x, y, 0.0f,
 											 0.2f, 0.2f, 0.2f,
+								 			 0.0, 0.0, 0.0,
 											 state->map_hex_size, iter_v);
 				}
 					
@@ -544,15 +596,16 @@ void updateStoreSizeGL(game_state *state)
 	}
 }
 
-void updateGL(game_state *state, GLuint VAO, GLuint VBO, GLuint shader_program)
+void updateGL(game_state *state, GLuint VAO, GLuint VBO, GLuint shader_program, GLuint texture)
 {
 	// Specify the color of the background
 	glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 	// Clean the back buffer and assign the new color to it
 	glClear(GL_COLOR_BUFFER_BIT);
 
+	glBindTexture(GL_TEXTURE_2D, texture);	
 	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO); 
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
 	updateStoreSizeGL(state);
 	gl_object *iter = state->gl_objects;
@@ -585,8 +638,8 @@ void updateGL(game_state *state, GLuint VAO, GLuint VBO, GLuint shader_program)
 				iter->modified = 0;
 			}
 
-			for(int i = iter->vertices_offset/6; 
-				i <= (iter->vertices_offset + iter->vertices_size) / 6; 
+			for(int i = iter->vertices_offset/VERTEX_CHANNELS; 
+				i <= (iter->vertices_offset + iter->vertices_size) / VERTEX_CHANNELS; 
 				i = i + 6)
 				glDrawArrays(GL_TRIANGLE_FAN, i, 6);
 			
@@ -598,5 +651,6 @@ void updateGL(game_state *state, GLuint VAO, GLuint VBO, GLuint shader_program)
 	glUseProgram(shader_program);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);	
 }
 
