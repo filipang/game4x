@@ -45,6 +45,7 @@ typedef struct game_state
 	struct gl_object *map_object;
 	struct gl_object *highlight_object;
 	struct gl_object *fog_of_war_object;
+	struct gl_object *test_text;
 
 	float map_offset_x;
 	float map_offset_y;

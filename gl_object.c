@@ -13,6 +13,9 @@
 *
 *******************************************************************************/
 
+#define SPRITE_OBJECT 0
+#define TEXT_OBJECT 1
+
 typedef struct gl_object
 {
 	GLfloat* vertices;
@@ -22,6 +25,8 @@ typedef struct gl_object
 	int modified; // NOTE(filip): This turns to 1 when it needs to be updated
 	int resized;
 	int deleted; // NOTE(filip): This turns to 1 when it needs to be deleted
+	
+	int type;
 } gl_object;
 
 // NOTE(filip): problem with holding address related information in ints and not
@@ -35,6 +40,7 @@ void createGLObject(gl_object **o,
 	(*o)->modified = 0;
 	(*o)->deleted = 0;
 	(*o)->resized = 0;
+	(*o)->type = SPRITE_OBJECT;
 	(*o)->next = NULL;
 }
 
@@ -45,6 +51,7 @@ void createGLObjectEmpty(gl_object **o)
 	(*o)->modified = 0;
 	(*o)->deleted = 0;
 	(*o)->resized = 0;
+	(*o)->type = SPRITE_OBJECT;
 	(*o)->next = NULL;
 }
 
@@ -111,7 +118,7 @@ void removeGLObject(gl_object **base, gl_object *target)
 				printf("FOUND ONE!:\n");
 				iter->next = target->next;
 				computeListOffsets(*base);
-				markObjectsModified(target->next);
+				markObjectsModified(*base); // NOTE(filip): this isn't right
 				free(target);
 			}
 			iter = iter->next;

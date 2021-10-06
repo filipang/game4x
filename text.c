@@ -13,50 +13,88 @@
 *
 *******************************************************************************/
 
-/*
-void render_text(const char *text, 
+
+void renderText(const char *text, 
 				 float x, float y, 
-				 float sx, float sy, 
-				 gl_object* object) 
+				 float sx, float sy,
+				 FT_Library *library, FT_Face *face, 
+				 gl_object** object, game_state *state) 
 {
   const char *p;
+  if(object==NULL)
+  {
+	  createGLObject(object, strlen(text));
+	  for(p = text; *p; p++) {
+		if(FT_Load_Char(*face, *p, FT_LOAD_RENDER))
+			continue;
 
-  for(p = text; *p; p++) {
-    if(FT_Load_Char(face, *p, FT_LOAD_RENDER))
-        continue;
+		glTexImage2D(
+		  GL_TEXTURE_2D,
+		  0,
+		  GL_RED,
+		  face->glyph->bitmap.width,
+		  g->bitmap.rows,
+		  0,
+		  GL_RED,
+		  GL_UNSIGNED_BYTE,
+		  face->glyph->bitmap.buffer
+		);
 
-    glTexImage2D(
-      GL_TEXTURE_2D,
-      0,
-      GL_RED,
-      g->bitmap.width,
-      g->bitmap.rows,
-      0,
-      GL_RED,
-      GL_UNSIGNED_BYTE,
-      g->bitmap.buffer
-    );
+		float x2 = x + g->bitmap_left * sx;
+		float y2 = -y - g->bitmap_top * sy;
+		float w = face->glyph->bitmap.width * sx;
+		float h = face->glyph->bitmap.rows * sy;
 
-    float x2 = x + g->bitmap_left * sx;
-    float y2 = -y - g->bitmap_top * sy;
-    float w = g->bitmap.width * sx;
-    float h = g->bitmap.rows * sy;
+		GLfloat text_box[16] = {x2,     -y2    , 0, 0,
+								x2 + w, -y2    , 1, 0,
+								x2,     -y2 - h, 0, 1,
+								x2 + w, -y2 - h, 1, 1};
 
-    GLfloat box[4][4] = {
-        {x2,     -y2    , 0, 0},
-        {x2 + w, -y2    , 1, 0},
-        {x2,     -y2 - h, 0, 1},
-        {x2 + w, -y2 - h, 1, 1},
-    };
+		memcpy(text_box, object->vertices + p * 16 * sizeof(GLfloat), 16 * sizeof(GLfloat));
+		//glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
+		//glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-
-    //glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
-    //glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-    x += (g->advance.x/64) * sx;
-    y += (g->advance.y/64) * sy;
+		x += (g->advance.x/64) * sx;
+		y += (g->advance.y/64) * sy;
+	  }
+	  add_object(&state->gl_objects, *object);
+	  (*object)->modified = 1;
   }
-}*/
+  else
+  {
+	  for(p = text; *p; p++) {
+		if(FT_Load_Char(face, *p, FT_LOAD_RENDER))
+			continue;
+
+		glTexImage2D(
+		  GL_TEXTURE_2D,
+		  0,
+		  GL_RED,
+		  g->bitmap.width,
+		  g->bitmap.rows,
+		  0,
+		  GL_RED,
+		  GL_UNSIGNED_BYTE,
+		  g->bitmap.buffer
+		);
+
+		float x2 = x + g->bitmap_left * sx;
+		float y2 = -y - g->bitmap_top * sy;
+		float w = g->bitmap.width * sx;
+		float h = g->bitmap.rows * sy;
+
+		GLfloat text_box[16] = {x2,     -y2    , 0, 0,
+								x2 + w, -y2    , 1, 0,
+								x2,     -y2 - h, 0, 1,
+								x2 + w, -y2 - h, 1, 1};
+
+		memcpy(text_box, object->vertices + p * 16 * sizeof(GLfloat), 16 * sizeof(GLfloat));
+		x += (g->advance.x/64) * sx;
+		y += (g->advance.y/64) * sy;
+	  }
+	  (*object)->modified = 1;
+  }
+}
 
 FT_Bitmap* testFreetype()
 {
@@ -108,4 +146,27 @@ error = FT_Render_Glyph( face->glyph,   /* glyph slot  */
 	else
 		printf("NU-I BITMAP COAIE\n");
 	return &face->glyph->bitmap;
+}
+
+void initFreetype(FT_Library *library, FT_Face *face)
+{
+	int error;
+
+	error = FT_Init_FreeType(library);
+	if (error)
+	{
+		printf("Freetype failed to initialize\n");
+		}
+	error = FT_New_Face( library,
+                     "/usr/share/fonts/truetype/freefont/FreeSans.ttf",
+                     0,
+                     face);
+	if ( error == FT_Err_Unknown_File_Format )
+	{
+		printf("Format unsupported");
+	}
+	else if ( error )
+	{
+		printf("Fontfile could not be opened\n");
+	}
 }

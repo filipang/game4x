@@ -15,7 +15,10 @@
 
 // FIXME(filip): Visual glitch when changing turns sometimes
 
-void initializeGL(GLFWwindow **window, GLuint *VAO, GLuint *VBO, GLuint *shader_program, GLuint *texture)
+void initializeGL(GLFWwindow **window, 
+				  GLuint *VAO, GLuint *VBO, 
+				  GLuint *shader_program, 
+				  GLuint *text_texture, GLuint *sprite_texture)
 {
 	// GENERAL START SETUP -----------------------------------------------------
 	// Initialize GLFW
@@ -50,8 +53,9 @@ void initializeGL(GLFWwindow **window, GLuint *VAO, GLuint *VBO, GLuint *shader_
 	const char* vertex_shader_src = loadFile("shader.vert");
 	const char* fragment_shader_src = loadFile("shader.frag");
 	int width, height, nr_channels;
-	const char* data = 
+	const char* sprite_data = 
 		stbi_load("tex.bmp", &width, &height, &nr_channels, 0);
+
 
 	#ifdef DEBUG
 	printf("width: %d\nheight: %d\nnr_channels: %d\n", width, height, nr_channels);
@@ -92,15 +96,15 @@ void initializeGL(GLFWwindow **window, GLuint *VAO, GLuint *VBO, GLuint *shader_
 	glGenVertexArrays(1, VAO);
 	glGenBuffers(1, VBO);
 
-	glGenTextures(1, texture);
-	glBindTexture(GL_TEXTURE_2D, *texture);
+	glGenTextures(1, sprite_texture);
+	glBindTexture(GL_TEXTURE_2D, *sprite_texture);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, sprite_data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	glBindVertexArray(*VAO);
@@ -615,6 +619,7 @@ void updateGL(game_state *state, GLuint VAO, GLuint VBO, GLuint shader_program, 
 		{
 			gl_object *temp = iter->next;
 			removeGLObject(&state->gl_objects, iter);	
+			markObjectsModified(state->gl_objects);
 			iter = temp;	
 			getTotalSizes(state->gl_objects, &state->vertices_size);
 		}
@@ -639,7 +644,7 @@ void updateGL(game_state *state, GLuint VAO, GLuint VBO, GLuint shader_program, 
 			}
 
 			for(int i = iter->vertices_offset/VERTEX_CHANNELS; 
-				i <= (iter->vertices_offset + iter->vertices_size) / VERTEX_CHANNELS; 
+				i < (iter->vertices_offset + iter->vertices_size) / VERTEX_CHANNELS; 
 				i = i + 6)
 				glDrawArrays(GL_TRIANGLE_FAN, i, 6);
 			

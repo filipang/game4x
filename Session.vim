@@ -42,12 +42,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 96 - ((27 * winheight(0) + 26) / 53)
+let s:l = 62 - ((15 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 96
-normal! 036|
+keepjumps 62
+normal! 039|
 tabnext
 edit utils.c
 set splitbelow splitright
@@ -69,11 +69,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 53 - ((37 * winheight(0) + 26) / 53)
+let s:l = 46 - ((37 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 53
+keepjumps 46
 normal! 0
 tabnext
 edit gl_game.c
@@ -96,12 +96,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 232 - ((15 * winheight(0) + 26) / 53)
+let s:l = 603 - ((26 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 232
-normal! 048|
+keepjumps 603
+normal! 087|
 tabnext
 edit shader.frag
 set splitbelow splitright
@@ -177,12 +177,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 69 - ((15 * winheight(0) + 26) / 53)
+let s:l = 29 - ((19 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 69
-normal! 0
+keepjumps 29
+normal! 021|
 tabnext
 edit unit.c
 set splitbelow splitright
@@ -231,12 +231,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 334 - ((15 * winheight(0) + 26) / 53)
+let s:l = 3 - ((2 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 334
-normal! 030|
+keepjumps 3
+normal! 0
 tabnext
 edit gl_object.c
 set splitbelow splitright
@@ -258,12 +258,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 154 - ((48 * winheight(0) + 26) / 53)
+let s:l = 35 - ((34 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 154
-normal! 0
+keepjumps 35
+normal! 08|
 tabnext
 edit outpost.c
 set splitbelow splitright
@@ -291,14 +291,14 @@ keepjumps exe s:l
 normal! zt
 keepjumps 11
 normal! 0
-tabnext 3
+tabnext 6
 set stal=1
 badd +1 main.c
 badd +1 utils.c
 badd +1 gl_game.c
 badd +1 text.c
 badd +1 unit.c
-badd +0 game.c
+badd +1 game.c
 badd +1 gl_object.c
 badd +1 outpost.c
 badd +0 shader.frag
