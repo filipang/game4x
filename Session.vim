@@ -232,12 +232,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 359 - ((15 * winheight(0) + 26) / 53)
+let s:l = 223 - ((15 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 359
-normal! 029|
+keepjumps 223
+normal! 011|
 tabnext
 edit input.c
 set splitbelow splitright
@@ -319,7 +319,7 @@ keepjumps exe s:l
 normal! zt
 keepjumps 11
 normal! 0
-tabnext 8
+tabnext 6
 set stal=1
 badd +1 main.c
 badd +1 utils.c

@@ -34,13 +34,13 @@ void updateTexts(game_state *state)
 
 	char message[100];
 	sprintf(message, "%.1f MS, %.0f FPS", state->delta_time*1000, 1/state->delta_time);
-	updateText(message, 0.0, 0.85, state);
+	updateText(message, 0.55, -0.96, state);
 
 	sprintf(message, "Player turn: %d", state->turn);
-	updateText(message, 0.0, 0.68, state);
+	updateText(message, 0.55, -0.9, state);
 
 	sprintf(message, "Turn count: %d", state->turn_count/state->player_number);
-	updateText(message, 0.0, 0.51, state);
+	updateText(message, 0.55, -0.83, state);
 }
 
 // FIXME(filip): Call updata datastore before drawing to avoid gl store overflow
@@ -53,7 +53,7 @@ void drawTexts(GLuint VAO, GLuint VBO, GLuint shader_program, FT_Face *face, gam
 	for(gl_object *iter = state->text_objects; iter !=NULL; iter = iter->next)
 	{
 		float x = iter->vertices[0], y = iter->vertices[1];
-		float sx = 0.002, sy = 0.002;
+		float sx = 0.00085, sy = 0.00085;
 
   		char *p;
 		int string_length = strlen(iter->text);
