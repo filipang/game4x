@@ -26,7 +26,8 @@ typedef struct gl_object
 	int resized;
 	int deleted; // NOTE(filip): This turns to 1 when it needs to be deleted
 	char *text; //
-	
+
+	int vertex_step;
 } gl_object;
 
 // NOTE(filip): problem with holding address related information in ints and not

@@ -45,6 +45,7 @@ typedef struct game_state
 	struct gl_object *map_object;
 	struct gl_object *highlight_object;
 	struct gl_object *fog_of_war_object;
+	struct gl_object *foreground_object;
 	struct gl_object *test_text;
 
 	float map_offset_x;
@@ -53,6 +54,7 @@ typedef struct game_state
 
 	int player_number; // Number of players in game
 	int turn; // Active player index
+	int turn_count;
 
 	// Selected unit data
 	struct unit *selected_unit; // What unit is selected
@@ -80,6 +82,7 @@ typedef struct game_state
 
 	int vertices_store_size;
 	int vertices_size;
+	double delta_time;
 } game_state;
 
 void allocMap(int size_x, int size_y, unsigned char ***mapPtr)
@@ -129,11 +132,12 @@ void initializeGameState(game_state* state)
 	state->turn = 0;
 	state->cursor_active = 0;
 	state->turn = -1;
+	state->turn_count = 1;
 	state->mode = MODE_NORMAL;
 
-	state->map_offset_x = -0.94f;
-	state->map_offset_y = -0.8f;
-	state->map_hex_size = 0.08;
+	state->map_offset_x = -0.85;
+	state->map_offset_y = -0.60;
+	state->map_hex_size = 0.04;
 	for(int i = 0; i < MAX_PLAYERS; i++)
 	{
 		state->players[i].units = NULL;
@@ -145,6 +149,7 @@ void initializeGameState(game_state* state)
 	state->gl_objects = NULL;
 	state->text_objects = NULL;
 	state->fog_of_war_object = NULL;
+	state->foreground_object = NULL;
 	state->vertices_size = 0;
 	state->vertices_store_size = 0;
 }
@@ -154,6 +159,7 @@ void turn(game_state* state)
 {
 	//state-> turn is -1 when the game starts
 	state->turn = (state->turn + 1)%state->player_number;
+	state->turn_count++;
 
 	struct unit *iter = state->players[state->turn].units;
 
@@ -349,6 +355,26 @@ void processInput(struct input_pressed *input, struct game_state *state)
 		if(input->button_T && state->selected_unit != NULL)
 		{
 			state->mode = MODE_ATTACK;
+		}
+		if(input->key_pressed_W)
+		{	
+			state->map_offset_y += state->delta_time;
+			state->map_object->modified = 1;
+		}
+		if(input->key_pressed_A)
+		{	
+			state->map_offset_x -= state->delta_time;
+			state->map_object->modified = 1;
+		}
+		if(input->key_pressed_S)
+		{	
+			state->map_offset_y -= state->delta_time;
+			state->map_object->modified = 1;
+		}
+		if(input->key_pressed_D)
+		{	
+			state->map_offset_x += state->delta_time;
+			state->map_object->modified = 1;
 		}
 		if(input->button_ENTER)
 			turn(state);

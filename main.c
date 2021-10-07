@@ -45,6 +45,7 @@
 #include "gl_game.c"
 #include "text.c"
 
+// FIXME(filip): !!!!!! SOLVE MEMORY LEAKS FROM MALLOC !!!!!!!! 
 int main()
 {
 	FT_Library library;
@@ -93,9 +94,20 @@ int main()
 	// This starts the turn of player 0
 	turn(&state);
 	// Main while loop
+	double lastTime = glfwGetTime(), timer = lastTime;	
+	double deltaTime = 0, nowTime = 0;
+    int frames = 0 , updates = 0;
 	while (!glfwWindowShouldClose(window))
 	{
-		//Update and process input
+	    // Measure frame 
+        nowTime = glfwGetTime();
+        deltaTime = nowTime - lastTime;
+        lastTime = nowTime;
+		
+		// Store delta time in game state
+		state.delta_time = deltaTime;
+
+		// Update and process input
 		updateInput(window, &input);
 		processInput(&input, &state);
 
@@ -109,12 +121,16 @@ int main()
 		//renderText("Lorem", 0, 0, 0.05, 0.05, &library, &face, &state.test_text, &state);
 		// Write all updates to the VBO and draw elements to the back buffer
 		updateGL(&state, VAO, VBO, shader_program, texture);
-		updateSidebar(&state);
-		drawSidebar(VAO, VBO, shader_program, &face, &state);
+
+		updateTexts(&state);
+		drawTexts(VAO, VBO, shader_program, &face, &state);
 
 
 		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);
+		
+		// NOTE(filip): This can be swapped with glfwWaitEvents to save 
+		// 				processing power
 		// Take care of all GLFW events
 		glfwPollEvents();
 	}

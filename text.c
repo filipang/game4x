@@ -13,31 +13,47 @@
 *
 *******************************************************************************/
 
-void updateSidebar(game_state *state)
+void updateText(char message[], float x, float y, game_state *state)
+{
+	gl_object *object;
+	int string_length = strlen(message);
+
+	createGLObject(&object, string_length*4*VERTEX_CHANNELS);
+	object->text = malloc(string_length+1);
+	strcpy(object->text, message);
+	
+	addGLObject(object, &state->text_objects);
+	object->vertices[0] = x;
+	object->vertices[1] = y;
+}
+
+void updateTexts(game_state *state)
 {
 	while(state->text_objects != NULL)
 			removeGLObject(&state->text_objects, state->text_objects);
 
-	gl_object *iter;
-	const char message[] = "Current Turn: 5";
-	int string_length = strlen(message);
+	char message[100];
+	sprintf(message, "%.1f MS, %.0f FPS", state->delta_time*1000, 1/state->delta_time);
+	updateText(message, 0.0, 0.85, state);
 
-	createGLObject(&iter, string_length*4*VERTEX_CHANNELS);
-	iter->text = malloc(string_length+1);
-	strcpy(iter->text, message);
-	
-	addGLObject(iter, &state->text_objects);
+	sprintf(message, "Player turn: %d", state->turn);
+	updateText(message, 0.0, 0.68, state);
+
+	sprintf(message, "Turn count: %d", state->turn_count/state->player_number);
+	updateText(message, 0.0, 0.51, state);
 }
 
-void drawSidebar(GLuint VAO, GLuint VBO, GLuint shader_program, FT_Face *face, game_state *state)
+// FIXME(filip): Call updata datastore before drawing to avoid gl store overflow
+void drawTexts(GLuint VAO, GLuint VBO, GLuint shader_program, FT_Face *face, game_state *state)
 {
 	state->text_objects->vertices_offset = state->vertices_size;
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	float x = 0.0, y = 0.0;
-	float sx = 0.002, sy = 0.002;
+	glUniform1i(glGetUniformLocation(shader_program, "isText"), 1);
 	for(gl_object *iter = state->text_objects; iter !=NULL; iter = iter->next)
 	{
+		float x = iter->vertices[0], y = iter->vertices[1];
+		float sx = 0.002, sy = 0.002;
 
   		char *p;
 		int string_length = strlen(iter->text);
@@ -56,7 +72,13 @@ void drawSidebar(GLuint VAO, GLuint VBO, GLuint shader_program, FT_Face *face, g
 		  				 (*face)->glyph->bitmap.rows, 0, GL_RED,
 		  				 GL_UNSIGNED_BYTE,
 		  				 (*face)->glyph->bitmap.buffer);
-			
+
+		    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 1); 
+
 			float x2 = x + (*face)->glyph->bitmap_left * sx;
 			float y2 = -y - (*face)->glyph->bitmap_top * sy;
 			float w = (*face)->glyph->bitmap.width * sx;
@@ -76,7 +98,8 @@ void drawSidebar(GLuint VAO, GLuint VBO, GLuint shader_program, FT_Face *face, g
 			
 			x += ((*face)->glyph->advance.x/64) * sx;
 			y += ((*face)->glyph->advance.y/64) * sy;
-			
+			if(iter->next)
+				iter->next->vertices_offset=iter->vertices_offset+iter->vertices_size;
 
 		}
 	}	
@@ -84,88 +107,6 @@ void drawSidebar(GLuint VAO, GLuint VBO, GLuint shader_program, FT_Face *face, g
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);	
 }
-/*void renderText(const char *text, 
-				 float sx, float sy,
-				 FT_Library *library, FT_Face *face, 
-				 gl_object** object, game_state *state) 
-{
-  const char *p;
-  if(object==NULL)
-  {
-	  createGLObject(object, strlen(text));
-	  for(p = text; *p; p++) {
-		if(FT_Load_Char(*face, *p, FT_LOAD_RENDER))
-			continue;
-
-		glTexImage2D(
-		  GL_TEXTURE_2D,
-		  0,
-		  GL_RED,
-		  
-		  face->glyph->bitmap.width,
-		  g->bitmap.rows,
-		  0,
-		  GL_RED,
-		  GL_UNSIGNED_BYTE,
-		  face->glyph->bitmap.buffer
-		);
-
-		float x2 = x + g->bitmap_left * sx;
-		float y2 = -y - g->bitmap_top * sy;
-		float w = face->glyph->bitmap.width * sx;
-		float h = face->glyph->bitmap.rows * sy;
-
-		GLfloat text_box[16] = {x2,     -y2    , 0, 0,
-								x2 + w, -y2    , 1, 0,
-								x2,     -y2 - h, 0, 1,
-								x2 + w, -y2 - h, 1, 1};
-
-		memcpy(text_box, object->vertices + p * 16 * sizeof(GLfloat), 16 * sizeof(GLfloat));
-		//glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
-		//glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-		x += (g->advance.x/64) * sx;
-		y += (g->advance.y/64) * sy;
-	  }
-	  add_object(&state->gl_objects, *object);
-	  (*object)->modified = 1;
-  }
-  else
-  {
-	  for(p = text; *p; p++) {
-		if(FT_Load_Char(face, *p, FT_LOAD_RENDER))
-			continue;
-
-		glTexImage2D(
-		  GL_TEXTURE_2D,
-		  0,
-		  GL_RED,
-		  g->bitmap.width,
-		  g->bitmap.rows,
-		  0,
-		  GL_RED,
-		  GL_UNSIGNED_BYTE,
-		  g->bitmap.buffer
-		);
-
-		float x2 = x + g->bitmap_left * sx;
-		float y2 = -y - g->bitmap_top * sy;
-		float w = g->bitmap.width * sx;
-		float h = g->bitmap.rows * sy;
-
-		GLfloat text_box[16] = {x2,     -y2    , 0, 0,
-								x2 + w, -y2    , 1, 0,
-								x2,     -y2 - h, 0, 1,
-								x2 + w, -y2 - h, 1, 1};
-
-		memcpy(text_box, object->vertices + p * 16 * sizeof(GLfloat), 16 * sizeof(GLfloat));
-		x += (g->advance.x/64) * sx;
-		y += (g->advance.y/64) * sy;
-	  }
-	  (*object)->modified = 1;
-  }
-}
-*/
 
 FT_Bitmap* testFreetype()
 {

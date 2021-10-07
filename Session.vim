@@ -22,6 +22,7 @@ tabnew
 tabnew
 tabnew
 tabnew
+tabnew
 tabrewind
 edit main.c
 set splitbelow splitright
@@ -42,12 +43,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 62 - ((15 * winheight(0) + 26) / 53)
+let s:l = 110 - ((25 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 62
-normal! 039|
+keepjumps 110
+normal! 035|
 tabnext
 edit utils.c
 set splitbelow splitright
@@ -69,11 +70,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 46 - ((37 * winheight(0) + 26) / 53)
+let s:l = 72 - ((52 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 46
+keepjumps 72
 normal! 0
 tabnext
 edit gl_game.c
@@ -96,12 +97,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 603 - ((26 * winheight(0) + 26) / 53)
+let s:l = 364 - ((15 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 603
-normal! 087|
+keepjumps 364
+normal! 061|
 tabnext
 edit shader.frag
 set splitbelow splitright
@@ -128,7 +129,7 @@ if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 12
-normal! 016|
+normal! 019|
 tabnext
 edit shader.vert
 set splitbelow splitright
@@ -177,12 +178,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 29 - ((19 * winheight(0) + 26) / 53)
+let s:l = 43 - ((37 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 29
-normal! 021|
+keepjumps 43
+normal! 034|
 tabnext
 edit unit.c
 set splitbelow splitright
@@ -231,11 +232,38 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 3 - ((2 * winheight(0) + 26) / 53)
+let s:l = 359 - ((15 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 3
+keepjumps 359
+normal! 029|
+tabnext
+edit input.c
+set splitbelow splitright
+set nosplitbelow
+set nosplitright
+wincmd t
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+argglobal
+balt game.c
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let s:l = 19 - ((18 * winheight(0) + 26) / 53)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 19
 normal! 0
 tabnext
 edit gl_object.c
@@ -258,12 +286,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 35 - ((34 * winheight(0) + 26) / 53)
+let s:l = 43 - ((31 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 35
-normal! 08|
+keepjumps 43
+normal! 0
 tabnext
 edit outpost.c
 set splitbelow splitright
@@ -291,18 +319,19 @@ keepjumps exe s:l
 normal! zt
 keepjumps 11
 normal! 0
-tabnext 6
+tabnext 8
 set stal=1
 badd +1 main.c
 badd +1 utils.c
 badd +1 gl_game.c
-badd +1 text.c
+badd +1 shader.frag
+badd +1 shader.vert
+badd +0 text.c
 badd +1 unit.c
 badd +1 game.c
 badd +1 gl_object.c
 badd +1 outpost.c
-badd +0 shader.frag
-badd +0 shader.vert
+badd +0 input.c
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0
   silent exe 'bwipe ' . s:wipebuf
 endif
