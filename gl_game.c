@@ -270,84 +270,6 @@ GLfloat* buildRectVertices(float offset_x, float offset_y, float z_index,
 
 	return dest;
 }
-// This generates vertices and indices for map
-gl_object* buildMapGL(float offset_x, float offset_y, float z_index,
-				float side_len,
-				game_state *state)
-{
-	int i, j;
-	float x, y;
-	int vertices_size = state->size_x * state->size_y * VERTEX_CHANNELS * 6;
-
-	gl_object *temp;
-	createGLObject(&temp, 
-				   vertices_size);
-	temp->vertex_step = 6;
-	GLfloat *iter_v = temp->vertices;
-	addGLObject(temp, &state->gl_objects);
-	//computeListOffsets(state->gl_objects, NULL);
-	for(i = 0; i < state->size_y; i++){
-		for(j = 0; j < state->size_x; j++){
-			// NOTE(filip): Organize this to be more readable
-			hexGridToViewport(j, i, 
-							  state->map_offset_x, state->map_offset_y,
-							  state->map_hex_size,
-				   			  &x, &y);
-			iter_v = 
-				buildHexagonVertices(x, y, 
-									z_index,
-								    0.0, 0.0, 0.0,
-									0.0, 0.0, 1.0,
-								    side_len * 0.9, iter_v);
-		}
-	}
-
-	return temp;
-}
-
-gl_object* buildHexagonGL(float offset_x, float offset_y, float z_index,
-					float color_r, float color_g, float color_b,
-				   	float tex_x, float tex_y, float tex_weight,	
-					float side_len, game_state *state)
-{
-	int vertices_size = VERTEX_CHANNELS * 6; // Hexagon has 6 vertices, each with 10 float values
-
-	gl_object *temp;
-	createGLObject(&temp, 
-				   vertices_size);
-	temp->vertex_step = 6;
-	GLfloat *iter_v = temp->vertices;
-	addGLObject(temp, &state->gl_objects);
-	buildHexagonVertices(offset_x, offset_y, z_index, 
-						 color_r, color_g, color_b,
-						 tex_x, tex_y, tex_weight, 
-						 side_len, iter_v);
-
-	return temp;
-}
-
-gl_object* buildRectGL(float offset_x, float offset_y, float z_index,
-					   float size_x, float size_y,
-					   float color_r, float color_g, float color_b,
-				   	   float tex_x, float tex_y, float tex_weight,	
-					   game_state *state)
-{
-	int vertices_size = VERTEX_CHANNELS * 4; // Hexagon has 6 vertices, each with 10 float values
-
-	gl_object *temp;
-	createGLObject(&temp, 
-				   vertices_size);
-	temp->vertex_step = 4;
-	GLfloat *iter_v = temp->vertices;
-	addGLObject(temp, &state->gl_objects);
-	buildRectVertices(offset_x, offset_y, z_index, 
-						 size_x, size_y,
-						 color_r, color_g, color_b,
-						 tex_x, tex_y, tex_weight, 
-						 iter_v);
-
-	return temp;
-}
 
 void freeMapVertices(GLfloat* vertices)
 {
@@ -360,12 +282,18 @@ void updateMapGL(game_state *state)
 	int i, j, k;
 	float x, y;
 
-	if(state->map_object == NULL)	
-		state->map_object = buildMapGL(state->map_offset_x, state->map_offset_y, 
-									   0.0f, state->map_hex_size, state);
+	if(state->map_object == NULL)
+	{
+			
+		int vertices_size = state->size_x * state->size_y * VERTEX_CHANNELS * 6;
 
-	GLfloat *vertices = state->map_object->vertices;
-	GLfloat *iter_v = vertices;
+		createGLObject(&state->map_object, 
+					   vertices_size);
+		state->map_object->vertex_step = 6;
+		addGLObject(state->map_object, &state->gl_objects);
+	}
+
+	GLfloat *iter_v = state->map_object->vertices;
 	GLfloat *beginWrite=NULL, *endWrite=NULL;
 	
 	// TODO(filip): Optimize this
@@ -383,36 +311,6 @@ void updateMapGL(game_state *state)
 								    	  state->colors[state->terrain_map[i][j] * 9 + 2], 
 										  0.0, 0.0, 1.0,
 								    	  state->map_hex_size * 0.9, iter_v);
-			/*for (k = 0; k < 6; k++)
-			{
-				hexGridToViewport(j, i, 
-								  state->map_offset_x, state->map_offset_y,
-								  state->map_hex_size,
-								  &x, &y);
-				iter += 3;	
-				if(*iter!=state->colors[state->terrain_map[i][j] * 9 + 0])
-				{
-					endWrite = iter+1;
-					beginWrite = beginWrite != NULL ? beginWrite : iter;
-				}
-				*(iter++) = state->colors[state->terrain_map[i][j] * 9 + 0];
-
-				if(*iter!=state->colors[state->terrain_map[i][j] * 9 + 1])
-				{
-					endWrite = iter+1;
-					beginWrite = beginWrite != NULL ? beginWrite : iter;
-				}
-				*(iter++) = state->colors[state->terrain_map[i][j] * 9 + 1];
-
-				if(*iter!=state->colors[state->terrain_map[i][j] * 9 + 2])
-				{
-					endWrite = iter+1;
-					beginWrite = beginWrite != NULL ? beginWrite : iter;
-				}
-				*(iter++) = state->colors[state->terrain_map[i][j] * 9 + 2];
-
-				iter += 4;
-			}*/
 		}
 	}
 	state->map_object->modified = 1;
@@ -431,23 +329,22 @@ void updateUnitGL(game_state *state, unit* u)
 		float color_r = state->colors[u->type * u->team * 9 + 3];
 		float color_g = state->colors[u->type * u->team * 9 + 4];
 		float color_b = state->colors[u->type * u->team * 9 + 5];
-		if(u->object != NULL)
+		if(u->object == NULL)
 		{
-			buildHexagonVertices(position_x, position_y, 0.2f,
-								 color_r, color_g, color_b,
-								 0.0, 0.0, 0.0,
-								 0.55 * state->map_hex_size,
-								 u->object->vertices);
-			
-		}
-		else
-		{
-			u->object = buildHexagonGL(position_x, position_y, 0.2f, 
-									   color_r, color_g, color_b,
-								 	   0.0, 0.0, 0.0,
-									   0.55 * state->map_hex_size, state);
+			int vertices_size = VERTEX_CHANNELS * 6; // Hexagon has 6 vertices, each with 10 float values
+
+			createGLObject(&u->object, 
+						   vertices_size);
+			u->object->vertex_step = 6;
+			addGLObject(u->object, &state->gl_objects);
 			state->vertices_size+= u->object->vertices_size;
 		}
+
+		buildHexagonVertices(position_x, position_y, 0.2f,
+							 color_r, color_g, color_b,
+							 0.0, 0.0, 0.0,
+							 0.55 * state->map_hex_size,
+							 u->object->vertices);
 		u->object->modified = 1;
 	}
 	else{
@@ -487,23 +384,22 @@ void updateHighlight(game_state *state)
 		float color_g = 0.9f;
 		float color_b = 0.9f;
 
-		if(state->highlight_object != NULL)
+		if(state->highlight_object == NULL)
 		{
-			buildHexagonVertices(position_x, position_y, 0.2f,
-								 color_r, color_g, color_b,
-								 0.0, 0.0, 0.0,
-								 0.55 * state->map_hex_size,
-								 state->highlight_object->vertices);
-		}
-		else
-		{
-			state->highlight_object = 
-				buildHexagonGL(position_x, position_y, 0.2f, 
-							   color_r, color_g, color_b,
-						   	   0.0, 0.0, 0.0,
-							   0.55 * state->map_hex_size, state);
+			int vertices_size = VERTEX_CHANNELS * 6; // Hexagon has 6 vertices, each with 10 float values
+
+			createGLObject(&state->highlight_object, 
+						   vertices_size);
+			state->highlight_object->vertex_step = 6;
+			addGLObject(state->highlight_object, &state->gl_objects);
 			state->vertices_size+= state->highlight_object->vertices_size;
 		}
+
+		buildHexagonVertices(position_x, position_y, 0.2f,
+							 color_r, color_g, color_b,
+							 0.0, 0.0, 0.0,
+							 0.55 * state->map_hex_size,
+							 state->highlight_object->vertices);
 		state->highlight_object->modified = 1;
 
 	}
@@ -536,23 +432,22 @@ void updateCursor(game_state *state)
 		float color_g = state->colors[9 * state->cursor_color + 7];
 		float color_b = state->colors[9 * state->cursor_color + 8];
 
-		if(state->cursor_object != NULL)
+		if(state->cursor_object == NULL)
 		{
-			buildHexagonVertices(position_x, position_y, 0.4f,
-								 color_r, color_g, color_b,
-								 0.0, 0.0, 0.0,
-								 0.55 * state->map_hex_size,
-								 state->cursor_object->vertices);
-		}
-		else
-		{
-			state->cursor_object = 
-				buildHexagonGL(position_x, position_y, 0.4f, 
-							   color_r, color_g, color_b,
-							   0.0, 0.0, 0.0,
-							   0.55 * state->map_hex_size, state);
+			int vertices_size = VERTEX_CHANNELS * 6; // Hexagon has 6 vertices, each with 10 float values
+			createGLObject(&state->cursor_object, 
+						   vertices_size);
+			state->cursor_object->vertex_step = 6;
+			GLfloat *iter_v = state->cursor_object->vertices;
+			addGLObject(state->cursor_object, &state->gl_objects);
 			state->vertices_size+= state->cursor_object->vertices_size;
 		}
+
+		buildHexagonVertices(position_x, position_y, 0.4f,
+							 color_r, color_g, color_b,
+							 0.0, 0.0, 0.0,
+							 0.55 * state->map_hex_size,
+							 state->cursor_object->vertices);
 		state->cursor_object->modified = 1;
 
 	}
@@ -645,28 +540,26 @@ void updateForeground(game_state *state)
 	float color_g = 0.1;
 	float color_b = 0.1; 
 
-	if(state->foreground_object != NULL)
+	if(state->foreground_object == NULL)
 	{
-		buildRectVertices(position_x, position_y, 0.0f,
-						  size_x, size_y,
-						  color_r, color_g, color_b,
-						  0.0, 0.0, 0.0,
-						  state->foreground_object->vertices);
-		
-	}
-	else
-	{
-		state->foreground_object = buildRectGL(position_x, position_y, 0.2f, 
-											   size_x, size_y,
-											   color_r, color_g, color_b,
-											   0.0, 0.0, 0.0,
-											   state);
+		int vertices_size = VERTEX_CHANNELS * 4; // Hexagon has 6 vertices, each with 10 float values
+
+		createGLObject(&state->foreground_object, 
+					   vertices_size);
+		state->foreground_object->vertex_step = 4;
+		addGLObject(state->foreground_object, &state->gl_objects);
 		state->vertices_size+= state->foreground_object->vertices_size;
 	}
+
+	buildRectVertices(position_x, position_y, -0.9f,
+					  size_x, size_y,
+					  color_r, color_g, color_b,
+					  0.0, 0.0, 0.0,
+					  state->foreground_object->vertices);
 	state->foreground_object->modified = 1;
 }
 
-
+// FIXME(filip): Highlight gets displayed over foreground
 void updateUIGL(game_state *state)	
 {
 	updateFogOfWar(state);

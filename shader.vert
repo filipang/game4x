@@ -3,7 +3,6 @@ layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec4 aCol;
 layout (location = 2) in vec3 aTexCoord;
 
-uniform int isText;
 
 out vec4 ourColor;
 out vec3 texCoord;

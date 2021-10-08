@@ -40,14 +40,14 @@ typedef struct game_state
 
 	struct gl_object **gl_object;
 
-	int size_x;
-	int size_y;
 	struct gl_object *map_object;
 	struct gl_object *highlight_object;
 	struct gl_object *fog_of_war_object;
 	struct gl_object *foreground_object;
 	struct gl_object *test_text;
 
+	int size_x;
+	int size_y;
 	float map_offset_x;
 	float map_offset_y;
 	float map_hex_size;
@@ -79,6 +79,7 @@ typedef struct game_state
 	// NOTE(ionut): Every third element belongs to the same map to compress all
 	// 				3 into one vector
 	GLfloat *colors;
+	char **unit_names; 
 
 	int vertices_store_size;
 	int vertices_size;
@@ -152,6 +153,12 @@ void initializeGameState(game_state* state)
 	state->foreground_object = NULL;
 	state->vertices_size = 0;
 	state->vertices_store_size = 0;
+
+	state->unit_names = malloc(4 * sizeof(char *));
+	state->unit_names[0] = malloc(40 * sizeof(char));
+	strcpy(state->unit_names[0], "Golem");
+	state->unit_names[1] = malloc(40 * sizeof(char));
+	strcpy(state->unit_names[1], "Unbound elemental");
 }
 
 // End curent player turn and start next player turn
@@ -212,15 +219,8 @@ void step (struct game_state* state)
 		state->mode = MODE_NORMAL;
 
 		setMoveCursor(state->selected_unit->position_x, 
-				state->selected_unit->position_y, 
-				state);
-
-		// NOTE(filip): Uncomment this for turns ending when all units with 
-		// MP have been cycled
-		/*if(looped == 1 && state->selected_unit->next == NULL)
-		{
-			turn(state);
-		}*/
+					  state->selected_unit->position_y, 
+					  state);
 	}
 }
 
@@ -340,9 +340,6 @@ void processInput(struct input_pressed *input, struct game_state *state)
 		{
 			state->selected_unit = NULL;
 			state->cursor_active = 0;
-			printGLObjectList(state->gl_objects);
-			printf("Vertices size: %d\n", state->vertices_size);
-			printf("Store size: %d\n", state->vertices_store_size);
 		}
 		if(input->button_TAB)
 		{
@@ -453,9 +450,6 @@ void processInput(struct input_pressed *input, struct game_state *state)
 	
 }
 
-struct gl_object* buildMapGL(float offset_x, float offset_y, float z_index,
-							 float side_len,
-							 game_state *state);
 // Generates a hard coded hexagonal test map
 // TODO(filip): Free memory allocated by initializeMap() and initializeUIState()
 // 				Create freeMap and freeUIState functions
@@ -472,12 +466,14 @@ void generateTestMap(struct game_state *state)
 		unit *u;
 		createUnit(&u, 0, 0, 1, 0, 2, 2, 3);
 		addUnit(u, &state->players[0].units);
+		u->type = 0;
 	}
 
 	for(i = 0; i < 3; i++){
 		unit *u;
 		createUnit(&u, 0, 0, 1, 1, 2, 2, 3);
 		addUnit(u, &state->players[1].units);
+		u->type = 1;
 	}
 
 	state->unit_map[2][0] = 1; 
@@ -498,7 +494,4 @@ void generateTestMap(struct game_state *state)
 	state->unit_map[9][8] = 1;	
 	state->players[1].units->next->next->position_x = 8;
 	state->players[1].units->next->next->position_y = 9;
-
-	state->map_object = buildMapGL(state->map_offset_x, state->map_offset_y, 
-								   0.0f, state->map_hex_size, state);
 }
