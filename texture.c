@@ -11,9 +11,10 @@
 *
 *******************************************************************************/
 #define SUB_TEXTURE_COUNT 2
-
+#define TEXMAP_WIDTH 512
+#define TEXMAP_HEIGHT 256
 #define TEXTURE_GRASS	0
-#define TEXTURE_FOG		1
+#define TEXTURE_FOG	1
 
 typedef struct sub_texture
 {
@@ -22,19 +23,35 @@ typedef struct sub_texture
 	GLfloat width;
 	GLfloat height;
 } sub_texture;
+char *loadTexture(const char *texture_location)
+{
+	int nr_channels, width, height;
+	return stbi_load(texture_location, &width, &height, &nr_channels, 0);
+}
 
 // NOTE(filip): This approach is not very scalable, consider implementing 
 // 				a streamlined texture packing method				
-void loadSubTextureBounds(sub_texture **sub_textures)
+sub_texture loadSubtextureBounds(int texture_index)
 {
-	*sub_textures = malloc(SUB_TEXTURE_COUNT * sizeof(sub_texture));
-	(*sub_textures)[0].start_x = 0;
-	(*sub_textures)[0].start_y = 0;
-	(*sub_textures)[0].width   = 0.5;
-	(*sub_textures)[0].height  = 1;
-
-	(*sub_textures)[1].start_x = 0.5;
-	(*sub_textures)[1].start_y = 0;
-	(*sub_textures)[1].width   = 0.5;
-	(*sub_textures)[1].height  = 1;
-}
+	sub_texture result;
+	if(texture_index == 0)	
+	{
+		/*
+		result.start_x = ((GLfloat) (0 * 256 + 1))/(2 * TEXMAP_WIDTH);
+		result.start_y = ((GLfloat) (0 * 256 + 1))/(2 * TEXMAP_HEIGHT);
+		result.width = ((GLfloat) (2 * 256 - 2))/(2*TEXMAP_WIDTH);
+		result.height = ((GLfloat) (2 * 256 - 2))/(2*TEXMAP_HEIGHT);
+		*/
+		result.start_x = 0;
+		result.start_y = 0;
+		result.width = 0.5;
+		result.height = 1;
+	}
+	else if(texture_index == 1)
+	{
+		result.start_x = ((GLfloat) (1.0 * 256.0 + 1.0))/(2 * TEXMAP_WIDTH);
+		result.start_y = ((GLfloat) (1.0 * 256.0 + 1.0))/(2 * TEXMAP_HEIGHT);
+		result.width = ((GLfloat) (2.0 * 256.0 - 2.0))/(2 * TEXMAP_WIDTH);
+		result.height = ((GLfloat) (2.0 * 256.0 - 2.0))/(2 * TEXMAP_HEIGHT);
+	}
+}	

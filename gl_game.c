@@ -18,7 +18,8 @@
 void initializeGL(GLFWwindow **window, 
 				  GLuint *VAO, GLuint *VBO, 
 				  GLuint *shader_program, 
-				  GLuint *sprite_texture)
+				  GLuint *sprite_texture,
+				  char* sprite_data)
 {
 	// GENERAL START SETUP -----------------------------------------------------
 	// Initialize GLFW
@@ -52,14 +53,6 @@ void initializeGL(GLFWwindow **window,
 
 	const char* vertex_shader_src = loadFile("shader.vert");
 	const char* fragment_shader_src = loadFile("shader.frag");
-	int width, height, nr_channels;
-	const char* sprite_data = 
-		stbi_load("tex.bmp", &width, &height, &nr_channels, 0);
-
-
-	#ifdef DEBUG
-	printf("width: %d\nheight: %d\nnr_channels: %d\n", width, height, nr_channels);
-	#endif
 
 	// Create Vertex Shader Object and get its reference
 	GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
@@ -105,7 +98,7 @@ void initializeGL(GLFWwindow **window,
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, sprite_data);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, TEXMAP_WIDTH, TEXMAP_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, sprite_data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	glBindVertexArray(*VAO);
@@ -306,15 +299,16 @@ void updateMapGL(game_state *state)
 							  state->map_offset_x, state->map_offset_y,
 							  state->map_hex_size,
 							  &x, &y);
+			sub_texture temp = loadSubtextureBounds(TEXTURE_GRASS);
 			iter_v = buildHexagonVertices(x, y, 0,
 								    	  state->colors[state->terrain_map[i][j] * 9 + 0], 
 								    	  state->colors[state->terrain_map[i][j] * 9 + 1], 
 								    	  state->colors[state->terrain_map[i][j] * 9 + 2], 
-										  state->sub_textures[TEXTURE_FOG].start_x,
-										  state->sub_textures[TEXTURE_FOG].start_y,
+										  temp.start_x,
+										  temp.start_y,
 										  1.0,
-										  state->sub_textures[TEXTURE_FOG].width,
-										  state->sub_textures[TEXTURE_FOG].height,
+										  temp.width,
+										  temp.height,
 								    	  state->map_hex_size * 0.9, iter_v);
 		}
 	}
@@ -571,7 +565,7 @@ void updateForeground(game_state *state)
 // FIXME(filip): Highlight gets displayed over foreground
 void updateUIGL(game_state *state)	
 {
-	updateFogOfWar(state);
+	//updateFogOfWar(state);
 	updateCursor(state);
 	updateHighlight(state);
 	updateForeground(state);

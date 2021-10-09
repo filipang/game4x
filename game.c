@@ -51,8 +51,6 @@ typedef struct game_state
 	float map_offset_y;
 	float map_hex_size;
 
-	struct sub_texture *sub_textures;
-
 	int player_number; // Number of players in game
 	int turn; // Active player index
 	int turn_count;
@@ -162,7 +160,6 @@ void initializeGameState(game_state* state)
 	strcpy(state->unit_names[1], "Unbound elemental");
 	
 	loadColors(&state->colors);
-	loadSubTextureBounds(&state->sub_textures);
 }
 
 // TODO(filip): implement this!

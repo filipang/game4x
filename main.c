@@ -50,6 +50,7 @@
 // FIXME(filip): !!!!!! SOLVE MEMORY LEAKS FROM MALLOC !!!!!!!! 
 int main()
 {
+	game_state state;
 	FT_Library library;
 	FT_Face face;
 	initFreetype(&library, &face);
@@ -57,10 +58,11 @@ int main()
 	// SETUP -------------------------------------------------------------------
 	GLFWwindow* window;
 	GLuint VAO, VBO, shader_program, texture;
-	initializeGL(&window, &VAO, &VBO, &shader_program, &texture);
+	char* sprite_data = loadTexture("tex.bmp");
+	initializeGL(&window, &VAO, &VBO, &shader_program, &texture, 
+			sprite_data);
 
 	input_pressed input = {0};
-	game_state state;
 
 	// Initialize values for game state
 	initializeGameState(&state);
