@@ -143,7 +143,4 @@ void initFreetype(FT_Library *library, FT_Face *face)
           16*64,   /* char_height in 1/64th of points */
           300,     /* horizontal device resolution    */
           300 );   /* vertical device resolution      */
-	printf("%d\n", error);
-	int glyph_index = FT_Get_Char_Index( *face, 0x00410);
-	printf("%d\n", glyph_index);
 }

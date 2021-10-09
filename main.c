@@ -36,6 +36,8 @@
 #define MODE_ATTACK 2
 #define VERTEX_CHANNELS (3+4+3)
 
+#include "texture.c"
+#include "colors.c"
 #include "utils.c"
 #include "input.c"
 #include "unit.c"
@@ -66,30 +68,6 @@ int main()
 
 	// TODO(filip): Move this somewhere else
 	// List of colors  
-	GLfloat colors[] = {0.65f, 0.65f, 0.55f, //T0.
-						0.55f, 0.15f, 0.5f,  //U0.
-						0.0f, 0.0f, 0.0f,    //I0. 
-						0.55f, 0.4f, 0.05f,	 //T1. 
-						0.8f, 0.4f, 0.2f,	 //U1.
-						0.9f, 0.9f, 0.9f,	 //I1. 
-						0.9f, 0.9f, 0.0f,    //T2.
-						0.3f, 0.1f, 0.0f,	 //U2.
-						0.55f, 0.55f, 1.0f,	 //I2.
-						0.7f, 0.4f, 0.0f,	 //T3.
-						0.0f, 0.0f, 0.0f,	 //U3.
-						0.9f, 0.9f, 0.3f,	 //I3.
-						0.15f, 0.9f, 0.6f,	 //T4.
-						0.0f, 0.0f, 0.0f,	 //U4.
-						0.8f, 0.2f, 0.2f,	 //I4.
-						0.0f, 0.0f, 0.0f,	 //T5,
-						0.0f, 0.0f, 0.0f, 	 //U5,
-						0.5f, 0.5f, 0.5f, 	 //I5,
-						0.0f, 0.0f, 0.0f, 	 //T6,
-						0.0f, 0.0f, 0.0f, 	 //U6,
-						0.1f, 0.66f, 0.1f 	 //I6,
-						};
-
-	state.colors = colors;
 	
 	// This starts the turn of player 0
 	turn(&state);
@@ -138,7 +116,6 @@ int main()
 
 	// EXIT SETUP --------------------------------------------------------------
 	freeMap(state.size_x, state.size_y, state.terrain_map);
-	freeMap(state.size_x, state.size_y, state.unit_map);
 	// Free allocated memory
 	finalizeGL(window, VAO, VBO, shader_program);
 	return 0;
