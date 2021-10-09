@@ -139,6 +139,7 @@ void finalizeGL(GLFWwindow *window, GLuint VAO, GLuint VBO, GLuint shader_progra
 // Vertex in memory: (pos_x, pos_y, pos_z, col_x, col_y, col_z)
 GLfloat* buildHexagonVertices(float offset_x, float offset_y, float z_index, 
 			 			 	  float color_r, float color_b, float color_g, 
+							  float color_a, 
 							  float tex_x, float tex_y, float tex_weight, 
 							  float tex_width, float tex_height, 
 							  float side_len, GLfloat* dest)
@@ -149,7 +150,7 @@ GLfloat* buildHexagonVertices(float offset_x, float offset_y, float z_index,
 	*(dest++) = color_r;
 	*(dest++) = color_b;
 	*(dest++) = color_g;
-	*(dest++) = 1.0;
+	*(dest++) = color_a;
 	*(dest++) = tex_x + (0.5 * tex_width);
 	*(dest++) = tex_y + (1.0 * tex_height);
 	*(dest++) = tex_weight;
@@ -160,7 +161,7 @@ GLfloat* buildHexagonVertices(float offset_x, float offset_y, float z_index,
 	*(dest++) = color_r;
 	*(dest++) = color_b;
 	*(dest++) = color_g;
-	*(dest++) = 1.0;
+	*(dest++) = color_a;
 	*(dest++) = tex_x + (1.0 * tex_width);
 	*(dest++) = tex_y + (sqrt(3)/2 * tex_height);
 	*(dest++) = tex_weight;
@@ -171,7 +172,7 @@ GLfloat* buildHexagonVertices(float offset_x, float offset_y, float z_index,
 	*(dest++) = color_r;
 	*(dest++) = color_b;
 	*(dest++) = color_g;
-	*(dest++) = 1.0;
+	*(dest++) = color_a;
 	*(dest++) = tex_x + (1.0 * tex_width);
 	*(dest++) = tex_y + (sqrt(3)/6 * tex_height);
 	*(dest++) = tex_weight;
@@ -182,7 +183,7 @@ GLfloat* buildHexagonVertices(float offset_x, float offset_y, float z_index,
 	*(dest++) = color_r;
 	*(dest++) = color_b;
 	*(dest++) = color_g;
-	*(dest++) = 1.0;
+	*(dest++) = color_a;
 	*(dest++) = tex_x + (0.5 * tex_width);
 	*(dest++) = tex_y + (0.0 * tex_height);
 	*(dest++) = tex_weight;
@@ -193,7 +194,7 @@ GLfloat* buildHexagonVertices(float offset_x, float offset_y, float z_index,
 	*(dest++) = color_r;
 	*(dest++) = color_b;
 	*(dest++) = color_g;
-	*(dest++) = 1.0;
+	*(dest++) = color_a;
 	*(dest++) = tex_x + (0.0 * tex_width);
 	*(dest++) = tex_y + (sqrt(3)/6 * tex_height);
 	*(dest++) = tex_weight;
@@ -204,7 +205,7 @@ GLfloat* buildHexagonVertices(float offset_x, float offset_y, float z_index,
 	*(dest++) = color_r;
 	*(dest++) = color_b;
 	*(dest++) = color_g;
-	*(dest++) = 1.0;
+	*(dest++) = color_a;
 	*(dest++) = tex_x + (0.0 * tex_width);
 	*(dest++) = tex_y + (sqrt(3)/2 * tex_height);
 	*(dest++) = tex_weight;
@@ -299,11 +300,12 @@ void updateMapGL(game_state *state)
 							  state->map_offset_x, state->map_offset_y,
 							  state->map_hex_size,
 							  &x, &y);
-			sub_texture temp = loadSubtextureBounds(TEXTURE_FOG);
+			sub_texture temp = loadSubtextureBounds(TEXTURE_GRASS);
 			iter_v = buildHexagonVertices(x, y, 0,
 								    	  state->colors[state->terrain_map[i][j] * 9 + 0], 
 								    	  state->colors[state->terrain_map[i][j] * 9 + 1], 
-								    	  state->colors[state->terrain_map[i][j] * 9 + 2], 
+								    	  state->colors[state->terrain_map[i][j] * 9 + 2],
+										  1.0, 
 										  temp.start_x,
 										  temp.start_y,
 										  1.0,
@@ -338,12 +340,15 @@ void updateUnitGL(game_state *state, unit* u)
 			addGLObject(u->object, &state->gl_objects);
 			state->vertices_size+= u->object->vertices_size;
 		}
-
+		sub_texture temp = loadSubtextureBounds(2);
 		buildHexagonVertices(position_x, position_y, 0.2f,
-							 color_r, color_g, color_b,
-							 0.0, 0.0, 0.0,
-							 0.0, 0.0,
-							 0.55 * state->map_hex_size,
+							 color_r, color_g, color_b, 1.0,
+							 temp.start_x,
+							 temp.start_y,
+							 1.0,
+							 temp.width,
+							 temp.height,
+							 0.8 * state->map_hex_size,
 							 u->object->vertices);
 		u->object->modified = 1;
 	}
@@ -383,6 +388,7 @@ void updateHighlight(game_state *state)
 		float color_r = 0.9f;
 		float color_g = 0.9f;
 		float color_b = 0.9f;
+		float color_a = 0.5;
 
 		if(state->highlight_object == NULL)
 		{
@@ -396,10 +402,10 @@ void updateHighlight(game_state *state)
 		}
 
 		buildHexagonVertices(position_x, position_y, 0.2f,
-							 color_r, color_g, color_b,
+							 color_r, color_g, color_b, color_a,
 							 0.0, 0.0, 0.0,
 							 0.0, 0.0,
-							 0.55 * state->map_hex_size,
+							 0.8 * state->map_hex_size,
 							 state->highlight_object->vertices);
 		state->highlight_object->modified = 1;
 
@@ -432,6 +438,7 @@ void updateCursor(game_state *state)
 		float color_r = state->colors[9 * state->cursor_color + 6];
 		float color_g = state->colors[9 * state->cursor_color + 7];
 		float color_b = state->colors[9 * state->cursor_color + 8];
+		float color_a = 0.8;
 
 		if(state->cursor_object == NULL)
 		{
@@ -443,9 +450,9 @@ void updateCursor(game_state *state)
 			addGLObject(state->cursor_object, &state->gl_objects);
 			state->vertices_size+= state->cursor_object->vertices_size;
 		}
-
+		
 		buildHexagonVertices(position_x, position_y, 0.4,
-							 color_r, color_g, color_b,
+							 color_r, color_g, color_b, color_a, 
 							 0.0, 0.0, 0.0,
 							 0.0, 0.0,
 							 0.55 * state->map_hex_size,
@@ -507,11 +514,15 @@ void updateFogOfWar(game_state *state)
 								  state->map_hex_size, 
 								  &x, &y);
 				object->vertices_size+= VERTEX_CHANNELS * 6;
+				sub_texture temp = loadSubtextureBounds(TEXTURE_FOG);
 				iter_v = 
 					buildHexagonVertices(x, y, 0.0f,
-										 0.15f, 0.15f, 0.15f,
-										 0.0, 0.0, 0.0,
-										 0.0, 0.0,
+										 0.15f, 0.15f, 0.15f, 1.0,
+										 temp.start_x,
+										 temp.start_y,
+										 1.0,
+										 temp.width,
+										 temp.height,
 										 state->map_hex_size, iter_v);
 			}		
 		}
@@ -565,7 +576,7 @@ void updateForeground(game_state *state)
 // FIXME(filip): Highlight gets displayed over foreground
 void updateUIGL(game_state *state)	
 {
-	//updateFogOfWar(state);
+	updateFogOfWar(state);
 	updateCursor(state);
 	updateHighlight(state);
 	updateForeground(state);
