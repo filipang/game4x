@@ -299,7 +299,7 @@ void updateMapGL(game_state *state)
 							  state->map_offset_x, state->map_offset_y,
 							  state->map_hex_size,
 							  &x, &y);
-			sub_texture temp = loadSubtextureBounds(TEXTURE_GRASS);
+			sub_texture temp = loadSubtextureBounds(TEXTURE_FOG);
 			iter_v = buildHexagonVertices(x, y, 0,
 								    	  state->colors[state->terrain_map[i][j] * 9 + 0], 
 								    	  state->colors[state->terrain_map[i][j] * 9 + 1], 
