@@ -211,9 +211,9 @@ GLfloat* buildHexagonVertices(float offset_x, float offset_y, float z_index,
 	*(dest++) = color_r;
 	*(dest++) = color_b;
 	*(dest++) = color_g;
-	*(dest++) = tex_x + (1.0 * tex_width);
-	*(dest++) = tex_y + (0.0 * tex_height);
-	*(dest++) = sqrt(3)/2;
+	*(dest++) = 1.0;
+	*(dest++) = tex_x + (0.0 * tex_width);
+	*(dest++) = tex_y + (sqrt(3)/2 * tex_height);
 	*(dest++) = tex_weight;
 	
 	return dest;
@@ -310,11 +310,11 @@ void updateMapGL(game_state *state)
 								    	  state->colors[state->terrain_map[i][j] * 9 + 0], 
 								    	  state->colors[state->terrain_map[i][j] * 9 + 1], 
 								    	  state->colors[state->terrain_map[i][j] * 9 + 2], 
-										  state->sub_textures[TEXTURE_GRASS].start_x,
-										  state->sub_textures[TEXTURE_GRASS].start_y,
+										  state->sub_textures[TEXTURE_FOG].start_x,
+										  state->sub_textures[TEXTURE_FOG].start_y,
 										  1.0,
-										  state->sub_textures[TEXTURE_GRASS].width,
-										  state->sub_textures[TEXTURE_GRASS].height,
+										  state->sub_textures[TEXTURE_FOG].width,
+										  state->sub_textures[TEXTURE_FOG].height,
 								    	  state->map_hex_size * 0.9, iter_v);
 		}
 	}
