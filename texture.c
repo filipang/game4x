@@ -13,8 +13,10 @@
 #define SUB_TEXTURE_COUNT 2
 #define TEXMAP_WIDTH 576
 #define TEXMAP_HEIGHT 256
+
+#define TEXTURE_GOLEM	2
 #define TEXTURE_GRASS	1
-#define TEXTURE_FOG	0
+#define TEXTURE_FOG		0
 
 typedef struct sub_texture
 {

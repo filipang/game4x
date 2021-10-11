@@ -36,47 +36,33 @@
 #define MODE_ATTACK 2
 #define VERTEX_CHANNELS (3+4+3)
 
-#include "texture.c"
-#include "colors.c"
 #include "utils.c"
 #include "input.c"
-#include "unit.c"
-#include "outpost.c"
-#include "gl_object.c"
 #include "game.c"
 #include "gl_game.c"
-#include "text.c"
 
 // FIXME(filip): !!!!!! SOLVE MEMORY LEAKS FROM MALLOC !!!!!!!! 
 int main()
 {
-	game_state state;
-	FT_Library library;
-	FT_Face face;
-	initFreetype(&library, &face);
-	//FT_Bitmap *testBitmap = testFreetype();
 	// SETUP -------------------------------------------------------------------
+	input_pressed input 	= {0};
+	game_state state		= {0};
+	gl_game_state gl_state	= {0};
+
 	GLFWwindow* window;
-	GLuint VAO, VBO, shader_program, texture;
-	char* sprite_data = loadTexture("tex.bmp");
-	initializeGL(&window, &VAO, &VBO, &shader_program, &texture, 
-			sprite_data);
 
-	input_pressed input = {0};
-
-	// Initialize values for game state
 	initializeGameState(&state);
-	generateTestMap(&state);
+	initializeGraphics(&window, &state, &gl_state);
 
-	// TODO(filip): Move this somewhere else
-	// List of colors  
 	
-	// This starts the turn of player 0
+	// Load test map and start the turn of player 0
+	generateTestMap(&state);
 	turn(&state);
 	// Main while loop
 	double lastTime = glfwGetTime(), timer = lastTime;	
 	double deltaTime = 0, nowTime = 0;
     int frames = 0 , updates = 0;
+	// MAIN LOOP  --------------------------------------------------------------
 	while (!glfwWindowShouldClose(window))
 	{
 	    // Measure frame 
@@ -87,31 +73,31 @@ int main()
 		// Store delta time in game state
 		state.delta_time = deltaTime;
 
+		// INPUT LAYER ---------------------------------------------------------
 		// Update and process input
 		updateInput(window, &input);
+
+		// GAME LAYER ----------------------------------------------------------
 		processInput(&input, &state);
 
+		// GRAPHICS LAYER ------------------------------------------------------
 		// Update map gl
-		updateMapGL(&state);		
+		updateMapGL(&state, &gl_state);		
 		// Update units gl
-		updateUnitListGL(&state);
+		updateUnitListGL(&state, &gl_state);
 		// Update UI gl
-		updateUIGL(&state);
-
-		//renderText("Lorem", 0, 0, 0.05, 0.05, &library, &face, &state.test_text, &state);
+		updateUIGL(&state, &gl_state);
 		// Write all updates to the VBO and draw elements to the back buffer
-		updateGL(&state, VAO, VBO, shader_program, texture);
+		updateGL(&state, &gl_state);
 
-		updateTexts(&state);
-		drawTexts(VAO, VBO, shader_program, &face, &state);
+		updateTexts(&state, &gl_state);
+		drawTexts(&state, &gl_state);
+		// ---------------------------------------------------------------------
 
 
-		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);
-		
 		// NOTE(filip): This can be swapped with glfwWaitEvents to save 
 		// 				processing power
-		// Take care of all GLFW events
 		glfwPollEvents();
 	}
 
@@ -119,6 +105,6 @@ int main()
 	// EXIT SETUP --------------------------------------------------------------
 	freeMap(state.size_x, state.size_y, state.terrain_map);
 	// Free allocated memory
-	finalizeGL(window, VAO, VBO, shader_program);
+	finalizeGraphics(window, &gl_state);
 	return 0;
 }

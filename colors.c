@@ -46,3 +46,24 @@ GLfloat* getColor(int color, GLfloat *colors)
 {
 	return colors + color * 3;
 }
+
+GLfloat* getUnitTypeColor(int type, GLfloat* colors)
+{
+	return getColor(COLORLESS, colors);
+}
+
+GLfloat* getUnitTeamColor(int team, GLfloat* colors)
+{
+	if(team == 0)
+		return getColor(PURPLE, colors);
+	else if(team == 1)
+		return getColor(ORANGE, colors);
+	else 
+		return getColor(PINK, colors);
+}
+
+GLfloat* getUnitTexCoords(int type)
+{
+	 
+
+}

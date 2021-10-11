@@ -45,12 +45,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 48 - ((27 * winheight(0) + 26) / 53)
+let s:l = 85 - ((24 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 48
-normal! 017|
+keepjumps 85
+normal! 024|
 tabnext
 edit utils.c
 set splitbelow splitright
@@ -72,11 +72,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 26) / 53)
+let s:l = 2 - ((1 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
+keepjumps 2
 normal! 0
 tabnext
 edit gl_game.c
@@ -99,12 +99,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 460 - ((37 * winheight(0) + 26) / 53)
+let s:l = 152 - ((29 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 460
-normal! 08|
+keepjumps 152
+normal! 019|
 tabnext
 edit colors.c
 set splitbelow splitright
@@ -126,12 +126,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 71 - ((52 * winheight(0) + 26) / 53)
+let s:l = 25 - ((24 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 71
-normal! 0
+keepjumps 25
+normal! 019|
 tabnext
 edit shader.frag
 set splitbelow splitright
@@ -180,11 +180,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 2 - ((1 * winheight(0) + 26) / 53)
+let s:l = 15 - ((14 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 2
+keepjumps 15
 normal! 0
 tabnext
 edit text.c
@@ -207,11 +207,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 26 - ((19 * winheight(0) + 26) / 53)
+let s:l = 53 - ((15 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 26
+keepjumps 53
 normal! 0
 tabnext
 edit unit.c
@@ -234,12 +234,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 66 - ((15 * winheight(0) + 26) / 53)
+let s:l = 98 - ((49 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 66
-normal! 039|
+keepjumps 98
+normal! 0
 tabnext
 edit texture.c
 set splitbelow splitright
@@ -261,12 +261,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 52 - ((44 * winheight(0) + 26) / 53)
+let s:l = 1 - ((0 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 52
-normal! 05|
+keepjumps 1
+normal! 0
 tabnext
 edit game.c
 set splitbelow splitright
@@ -288,12 +288,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 216 - ((37 * winheight(0) + 26) / 53)
+let s:l = 36 - ((16 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 216
-normal! 03|
+keepjumps 36
+normal! 05|
 tabnext
 edit input.c
 set splitbelow splitright
@@ -342,12 +342,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 26) / 53)
+let s:l = 111 - ((18 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
-normal! 04|
+keepjumps 111
+normal! 0
 tabnext
 edit outpost.c
 set splitbelow splitright
@@ -375,21 +375,21 @@ keepjumps exe s:l
 normal! zt
 keepjumps 1
 normal! 04|
-tabnext 4
+tabnext 1
 set stal=1
-badd +1 main.c
+badd +0 main.c
 badd +1 utils.c
 badd +1 gl_game.c
+badd +1 colors.c
 badd +1 shader.frag
 badd +1 shader.vert
 badd +1 text.c
 badd +1 unit.c
+badd +1 texture.c
 badd +1 game.c
 badd +1 input.c
 badd +1 gl_object.c
 badd +1 outpost.c
-badd +0 colors.c
-badd +0 texture.c
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0
   silent exe 'bwipe ' . s:wipebuf
 endif

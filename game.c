@@ -12,6 +12,7 @@
 * START DATE :    2/10/2021
 *
 *******************************************************************************/
+#include "unit.c"
 
 // NOTE(filip): Make these unsigned char* instead of unsigned char** for ASM?
 // NOTE(filip): Consider splitting game_state into persistent game data and 
@@ -37,13 +38,6 @@ typedef struct game_state
 
 	unsigned char **terrain_map;
 
-	struct gl_object **gl_object;
-
-	struct gl_object *map_object;
-	struct gl_object *highlight_object;
-	struct gl_object *fog_of_war_object;
-	struct gl_object *foreground_object;
-	struct gl_object *test_text;
 
 	int size_x;
 	int size_y;
@@ -65,7 +59,6 @@ typedef struct game_state
 	int cursor_y;
 	int cursor_active;
 	int cursor_distance;
-	struct gl_object *cursor_object;
 
 	int mode; // Cursor mode 0, 1, 2
 
@@ -73,15 +66,10 @@ typedef struct game_state
 
 	struct player_state players[MAX_PLAYERS];
 
-	struct gl_object *text_objects;
-	struct gl_object *gl_objects;
 	// NOTE(ionut): Every third element belongs to the same map to compress all
 	// 				3 into one vector
-	GLfloat *colors;
 	char **unit_names; 
 
-	int vertices_store_size;
-	int vertices_size;
 	double delta_time;
 } game_state;
 
@@ -142,16 +130,6 @@ void initializeGameState(game_state* state)
 	{
 		state->players[i].units = NULL;
 	}
-	state->selected_unit = NULL;
-	state->highlight_object = NULL;
-	state->cursor_object = NULL;
-	state->map_object = NULL;
-	state->gl_objects = NULL;
-	state->text_objects = NULL;
-	state->fog_of_war_object = NULL;
-	state->foreground_object = NULL;
-	state->vertices_size = 0;
-	state->vertices_store_size = 0;
 
 	state->unit_names = malloc(4 * sizeof(char *));
 	state->unit_names[0] = malloc(40 * sizeof(char));
@@ -159,7 +137,6 @@ void initializeGameState(game_state* state)
 	state->unit_names[1] = malloc(40 * sizeof(char));
 	strcpy(state->unit_names[1], "Unbound elemental");
 	
-	loadColors(&state->colors);
 }
 
 // TODO(filip): implement this!
@@ -338,11 +315,8 @@ void attackSelectedUnit(struct game_state *state)
 		{
 			target->health -= state->selected_unit->attack_damage;
 			if(target->health <= 0)
-			{
 				removeUnit(&state->players[target->team].units, target);
-				target->object->deleted = 1;
-				state->vertices_size-=target->object->vertices_size;
-			}
+
 			state->selected_unit->mp_current = 0;
 			step(state);
 		}
@@ -373,22 +347,18 @@ void processInput(struct input_pressed *input, struct game_state *state)
 		if(input->key_pressed_W)
 		{	
 			state->map_offset_y += state->delta_time;
-			state->map_object->modified = 1;
 		}
 		if(input->key_pressed_A)
 		{	
 			state->map_offset_x -= state->delta_time;
-			state->map_object->modified = 1;
 		}
 		if(input->key_pressed_S)
 		{	
 			state->map_offset_y -= state->delta_time;
-			state->map_object->modified = 1;
 		}
 		if(input->key_pressed_D)
 		{	
 			state->map_offset_x += state->delta_time;
-			state->map_object->modified = 1;
 		}
 		if(input->button_ENTER)
 			turn(state);

@@ -13,53 +13,57 @@
 *
 *******************************************************************************/
 
-void updateText(char message[], float x, float y, game_state *state)
+void updateText(char message[], float x, float y, struct gl_game_state *gl_state)
 {
 	gl_object *object;
 	int string_length = strlen(message);
 
 	createGLObject(&object, string_length*4*VERTEX_CHANNELS);
-	object->vertices_offset = state->vertices_size;
-	state->vertices_size += object->vertices_size;
+	object->vertices_offset = gl_state->vertices_size;
+	gl_state->vertices_size += object->vertices_size;
 	object->text = malloc(string_length+1);
 	strcpy(object->text, message);
 	
-	addGLObject(object, &state->text_objects);
+	addGLObject(object, &gl_state->text_objects);
 	object->vertices[0] = x;
 	object->vertices[1] = y;
 }
 
-void updateTexts(game_state *state)
+void updateTexts(game_state *state, gl_game_state *gl_state)
 {
-	while(state->text_objects != NULL)
+	while(gl_state->text_objects != NULL)
 	{
-		state->vertices_size -= state->text_objects->vertices_size;
-		removeGLObject(&state->text_objects, state->text_objects);	
+		gl_state->vertices_size -= gl_state->text_objects->vertices_size;
+		removeGLObject(&gl_state->text_objects, gl_state->text_objects);	
 	}
 	char message[100];
-	sprintf(message, "%.1f MS, %.0f FPS", state->delta_time*1000, 1/state->delta_time);
-	updateText(message, 0.55, -0.96, state);
+	sprintf(message, "%.1f MS, %.0f FPS", 
+			state->delta_time*1000, 
+			1/state->delta_time);
+	updateText(message, 0.55, -0.96, gl_state);
 
-	sprintf(message, "Player turn: %d", state->turn);
-	updateText(message, 0.55, -0.9, state);
+	sprintf(message, "Player turn: %d", gl_state->state->turn);
+	updateText(message, 0.55, -0.9, gl_state);
 
 	sprintf(message, "Turn count: %d", state->turn_count/state->player_number);
-	updateText(message, 0.55, -0.83, state);
+	updateText(message, 0.55, -0.83, gl_state);
 
 	if(state->selected_unit != NULL)
 	{
-		sprintf(message, "Selected unit: %s", state->unit_names[state->selected_unit->type]);
-		updateText(message, -0.96, -0.83, state);
+		sprintf(message, "Selected unit: %s", 
+				gl_state->state->unit_names[state->selected_unit->type]);
+		updateText(message, -0.96, -0.83, gl_state);
 	}
 }
 
-// FIXME(filip): Call updata datastore before drawing to avoid gl store overflow
-void drawTexts(GLuint VAO, GLuint VBO, GLuint shader_program, FT_Face *face, game_state *state)
+void drawTexts(game_state *state, gl_game_state *gl_state) 
 {
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glUniform1i(glGetUniformLocation(shader_program, "isText"), 1);
-	for(gl_object *iter = state->text_objects; iter !=NULL; iter = iter->next)
+	FT_Face *face = &gl_state->face;
+	FT_Library *library = &gl_state->library;
+	glBindVertexArray(gl_state->VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, gl_state->VBO);
+	glUniform1i(glGetUniformLocation(gl_state->shader_program, "isText"), 1);
+	for(gl_object *iter = gl_state->text_objects; iter !=NULL; iter = iter->next)
 	{
 		float x = iter->vertices[0], y = iter->vertices[1];
 		float sx = 0.00085, sy = 0.00085;

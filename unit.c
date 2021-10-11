@@ -99,24 +99,3 @@ unit* findUnit(unit *iter, int position_x, int position_y){
 		return findUnit(iter->next, position_x, position_y);
 	}
 }
-
-GLfloat* getUnitTypeColor(int type, GLfloat* colors)
-{
-	return getColor(COLORLESS, colors);
-}
-
-GLfloat* getUnitTeamColor(int team, GLfloat* colors)
-{
-	if(team == 0)
-		return getColor(PURPLE, colors);
-	else if(team == 1)
-		return getColor(ORANGE, colors);
-	else 
-		return getColor(PINK, colors);
-}
-
-GLfloat* getUnitTexCoords(int type)
-{
-	 
-
-}
