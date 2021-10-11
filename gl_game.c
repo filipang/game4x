@@ -13,6 +13,10 @@
 *
 *******************************************************************************/
 
+#define VERTEX_CHANNELS (3+4+3)
+#define PI 3.14159265359
+#define MAXBUF 1000
+
 typedef struct gl_game_state
 {
 	game_state *state;
@@ -24,6 +28,7 @@ typedef struct gl_game_state
 	struct gl_object *fog_of_war_object;
 	struct gl_object *foreground_object;
 	struct gl_object *text_objects;
+	struct gl_object *units_object;
 	struct gl_object *cursor_object;
 
 	GLfloat *colors;
@@ -177,10 +182,29 @@ GLfloat* buildHexagonVertices(float offset_x, float offset_y, float z_index,
 							  float color_a, 
 							  float tex_x, float tex_y, float tex_weight, 
 							  float tex_width, float tex_height, 
-							  float side_len, GLfloat* dest)
+							  float side_len, int rotation, GLfloat* dest)
 {
-	*(dest++) = offset_x;
-	*(dest++) = offset_y + side_len;
+	GLfloat positions_x[6] = 
+	{
+		offset_x, 
+		offset_x + sqrt(3)/2*side_len, 
+		offset_x + sqrt(3)/2*side_len,
+		offset_x,
+		offset_x - sqrt(3)/2*side_len,
+		offset_x - sqrt(3)/2*side_len,
+	};
+	GLfloat positions_y[6] = 
+	{
+		offset_y + side_len, 
+		offset_y + side_len/2,
+		offset_y - side_len/2,
+		offset_y - side_len,
+		offset_y - side_len/2,
+		offset_y + side_len/2, 
+	};
+
+	*(dest++) = positions_x[(rotation)%6];
+	*(dest++) = positions_y[(rotation)%6];
 	*(dest++) = z_index;
 	*(dest++) = color_r;
 	*(dest++) = color_b;
@@ -190,8 +214,8 @@ GLfloat* buildHexagonVertices(float offset_x, float offset_y, float z_index,
 	*(dest++) = tex_y + (1.0 * tex_height);
 	*(dest++) = tex_weight;
 
-	*(dest++) = offset_x + sqrt(3)/2*side_len;
-	*(dest++) = offset_y + side_len/2;
+	*(dest++) = positions_x[(rotation + 1)%6];
+	*(dest++) = positions_y[(rotation + 1)%6];
 	*(dest++) = z_index;
 	*(dest++) = color_r;
 	*(dest++) = color_b;
@@ -201,8 +225,8 @@ GLfloat* buildHexagonVertices(float offset_x, float offset_y, float z_index,
 	*(dest++) = tex_y + (sqrt(3)/2 * tex_height);
 	*(dest++) = tex_weight;
 	
-	*(dest++) = offset_x + sqrt(3)/2*side_len;
-	*(dest++) = offset_y - side_len/2;
+	*(dest++) = positions_x[(rotation + 2)%6];
+	*(dest++) = positions_y[(rotation + 2)%6];
 	*(dest++) = z_index;
 	*(dest++) = color_r;
 	*(dest++) = color_b;
@@ -212,8 +236,8 @@ GLfloat* buildHexagonVertices(float offset_x, float offset_y, float z_index,
 	*(dest++) = tex_y + (sqrt(3)/6 * tex_height);
 	*(dest++) = tex_weight;
 
-	*(dest++) = offset_x;
-	*(dest++) = offset_y - side_len;
+	*(dest++) = positions_x[(rotation + 3)%6];
+	*(dest++) = positions_y[(rotation + 3)%6];
 	*(dest++) = z_index;
 	*(dest++) = color_r;
 	*(dest++) = color_b;
@@ -223,8 +247,8 @@ GLfloat* buildHexagonVertices(float offset_x, float offset_y, float z_index,
 	*(dest++) = tex_y + (0.0 * tex_height);
 	*(dest++) = tex_weight;
 
-	*(dest++) = offset_x - sqrt(3)/2*side_len;
-	*(dest++) = offset_y - side_len/2;
+	*(dest++) = positions_x[(rotation + 4)%6];
+	*(dest++) = positions_y[(rotation + 4)%6];
 	*(dest++) = z_index;
 	*(dest++) = color_r;
 	*(dest++) = color_b;
@@ -234,8 +258,8 @@ GLfloat* buildHexagonVertices(float offset_x, float offset_y, float z_index,
 	*(dest++) = tex_y + (sqrt(3)/6 * tex_height);
 	*(dest++) = tex_weight;
 	
-	*(dest++) = offset_x - sqrt(3)/2*side_len;
-	*(dest++) = offset_y + side_len/2;
+	*(dest++) = positions_x[(rotation + 5)%6];
+	*(dest++) = positions_y[(rotation + 5)%6];
 	*(dest++) = z_index;
 	*(dest++) = color_r;
 	*(dest++) = color_b;
@@ -346,7 +370,7 @@ void updateMapGL(game_state *state, gl_game_state *gl_state)
 										  1.0,
 										  temp.width,
 										  temp.height,
-								    	  state->map_hex_size * 0.9, iter_v);
+								    	  state->map_hex_size * 0.9, 0, iter_v);
 		}
 	}
 	gl_state->vertices_size += gl_state->map_object->vertices_size;
@@ -355,56 +379,72 @@ void updateMapGL(game_state *state, gl_game_state *gl_state)
 
 void updateUnitGL(unit *u, game_state *state, gl_game_state *gl_state)
 {
-	if(u->health>=0)
-	{
-		float position_x; 
-		float position_y;
-		hexGridToViewport(u->position_x, u->position_y, 
-						  state->map_offset_x, state->map_offset_y,
-						  state->map_hex_size, 
-						  &position_x, &position_y);
-		float color_r = gl_state->colors[u->type * u->team * 9 + 3];
-		float color_g = gl_state->colors[u->type * u->team * 9 + 4];
-		float color_b = gl_state->colors[u->type * u->team * 9 + 5];
-		if(u->object == NULL)
-		{
-			int vertices_size = VERTEX_CHANNELS * 6; // Hexagon has 6 vertices, each with 10 float values
-
-			createGLObject(&u->object, 
-						   vertices_size);
-			u->object->vertex_step = 6;
-			addGLObject(u->object, &gl_state->gl_objects);
-		}
-		gl_state->vertices_size+= u->object->vertices_size;
-		sub_texture temp = loadSubtextureBounds(2);
-		buildHexagonVertices(position_x, position_y, 0.2f,
-							 color_r, color_g, color_b, 1.0,
-							 temp.start_x,
-							 temp.start_y,
-							 1.0,
-							 temp.width,
-							 temp.height,
-							 0.8 * state->map_hex_size,
-							 u->object->vertices);
-		u->object->modified = 1;
-	}
-	else{
-		u->object->deleted = 1;
-	}
 }
 
 void updateUnitListGL(game_state *state, gl_game_state *gl_state)
 {
 	int i;
+	unit *iter;
+	int vertices_size = VERTEX_CHANNELS * 6 * 2 * state->unit_count; 
+	int old_vertices_size; 
+	if(gl_state->units_object == NULL)
+	{
+
+		createGLObject(&gl_state->units_object, 
+					   vertices_size);
+		gl_state->units_object->vertex_step = 6;
+		old_vertices_size = 0;
+		addGLObject(gl_state->units_object, &gl_state->gl_objects);
+	}
+	else
+	{
+		old_vertices_size = gl_state->units_object->vertices_size;
+	}
+	GLfloat *iter_v = gl_state->units_object->vertices;
 	for(i = 0; i < state->player_number; i++)
 	{
-		unit *iter = state->players[i].units;
+		iter = state->players[i].units;
 		while(iter != NULL)
 		{
-			updateUnitGL(iter, state, gl_state);
+				float position_x; 
+				float position_y;
+				hexGridToViewport(iter->position_x, iter->position_y, 
+								  state->map_offset_x, state->map_offset_y,
+								  state->map_hex_size, 
+								  &position_x, &position_y);
+				int color = getUnitTeamColor(iter->team, gl_state->colors);
+				float color_r = gl_state->colors[color * 3 + 0];
+				float color_g = gl_state->colors[color * 3 + 1];
+				float color_b = gl_state->colors[color * 3 + 2];
+				float color_a = 1;
+				sub_texture temp = loadSubtextureBounds(TEXTURE_GOLEM);
+				iter_v = buildHexagonVertices(position_x, position_y, 0.2f,
+									 color_r, color_g, color_b, color_a,
+									 0, 0, 0, 0, 0,
+									 0.75 * state->map_hex_size,
+									 iter->rotation,
+									 iter_v);
+				color_a = 1;
+				iter_v = buildHexagonVertices(position_x, position_y, 0.2f,
+									 color_r, color_g, color_b, color_a,
+									 temp.start_x,
+									 temp.start_y,
+									 1.0,
+									 temp.width,
+									 temp.height,
+									 0.8 * state->map_hex_size,
+									 iter->rotation,
+									 iter_v);
+
 			iter = iter->next;
 		}
-	}	
+	}
+	gl_state->units_object->vertices_size = vertices_size;	
+	gl_state->units_object->resized =  gl_state->units_object->vertices_size - old_vertices_size;
+	gl_state->vertices_size += gl_state->units_object->vertices_size;
+	gl_state->units_object->modified = 1;
+	gl_state->units_object->deleted = 0;
+	markObjectsModified(gl_state->units_object);
 }
 
 void updateHighlight(game_state *state, gl_game_state *gl_state)
@@ -420,11 +460,11 @@ void updateHighlight(game_state *state, gl_game_state *gl_state)
 						   state->selected_unit->position_y * 
 						   state->map_hex_size * 
 						   3/2;
-		
-		float color_r = 0.9f;
-		float color_g = 0.9f;
-		float color_b = 0.9f;
-		float color_a = 0.5;
+		int color = YELLOW;	
+		float color_r = gl_state->colors[3 * color + 0];
+		float color_g = gl_state->colors[3 * color + 1];
+		float color_b = gl_state->colors[3 * color + 2];
+		float color_a = 1;
 
 		if(gl_state->highlight_object == NULL)
 		{
@@ -432,18 +472,23 @@ void updateHighlight(game_state *state, gl_game_state *gl_state)
 
 			createGLObject(&gl_state->highlight_object, 
 						   vertices_size);
+			gl_state->highlight_object->drawing_mode = GL_LINE_LOOP;
 			gl_state->highlight_object->vertex_step = 6;
 			addGLObject(gl_state->highlight_object, &gl_state->gl_objects);
 		}
 
 		gl_state->vertices_size+= gl_state->highlight_object->vertices_size;
+		glEnable(GL_LINE_SMOOTH);
+		glLineWidth(3);
 		buildHexagonVertices(position_x, position_y, 0.2f,
 							 color_r, color_g, color_b, color_a,
 							 0.0, 0.0, 0.0,
 							 0.0, 0.0,
-							 0.8 * state->map_hex_size,
+							 1.0 * state->map_hex_size,
+							 0,
 							 gl_state->highlight_object->vertices);
 		gl_state->highlight_object->modified = 1;
+		gl_state->highlight_object->deleted = 0;
 
 	}
 	else
@@ -461,6 +506,8 @@ void updateCursor(game_state *state, gl_game_state *gl_state)
 {
 	if(state->cursor_active != 0)
 	{
+		unit *target = findGameUnit(state->cursor_x, state->cursor_y, state);
+		
 		float position_x = state->map_offset_x + 
 						   (state->cursor_x + state->cursor_y * 0.5) * 
 						   sqrt(3) * 
@@ -471,11 +518,42 @@ void updateCursor(game_state *state, gl_game_state *gl_state)
 						   state->map_hex_size * 
 						   3/2;
 		
-		float color_r = gl_state->colors[9 * gl_state->cursor_color + 6];
-		float color_g = gl_state->colors[9 * gl_state->cursor_color + 7];
-		float color_b = gl_state->colors[9 * gl_state->cursor_color + 8];
-		float color_a = 0.8;
+		int color;	
+		if(state->mode == MODE_MOVE)
+		{
+			if(state->cursor_distance > state->selected_unit->mp_current)
+				color = RED;
 
+			if(state->cursor_distance == state->selected_unit->mp_current)
+				color = YELLOW;
+
+			if(state->cursor_distance < state->selected_unit->mp_current)
+				color = WHITE;
+
+			if(target != NULL)	
+				color = RED;
+		}
+		if(state->mode == MODE_ATTACK)
+		{
+			if(target == NULL && 
+			   state->cursor_distance <= state->selected_unit->attack_range)
+				color = LIGHT_GREY;
+			else if(target != NULL && 
+			   		state->cursor_distance <= state->selected_unit->attack_range &&
+			   		target->team != state->selected_unit->team)
+				color = GREEN;
+			else
+				color =  RED;
+			printf("COLOR: %d\nCURSOR: %d\nATTACK_RANGE: %d\nTARGET: %x\n", 
+					color, state->cursor_distance, state->selected_unit->attack_range,
+					target);
+		}
+
+		float color_r = gl_state->colors[3 * color + 0];
+		float color_g = gl_state->colors[3 * color + 1];
+		float color_b = gl_state->colors[3 * color + 2];
+		float color_a = 0.6;
+		
 		if(gl_state->cursor_object == NULL)
 		{
 			int vertices_size = VERTEX_CHANNELS * 6; // Hexagon has 6 vertices, each with 10 float values
@@ -492,6 +570,7 @@ void updateCursor(game_state *state, gl_game_state *gl_state)
 							 0.0, 0.0, 0.0,
 							 0.0, 0.0,
 							 0.55 * state->map_hex_size,
+							 0,
 							 gl_state->cursor_object->vertices);
 		gl_state->cursor_object->modified = 1;
 
@@ -559,7 +638,9 @@ void updateFogOfWar(game_state *state, gl_game_state *gl_state)
 										 1.0,
 										 temp.width,
 										 temp.height,
-										 state->map_hex_size, iter_v);
+										 state->map_hex_size,
+										 0,
+										 iter_v);
 			}		
 		}
 	}
@@ -679,10 +760,14 @@ void updateGL(game_state *state, gl_game_state *gl_state)
 				
 				iter->modified = 0;
 			}
-			for(int i = iter->vertices_offset/VERTEX_CHANNELS; 
-				i < (iter->vertices_offset + iter->vertices_size) / VERTEX_CHANNELS; 
-				i = i + iter->vertex_step)
-				glDrawArrays(GL_TRIANGLE_FAN, i, iter->vertex_step);
+			if(iter->enabled)
+			{	
+				for(int i = iter->vertices_offset/VERTEX_CHANNELS; 
+					i < (iter->vertices_offset + iter->vertices_size) / VERTEX_CHANNELS; 
+					i = i + iter->vertex_step)
+					glDrawArrays(iter->drawing_mode, i, iter->vertex_step);
+			}
+			//iter->deleted = 1;
 			iter = iter->next;
 
 		}

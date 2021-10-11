@@ -25,9 +25,11 @@ typedef struct gl_object
 	int modified; // NOTE(filip): This turns to 1 when it needs to be updated
 	int resized;
 	int deleted; // NOTE(filip): This turns to 1 when it needs to be deleted
+	int enabled;
 	char *text; //
 
 	int vertex_step;
+	int drawing_mode;
 } gl_object;
 
 // NOTE(filip): problem with holding address related information in ints and not
@@ -41,6 +43,8 @@ void createGLObject(gl_object **o,
 	(*o)->modified = 0;
 	(*o)->deleted = 0;
 	(*o)->resized = 0;
+	(*o)->enabled = 1;
+	(*o)->drawing_mode = GL_TRIANGLE_FAN;
 	(*o)->text = NULL;
 	(*o)->next = NULL;
 }
@@ -52,6 +56,8 @@ void createGLObjectEmpty(gl_object **o)
 	(*o)->modified = 0;
 	(*o)->deleted = 0;
 	(*o)->resized = 0;
+	(*o)->enabled = 1;
+	(*o)->drawing_mode = GL_TRIANGLE_FAN;
 	(*o)->text = NULL;
 	(*o)->next = NULL;
 }

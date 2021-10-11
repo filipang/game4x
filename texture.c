@@ -25,9 +25,11 @@ typedef struct sub_texture
 	GLfloat width;
 	GLfloat height;
 } sub_texture;
+
 char *loadTexture(const char *texture_location)
 {
 	int nr_channels, width, height;
+	stbi_set_flip_vertically_on_load(1);  
 	return stbi_load(texture_location, &width, &height, &nr_channels, 0);
 }
 
@@ -53,7 +55,7 @@ sub_texture loadSubtextureBounds(int texture_index)
 	else if(texture_index == 2)
 	{
 		result.start_x = ((GLfloat) (2.0 * 256.0 * 2 + 3.0)) / (2 * TEXMAP_WIDTH);
-		result.start_y = ((GLfloat) (0.0 * 192.0 * 2 + 3.0)) / (2 * TEXMAP_HEIGHT);
+		result.start_y = ((GLfloat) (1.0 * 192.0 * 2 + 3.0)) / (2 * TEXMAP_HEIGHT);
 		result.width = ((GLfloat) (2.0 * 64.0 - 6.0)) / (2 * TEXMAP_WIDTH);
 		result.height = ((GLfloat) (2.0 * 64.0 - 6.0)) / (2 * TEXMAP_HEIGHT);
 	}

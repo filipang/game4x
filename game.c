@@ -12,6 +12,13 @@
 * START DATE :    2/10/2021
 *
 *******************************************************************************/
+
+#define MODE_NORMAL 0
+#define MODE_MOVE 1
+#define MODE_ATTACK 2
+
+#define MAX_PLAYERS 8
+
 #include "unit.c"
 
 // NOTE(filip): Make these unsigned char* instead of unsigned char** for ASM?
@@ -48,6 +55,7 @@ typedef struct game_state
 	int player_number; // Number of players in game
 	int turn; // Active player index
 	int turn_count;
+	int unit_count;
 
 	// Selected unit data
 	struct unit *selected_unit; // What unit is selected
@@ -239,6 +247,12 @@ void setMoveCursor(int new_move_x, int new_move_y, struct game_state *state)
 		return;
 	state->cursor_x = new_move_x;
 	state->cursor_y = new_move_y;
+	if (new_move_x != state->selected_unit->position_x || 
+		new_move_y != state->selected_unit->position_y)
+		state->selected_unit->rotation = 
+			calculateRotation(state->selected_unit->position_x,
+						  state->selected_unit->position_y,
+						  new_move_x, new_move_y);
 	state->cursor_active = 1;
 
 	// NOTE(filip): Clarify this
@@ -250,39 +264,8 @@ void setMoveCursor(int new_move_x, int new_move_y, struct game_state *state)
 	else
 		state->cursor_distance = 0;
 
-	if(state->mode == MODE_MOVE)
-	{
-		if(state->cursor_distance > state->selected_unit->mp_current)
-		{
-			// NOTE(filip): Cursor color outside move range 
-			state->cursor_color = 4;
-		}
-		if(state->cursor_distance == state->selected_unit->mp_current)
-		{
-			// NOTE(filip): Cursor color at the edge of  move range 
-			state->cursor_color = 3;
-		}
-		if(state->cursor_distance < state->selected_unit->mp_current)
-		{
-			if(findGameUnit(state->cursor_x, state->cursor_y, state) == NULL)	
-				// NOTE(filip): Cursor color inside move range 
-				state->cursor_color = 2;
-			else
-				state->cursor_color = 4;
-		}
-	}
-	if(state->mode == MODE_ATTACK)
-	{
-		unit *target = findGameUnit(state->cursor_x, state->cursor_y, state);
-		if(target == NULL || state->cursor_distance > 2)
-			state->cursor_color = 5;
-		else if(target != NULL && 
-		   state->cursor_distance <= state->selected_unit->attack_range &&
-		   target->team != state->selected_unit->team)
-			state->cursor_color = 6;
-		else
-			state->cursor_color =  4;
-	}
+	if(state->cursor_distance == 0)
+		state->cursor_active = 0;
 }
 
 // Confirms move, moving unit from cursor to cursor
@@ -294,6 +277,8 @@ void moveSelectedUnit(struct game_state *state)
 			state->selected_unit->mp_current-=state->cursor_distance;
 			state->selected_unit->position_x = state->cursor_x;
 			state->selected_unit->position_y = state->cursor_y;
+			//To make cursor invisible when it's on the selected unit
+			setMoveCursor(state->cursor_x, state->cursor_y, state); 		
 		} else 
 		{
 			printf("Not enough MP!\n");
@@ -315,8 +300,10 @@ void attackSelectedUnit(struct game_state *state)
 		{
 			target->health -= state->selected_unit->attack_damage;
 			if(target->health <= 0)
+			{
+				state->unit_count--;
 				removeUnit(&state->players[target->team].units, target);
-
+			}
 			state->selected_unit->mp_current = 0;
 			step(state);
 		}
@@ -454,6 +441,8 @@ void generateTestMap(struct game_state *state)
 		unit *u;
 		createUnit(&u, 0, 0, 1, 0, 2, 2, 8);
 		addUnit(u, &state->players[0].units);
+		u->rotation = 1;
+		u->team = 0;
 		u->type = 0;
 	}
 
@@ -461,7 +450,9 @@ void generateTestMap(struct game_state *state)
 		unit *u;
 		createUnit(&u, 0, 0, 1, 1, 2, 2, 8);
 		addUnit(u, &state->players[1].units);
-		u->type = 1;
+		u->rotation = 4;
+		u->team = 1;
+		u->type = 0;
 	}
 
 	state->players[0].units->position_x = 0;
@@ -481,4 +472,6 @@ void generateTestMap(struct game_state *state)
 
 	state->players[1].units->next->next->position_x = 8;
 	state->players[1].units->next->next->position_y = 9;
+
+	state->unit_count = 6;
 }

@@ -12,6 +12,8 @@
 * START DATE :    25/09/2021
 *
 *******************************************************************************/
+#define ROTATION_RIGHT_UP
+
 
 // NOTE(filip): Everything has to be simplified to be re-written in ASM
 typedef struct unit
@@ -25,8 +27,7 @@ typedef struct unit
     float attack_damage;		// attack damage from 0.0 to 1.0
 	int mp_current;			// points left this turn
 	int mp_stat;			// total mp
-
-	struct gl_object *object; // unit gl_object
+	int rotation;
 
 	struct unit *next;		// next unit
 } unit;
@@ -44,7 +45,6 @@ void createUnit(unit **u,
 	(*u)->attack_range = attack_range;
 	(*u)->attack_damage = attack_damage;
 	(*u)->mp_stat = mp_stat;
-	(*u)->object = NULL;
 	(*u)->next = NULL;
 }
 

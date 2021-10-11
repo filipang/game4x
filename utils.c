@@ -64,13 +64,13 @@ void hexGridToViewport(int grid_x, int grid_y,
 		*viewport_y = offset_y + grid_y * hex_size * 3/2;	
 }
 
-int calculateRotateIndex(int position_x, int position_y, int cursor_x, int cursor_y)
+int calculateRotation(int position_x, int position_y, int cursor_x, int cursor_y)
 {
 	float result_y = cursor_y - position_y;
 	float result_x = cursor_x - position_x;
 	result_x = result_x + result_y * 0.5;
 	result_y = result_y * sqrt(3) * 0.5;
-	result_ratio = result_y / result_x;
+	float result_ratio = result_y / result_x;
 	if(result_x == 0)
 	{
 		if(result_y >= 0)

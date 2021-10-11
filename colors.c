@@ -47,22 +47,22 @@ GLfloat* getColor(int color, GLfloat *colors)
 	return colors + color * 3;
 }
 
-GLfloat* getUnitTypeColor(int type, GLfloat* colors)
+int getUnitTypeColor(int type, GLfloat* colors)
 {
-	return getColor(COLORLESS, colors);
+	return COLORLESS;
 }
 
-GLfloat* getUnitTeamColor(int team, GLfloat* colors)
+int getUnitTeamColor(int team, GLfloat* colors)
 {
 	if(team == 0)
-		return getColor(PURPLE, colors);
+		return PURPLE; 
 	else if(team == 1)
-		return getColor(ORANGE, colors);
+		return ORANGE; 
 	else 
-		return getColor(PINK, colors);
+		return PINK;
 }
 
-GLfloat* getUnitTexCoords(int type)
+int getUnitTexCoords(int type)
 {
 	 
 

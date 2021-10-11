@@ -28,13 +28,6 @@
 #define DEBUG
 
 // NOTE(filip): Consider moving these defines in include files that use them
-#define PI 3.14159265359
-#define MAXBUF 1000
-#define MAX_PLAYERS 8
-#define MODE_NORMAL 0
-#define MODE_MOVE 1
-#define MODE_ATTACK 2
-#define VERTEX_CHANNELS (3+4+3)
 
 #include "utils.c"
 #include "input.c"
