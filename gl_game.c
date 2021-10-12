@@ -334,7 +334,6 @@ void freeMapVertices(GLfloat* vertices)
 void updateMapGL(game_state *state, gl_game_state *gl_state)
 {
 	int i, j, k;
-	float x, y;
 
 	if(gl_state->map_object == NULL)
 	{
@@ -355,19 +354,27 @@ void updateMapGL(game_state *state, gl_game_state *gl_state)
 	{
 		for(j = 0; j < state->size_x; j++)
 		{
+			float x;
+			float y;
 			hexGridToViewport(j, i, 
 							  state->map_offset_x, state->map_offset_y,
 							  state->map_hex_size,
 							  &x, &y);
+			int color = CYAN;	
+			float color_r = gl_state->colors[3 * color + 0];
+			float color_g = gl_state->colors[3 * color + 1];
+			float color_b = gl_state->colors[3 * color + 2];
+			float color_a = 1;
+			float tex_weight = 1;
+			if(state->terrain_map[i][j] == TILE_ESSENCE)
+				tex_weight = 0.3;
 			sub_texture temp = loadSubtextureBounds(TEXTURE_GRASS);
 			iter_v = buildHexagonVertices(x, y, 0,
-								    	  gl_state->colors[state->terrain_map[i][j] * 9 + 0], 
-								    	  gl_state->colors[state->terrain_map[i][j] * 9 + 1], 
-								    	  gl_state->colors[state->terrain_map[i][j] * 9 + 2],
+								    	  color_r, color_g, color_b, 
 										  1.0, 
 										  temp.start_x,
 										  temp.start_y,
-										  1.0,
+										  tex_weight,
 										  temp.width,
 										  temp.height,
 								    	  state->map_hex_size * 0.9, 0, iter_v);
@@ -710,6 +717,7 @@ void updateStoreSizeGL(gl_game_state *gl_state)
 	if(vertices_size > gl_state->vertices_store_size)
 	{
 		gl_state->vertices_store_size = nextPowerOf2(gl_state->vertices_size);
+		printf("New data store: %d\n", gl_state->vertices_store_size);
 		glBufferData(GL_ARRAY_BUFFER, gl_state->vertices_store_size * sizeof(GLfloat), NULL, GL_DYNAMIC_DRAW);
 		modified = 1;
 	}
@@ -747,11 +755,13 @@ void updateGL(game_state *state, gl_game_state *gl_state)
 		{
 			if(iter->modified)
 			{
-				if(iter->resized)
+				if(iter->resized!=0)
 				{
 					markObjectsModified(iter->next);
 					computeListOffsets(gl_state->gl_objects);
 					iter->resized = 0;
+					printf("store size: %d\nvertices_size:%d\n", gl_state->vertices_store_size, 
+							gl_state->vertices_size);
 				}
 				glBufferSubData(GL_ARRAY_BUFFER, 
 						iter->vertices_offset * sizeof(GLfloat), 
@@ -772,7 +782,6 @@ void updateGL(game_state *state, gl_game_state *gl_state)
 
 		}
 	}
-	gl_state->vertices_size = 0; // Resets vertices_size to 0
 	
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);

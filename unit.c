@@ -12,19 +12,26 @@
 * START DATE :    25/09/2021
 *
 *******************************************************************************/
-#define ROTATION_RIGHT_UP
-
+#define UNIT_WORKSHOP			0
+#define UNIT_GOLEM				1
+#define UNIT_WISP				2
+#define UNIT_UNBOUND_ELEMENTAL	3
+#define UNIT_FIRE_ELEMENTAL		4
+#define UNIT_WATER_ELEMENTAL	5
+#define UNIT_ICE_ELEMENTAL		6
+#define	UNIT_ARCANE_ELEMENTAL	7
+#define UNIT_ARCANE_PULSE		8
 
 // NOTE(filip): Everything has to be simplified to be re-written in ASM
 typedef struct unit
 {
-	float health; 			// from 0.0 to 1.0
+	int health; 			// from 0.0 to 1.0
 	int position_x;			// map position
 	int position_y;
-	int type; 			// 1, 2 or 3
-	int team; 			// from 0 to number of players
+	int type; 				// 1, 2 or 3
+	int team; 				// from 0 to number of players
 	int attack_range;		// attack range
-    float attack_damage;		// attack damage from 0.0 to 1.0
+    float attack_damage;	// attack damage from 0.0 to 1.0
 	int mp_current;			// points left this turn
 	int mp_stat;			// total mp
 	int rotation;
@@ -32,19 +39,11 @@ typedef struct unit
 	struct unit *next;		// next unit
 } unit;
 
-void createUnit(unit **u, 
-				int position_x, int position_y, 
-				int type, int team, int attack_range, 
-				float attack_damage, int mp_stat){
+void createUnit(unit **u, int position_x, int position_y)
+{	
 	*u = malloc(sizeof(unit));
-	(*u)->health = 1.0;
 	(*u)->position_x = position_x;
 	(*u)->position_y = position_y;
-	(*u)->type = type;
-	(*u)->team = team;
-	(*u)->attack_range = attack_range;
-	(*u)->attack_damage = attack_damage;
-	(*u)->mp_stat = mp_stat;
 	(*u)->next = NULL;
 }
 
@@ -99,3 +98,41 @@ unit* findUnit(unit *iter, int position_x, int position_y){
 		return findUnit(iter->next, position_x, position_y);
 	}
 }
+
+unit* createGolem(int pos_x, int pos_y, int team, struct game_state *state)
+{
+		unit *u;
+		createUnit(&u, pos_x, pos_y);
+		u->type = UNIT_GOLEM;
+		u->team = team;
+		u->health = 30;
+		u->attack_range = 2;
+		u->attack_damage = 5;
+		u->mp_stat = 2;
+		u->mp_current = 2;
+		if(team == 0)
+			u->rotation = 1;
+		else if(team == 1)
+			u->rotation = 4;
+		
+		addUnit(u, &state->players[team].units);
+		state->unit_count++;
+}
+
+unit* createWorkshop(int pos_x, int pos_y, int team, struct game_state *state)
+{
+		unit *u;
+		createUnit(&u, pos_x, pos_y);
+		u->type = UNIT_WORKSHOP;
+		u->team = team;
+		u->health = 80;
+		u->attack_range = 0;
+		u->attack_damage = 0;
+		u->mp_stat = 0;
+		u->mp_current = 2;
+		u->rotation = 0;
+
+		addUnit(u, &state->players[team].units);
+		state->unit_count++;
+}
+

@@ -21,6 +21,7 @@
 #define YELLOW		7
 #define RED			8
 #define PINK		9
+#define CYAN		10
 
 void loadColors(GLfloat **colors)
 {
@@ -34,6 +35,7 @@ void loadColors(GLfloat **colors)
 							0.9,	0.9,	0.3,	//7.YELLOW
 							0.8,	0.2,	0.2,	//8.RED
 							1.0,	0.5,	0.8,	//9.PINK
+							0.5,	0.5,	0.95	//10.CYAN	
 							};
 							
 	

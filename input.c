@@ -27,6 +27,10 @@ typedef struct input_pressed
 	unsigned char key_pressed_M;
 	unsigned char key_pressed_V;
 	unsigned char key_pressed_B;
+	unsigned char key_pressed_1;
+	unsigned char key_pressed_2;
+	unsigned char key_pressed_3;
+	unsigned char key_pressed_4;
 
 	unsigned char button_W;
 	unsigned char button_A;
@@ -40,6 +44,10 @@ typedef struct input_pressed
 	unsigned char button_M;
 	unsigned char button_V;
 	unsigned char button_B;
+	unsigned char button_1;
+	unsigned char button_2;
+	unsigned char button_3;
+	unsigned char button_4;
 
 } input_pressed;
 
@@ -69,4 +77,8 @@ void updateInput(struct GLFWwindow *window, input_pressed *input)
 	PROCESS_BUTTON_INPUT(M);
 	PROCESS_BUTTON_INPUT(V);
 	PROCESS_BUTTON_INPUT(B);
+	PROCESS_BUTTON_INPUT(1);
+	PROCESS_BUTTON_INPUT(2);
+	PROCESS_BUTTON_INPUT(3);
+	PROCESS_BUTTON_INPUT(4);
 }

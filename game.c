@@ -13,13 +13,17 @@
 *
 *******************************************************************************/
 
+#define TILE_DISABLED 0
+#define TILE_NORMAL	  1
+#define TILE_ESSENCE  2
+#define TILE_BLOCK	  3
+
 #define MODE_NORMAL 0
 #define MODE_MOVE 1
 #define MODE_ATTACK 2
+#define MODE_BUILD 3
 
 #define MAX_PLAYERS 8
-
-#include "unit.c"
 
 // NOTE(filip): Make these unsigned char* instead of unsigned char** for ASM?
 // NOTE(filip): Consider splitting game_state into persistent game data and 
@@ -44,7 +48,6 @@ typedef struct game_state
 {
 
 	unsigned char **terrain_map;
-
 
 	int size_x;
 	int size_y;
@@ -80,6 +83,8 @@ typedef struct game_state
 
 	double delta_time;
 } game_state;
+
+#include "unit.c"
 
 void allocMap(int size_x, int size_y, unsigned char ***mapPtr)
 {
@@ -130,6 +135,7 @@ void initializeGameState(game_state* state)
 	state->turn = -1;
 	state->turn_count = 1;
 	state->mode = MODE_NORMAL;
+	state->unit_count = 0;
 
 	state->map_offset_x = -0.85;
 	state->map_offset_y = -0.60;
@@ -138,22 +144,50 @@ void initializeGameState(game_state* state)
 	{
 		state->players[i].units = NULL;
 	}
-
-	state->unit_names = malloc(4 * sizeof(char *));
-	state->unit_names[0] = malloc(40 * sizeof(char));
-	strcpy(state->unit_names[0], "Golem");
-	state->unit_names[1] = malloc(40 * sizeof(char));
-	strcpy(state->unit_names[1], "Unbound elemental");
+	
+	state->unit_names = malloc(10 * sizeof(char *));
+	#define BIND_UNIT_NAME(index, string)\
+	state->unit_names[index] = malloc(40 * sizeof(char));\
+	strcpy(state->unit_names[index], string);
+	
+	BIND_UNIT_NAME(UNIT_GOLEM, "Golem");
+	BIND_UNIT_NAME(UNIT_WORKSHOP, "Workshop");
+	#undef BIND_UNIT_NAME
 	
 }
 
 // TODO(filip): implement this!
 void finalizeGameState(game_state state);
 
+void updateEssenceGeneration(int team, game_state *state)
+{
+	state->players[team].essence_generation = 0;
+	unit *iter = state->players[team].units;
+	while(iter!=NULL)
+	{
+		int pos_x = iter->position_x;
+		int pos_y = iter->position_y;
+		if(iter->type == UNIT_GOLEM && 
+		   state->terrain_map[pos_y][pos_x] == TILE_ESSENCE)
+			state->players[team].essence_generation += 10;	
+		iter = iter->next;
+	}
+}
+
+void updateEssenceTotal(int team, game_state *state)
+{
+	state->players[team].essence_total += 
+		state->players[team].essence_generation;  
+}
+
+
 // End curent player turn and start next player turn
 void turn(game_state* state)
 {
 	//state-> turn is -1 when the game starts
+	if(state->turn != -1)
+		updateEssenceTotal(state->turn, state);
+
 	state->turn = (state->turn + 1)%state->player_number;
 	state->turn_count++;
 
@@ -199,48 +233,6 @@ int isInMapBounds(int x, int y, game_state *state)
 }
 
 // NOTE(filip): Function header
-void setMoveCursor(int new_move_x, int new_move_y, game_state *state);
-
-// Jump to the next unit (or first if state->started == 0)
-// FIXME(filip): Step selects unit with 0 mp if it can't select any other unit
-void step (struct game_state* state)
-{
-	if(state->selected_unit == NULL)
-	{
-		state->selected_unit = state->players[state->turn].units;	
-		setMoveCursor(state->selected_unit->position_x, 
-					  state->selected_unit->position_y, 
-					  state);
-	}
-	else	
-	{
-		//NOTE(filip): this flag is ambiguous
-		unsigned char looped = 0;
-       	if(state->selected_unit->next !=NULL)
-			state->selected_unit = state->selected_unit->next;
-		else	
-			state->selected_unit = state->players[state->turn].units;	
-
-		while(state->selected_unit->next != NULL && state->selected_unit->mp_current == 0)
-		{ 
-			state->selected_unit = state->selected_unit->next;
-			if(state->selected_unit->next == NULL && state->selected_unit->mp_current == 0)
-			{
-				if(looped==0)
-				{
-					state->selected_unit = state->players[state->turn].units;
-				}
-				looped = 1;
-			}
-		}
-		state->mode = MODE_NORMAL;
-
-		setMoveCursor(state->selected_unit->position_x, 
-					  state->selected_unit->position_y, 
-					  state);
-	}
-}
-
 void setMoveCursor(int new_move_x, int new_move_y, struct game_state *state)
 {
 	if(isInMapBounds(new_move_x, new_move_y, state) == 0)
@@ -268,6 +260,34 @@ void setMoveCursor(int new_move_x, int new_move_y, struct game_state *state)
 		state->cursor_active = 0;
 }
 
+// Jump to the next unit (or first if state->started == 0)
+// FIXME(filip): Step selects unit with 0 mp if it can't select any other unit
+void step (struct game_state* state)
+{
+	if(state->selected_unit == NULL)
+	{
+		state->selected_unit = state->players[state->turn].units;	
+		setMoveCursor(state->selected_unit->position_x, 
+					  state->selected_unit->position_y, 
+					  state);
+	}
+	else	
+	{
+		//NOTE(filip): this flag is ambiguous
+		if(state->selected_unit->next == NULL)
+			state->selected_unit = state->players[state->turn].units;
+		else
+			state->selected_unit = state->selected_unit->next;
+		
+		setMoveCursor(state->selected_unit->position_x, 
+					  state->selected_unit->position_y, 
+					  state);
+	}
+	state->mode = MODE_NORMAL;
+	if(state->selected_unit->type == UNIT_WORKSHOP)
+		state->mode = MODE_BUILD;
+}
+
 // Confirms move, moving unit from cursor to cursor
 void moveSelectedUnit(struct game_state *state)
 {
@@ -279,6 +299,7 @@ void moveSelectedUnit(struct game_state *state)
 			state->selected_unit->position_y = state->cursor_y;
 			//To make cursor invisible when it's on the selected unit
 			setMoveCursor(state->cursor_x, state->cursor_y, state); 		
+			updateEssenceGeneration(state->turn, state);
 		} else 
 		{
 			printf("Not enough MP!\n");
@@ -350,7 +371,8 @@ void processInput(struct input_pressed *input, struct game_state *state)
 		if(input->button_ENTER)
 			turn(state);
 
-	} else if(state->mode == MODE_MOVE) 
+	} 
+	else if(state->mode == MODE_MOVE) 
 	{
 		if(input->button_TAB)
 			step(state);
@@ -394,7 +416,9 @@ void processInput(struct input_pressed *input, struct game_state *state)
 			setMoveCursor(state->cursor_x, state->cursor_y, state);
 		}
 
-	} else if(state->mode == MODE_ATTACK){
+	} 
+	else if(state->mode == MODE_ATTACK)
+	{
 		if(input->button_ESCAPE)
 		{
 			state->mode = MODE_NORMAL;
@@ -412,16 +436,77 @@ void processInput(struct input_pressed *input, struct game_state *state)
 			attackSelectedUnit(state);
 		// Move cursor up
 		if(input->button_W)	
-			setMoveCursor(state->cursor_x - (state->cursor_y + 1) % 2, state->cursor_y + 1, state);
+			setMoveCursor(state->cursor_x - (state->cursor_y + 1) % 2, 
+						  state->cursor_y + 1, 
+						  state);
 		// Move cursor down
 		if(input->button_S)			
-			setMoveCursor(state->cursor_x + state->cursor_y % 2, state->cursor_y - 1, state);
+			setMoveCursor(state->cursor_x + state->cursor_y % 2, 
+						  state->cursor_y - 1, 
+						  state);
 		// Move cursor left 
 		if(input->button_A)			
 			setMoveCursor(state->cursor_x - 1, state->cursor_y, state);
 		// Move cursor right
 		if(input->button_D)
 			setMoveCursor(state->cursor_x + 1, state->cursor_y, state);
+	} 
+	else if(state->mode == MODE_BUILD)
+	{
+		if(input->button_ESCAPE)
+		{
+			state->selected_unit = NULL;
+			state->cursor_active = 0;
+		}
+		if(input->button_TAB)
+		{
+			step(state);
+		}
+		if(input->key_pressed_W)
+		{	
+			state->map_offset_y += state->delta_time;
+		}
+		if(input->key_pressed_A)
+		{	
+			state->map_offset_x -= state->delta_time;
+		}
+		if(input->key_pressed_S)
+		{	
+			state->map_offset_y -= state->delta_time;
+		}
+		if(input->key_pressed_D)
+		{	
+			state->map_offset_x += state->delta_time;
+		}
+		if(input->button_1)
+		{
+			// TODO(filip): Check if space is obstructed and spawn somewhere 
+			// 				else if it is
+			if(state->players[state->turn].essence_total >= 30)
+			{
+				createGolem(state->selected_unit->position_x + 1, 
+							state->selected_unit->position_y,
+							state->turn,
+							state);
+				state->players[state->turn].essence_total -= 30;
+			}
+			else
+			{
+				// TODO(filip): Fading alert - not enough essence
+			}
+		}
+		else if(input->button_2)
+		{
+
+		}
+		else if(input->button_3)
+		{
+
+		}
+		else if(input->button_4)
+		{
+
+		}
 	}
 	
 }
@@ -435,43 +520,15 @@ void generateTestMap(struct game_state *state)
 	state->size_x = 10;
    	state->size_y = 10;	
 	allocMap(state->size_x, state->size_y, &state->terrain_map);
-	state->terrain_map[1][1] = 4;
-	state->terrain_map[8][8] = 4;
-	for(i = 0; i < 3; i++){
-		unit *u;
-		createUnit(&u, 0, 0, 1, 0, 2, 2, 8);
-		addUnit(u, &state->players[0].units);
-		u->rotation = 1;
-		u->team = 0;
-		u->type = 0;
-	}
 
-	for(i = 0; i < 3; i++){
-		unit *u;
-		createUnit(&u, 0, 0, 1, 1, 2, 2, 8);
-		addUnit(u, &state->players[1].units);
-		u->rotation = 4;
-		u->team = 1;
-		u->type = 0;
-	}
+	state->terrain_map[1][1] = TILE_ESSENCE;
+	state->terrain_map[8][8] = TILE_ESSENCE;
 
-	state->players[0].units->position_x = 0;
-	state->players[0].units->position_y = 2;
+	createWorkshop(3, 3, 0, state);
+	createGolem(0, 2, 0, state);
+	createGolem(2, 0, 0, state);
+	createWorkshop(state->size_x - 4, state->size_y - 4, 1, state);
+	createGolem(state->size_x - 3, state->size_y - 1, 1, state);
+	createGolem(state->size_x - 1, state->size_y - 3, 1, state);
 
-	state->players[0].units->next->position_x = 0;
-	state->players[0].units->next->position_y = 0;
-
-	state->players[0].units->next->next->position_x = 2;
-	state->players[0].units->next->next->position_y = 0;
-
-	state->players[1].units->position_x = 9;
-	state->players[1].units->position_y = 8;
-
-	state->players[1].units->next->position_x = 9;
-	state->players[1].units->next->position_y = 9;
-
-	state->players[1].units->next->next->position_x = 8;
-	state->players[1].units->next->next->position_y = 9;
-
-	state->unit_count = 6;
 }
