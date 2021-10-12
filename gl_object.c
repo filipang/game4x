@@ -20,11 +20,7 @@ typedef struct gl_object
 {
 	GLfloat* vertices;
 	int vertices_size;
-	int vertices_offset;
 	struct gl_object *next;	
-	int modified; // NOTE(filip): This turns to 1 when it needs to be updated
-	int resized;
-	int deleted; // NOTE(filip): This turns to 1 when it needs to be deleted
 	int enabled;
 	char *text; //
 
@@ -40,9 +36,6 @@ void createGLObject(gl_object **o,
 	*o = malloc(sizeof(gl_object));
 	(*o)->vertices_size = vertices_size;
 	(*o)->vertices = malloc(vertices_size*sizeof(GLfloat));
-	(*o)->modified = 0;
-	(*o)->deleted = 0;
-	(*o)->resized = 0;
 	(*o)->enabled = 1;
 	(*o)->drawing_mode = GL_TRIANGLE_FAN;
 	(*o)->text = NULL;
@@ -53,9 +46,6 @@ void createGLObjectEmpty(gl_object **o)
 {
 	*o = malloc(sizeof(gl_object));
 	(*o)->vertices_size = 0;
-	(*o)->modified = 0;
-	(*o)->deleted = 0;
-	(*o)->resized = 0;
 	(*o)->enabled = 1;
 	(*o)->drawing_mode = GL_TRIANGLE_FAN;
 	(*o)->text = NULL;
@@ -67,12 +57,10 @@ void addGLObject(gl_object *src, gl_object **dst)
 	if((*dst) == NULL)
 	{
 		(*dst) = src;
-		src->vertices_offset = 0;
 	}
 	else if((*dst)->next == NULL)
 	{
 		(*dst)->next = src;
-		src->vertices_offset = (*dst)->vertices_offset + (*dst)->vertices_size;
 	}
 	else
 	{
@@ -82,29 +70,6 @@ void addGLObject(gl_object *src, gl_object **dst)
 
 // TODO(filip): Free unit list function
 
-void markObjectsModified(gl_object *start)
-{
-	while(start != NULL)
-	{
-		start->modified = 1;
-		start = start->next;
-	}
-}
-
-// NOTE(filip): Computes offsets up to target without touching target (target 
-// 				can be NULL)
-void computeListOffsets(gl_object *list)
-{
-	int vertices_offset = 0;
-	gl_object *iter = list;
-	while(iter != NULL)
-	{
-		iter->vertices_offset = vertices_offset;
-		vertices_offset += iter->vertices_size;
-		iter = iter->next;
-	}
-}
-
 void removeGLObject(gl_object **base, gl_object *target)
 {
 	if(base == NULL || target == NULL) return;
@@ -112,49 +77,28 @@ void removeGLObject(gl_object **base, gl_object *target)
 	if(iter == target)
 	{
 		*base = target->next;
-		computeListOffsets(target->next);
-		markObjectsModified(target->next);
 		free(target);
 	}
 	else
 	{
-		printf("LOOKING FOR OBJ TO DELETE:\n");
 		while(iter != NULL)
 		{
 			if(iter->next == target)
 			{
-				printf("FOUND ONE!:\n");
 				iter->next = target->next;
-				computeListOffsets(*base);
-				markObjectsModified(*base); // NOTE(filip): this isn't right
 				free(target);
 			}
 			iter = iter->next;
 		}
-		printf("DONE LOOKING..!\n");
-	}
-}
-
-void getTotalSizes(gl_object *list, int *vertices_total)
-{
-	*vertices_total = 0;
-	gl_object *iter = list;
-	while(iter != NULL)
-	{
-		*vertices_total += iter->vertices_size;
-		iter = iter->next;
 	}
 }
 
 void printGLObject(gl_object *object)
 {
-	printf("gl_object: %x\nvertex_size: %d\nvertex_offset: %d\n"
-			"modified:%d\ndeleted:%d\nnext:%x\n",
+	printf("gl_object: %x\nvertex_size: %d\n"
+			"next:%x\n",
 			object,
 			object->vertices_size,
-			object->vertices_offset,
-			object->modified,
-			object->deleted,
 			object->next);
 }
 

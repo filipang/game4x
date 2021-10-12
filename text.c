@@ -19,49 +19,64 @@ void updateText(char message[], float x, float y, struct gl_game_state *gl_state
 	int string_length = strlen(message);
 
 	createGLObject(&object, string_length*4*VERTEX_CHANNELS);
-	object->vertices_offset = gl_state->vertices_size;
-	gl_state->vertices_size += object->vertices_size;
+	object->vertex_step = 4;
 	object->text = malloc(string_length+1);
 	strcpy(object->text, message);
 	
 	addGLObject(object, &gl_state->text_objects);
 	object->vertices[0] = x;
 	object->vertices[1] = y;
+	object->vertices[2] = 1.0; 
 }
 
-void updateStoreSizeGL(gl_game_state *gl_state);
+void updateTextAlpha(char message[], float x, float y, float alpha, struct gl_game_state *gl_state)
+{
+	gl_object *object;
+	int string_length = strlen(message);
+
+	createGLObject(&object, string_length*4*VERTEX_CHANNELS);
+	object->vertex_step = 4;
+	object->text = malloc(string_length+1);
+	strcpy(object->text, message);
+	
+	addGLObject(object, &gl_state->text_objects);
+	object->vertices[0] = x;
+	object->vertices[1] = y;
+	object->vertices[2] = alpha; 
+}
+
+void updateStoreSizeGL(int vertices_size, gl_game_state *gl_state);
 
 void updateTexts(game_state *state, gl_game_state *gl_state)
 {
 	while(gl_state->text_objects != NULL)
 	{
-		gl_state->vertices_size -= gl_state->text_objects->vertices_size;
 		removeGLObject(&gl_state->text_objects, gl_state->text_objects);	
 	}
 	char message[200];
-	sprintf(message, "%.1f MS, %.0f FPS", 
+	snprintf(message, 100, "%.1f MS, %.0f FPS", 
 			state->delta_time*1000, 
 			1/state->delta_time);
 	updateText(message, 0.55, -0.75, gl_state);
 
-	sprintf(message, "Player turn: %d", gl_state->state->turn);
+	snprintf(message, 100, "Player turn: %d", gl_state->state->turn);
 	updateText(message, 0.55, -0.80, gl_state);
 
-	sprintf(message, "Turn count: %d", state->turn_count/state->player_number);
+	snprintf(message, 100, "Turn count: %d", state->turn_count/state->player_number);
 	updateText(message, 0.55, -0.85, gl_state);
 
-	sprintf(message, "Your essence: %d (+%d)", 
+	snprintf(message, 100, "Your essence: %d (+%d)", 
 			state->players[state->turn].essence_total, 
 			state->players[state->turn].essence_generation);
 	updateText(message, 0.55, -0.90, gl_state);
 
 	if(state->selected_unit != NULL)
 	{
-		sprintf(message, "Selected unit: %s", 
+		snprintf(message, 100, "Selected unit: %s", 
 				gl_state->state->unit_names[state->selected_unit->type]);
 		updateText(message, -0.96, -0.75, gl_state);
 
-		sprintf(message, 
+		snprintf(message, 100, 
 				"Health points left: %d", 
 				state->selected_unit->health);
 		updateText(message, -0.96, -0.80, gl_state);
@@ -69,26 +84,38 @@ void updateTexts(game_state *state, gl_game_state *gl_state)
 
 		if(state->selected_unit->type != UNIT_WORKSHOP) 
 		{
-			sprintf(message, 
+			snprintf(message, 100, 
 					"Movement points left: %d", 
 					state->selected_unit->mp_current); 
 			updateText(message, -0.96, -0.85, gl_state);
 
-			sprintf(message, 
+			snprintf(message, 100, 
 					"Attack damage: %d", 
 					state->selected_unit->attack_damage); 
 			updateText(message, -0.96, -0.90, gl_state);
 
-			sprintf(message, "Options: TAB-CycleUnits, V-Move, T-Attack");
+			snprintf(message, 100, "Options: TAB-CycleUnits, V-Move, T-Attack");
 			updateText(message, -0.96, -0.95, gl_state);
 		}
 		else
 		{
-			sprintf(message, "Options: TAB-CycleUnits, B-Build, ESC-ExitBuild");
+			snprintf(message, 100, "Options: TAB-CycleUnits, B-Build, ESC-ExitBuild");
 			updateText(message, -0.96, -0.85, gl_state);
-			sprintf(message, "1-Wisp(50 E), 2-Golem(100 E), 3-Unbound Elemental(100 E), 4-Arcane Pulse(600 E)");
+
+			snprintf(message, 100, 
+					"1-Wisp(50 E), 2-Golem(100 E), 3-Unbound Elemental(100 E), 4-Arcane Pulse(600 E)");
 			updateText(message, -0.96, -0.90, gl_state);
 		}
+	}
+
+	if(state->alert_countdown >= 0)
+	{
+		state->alert_countdown -= state->delta_time;
+		snprintf(message, 100, 
+				"%s", state->alert_message);
+		updateTextAlpha(message, -0.3, 0.6, 
+						state->alert_countdown/state->alert_countdown_max, 
+						gl_state);
 	}
 }
 
@@ -99,10 +126,10 @@ void drawTexts(game_state *state, gl_game_state *gl_state)
 	glBindVertexArray(gl_state->VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, gl_state->VBO);
 	glUniform1i(glGetUniformLocation(gl_state->shader_program, "isText"), 1);
-	updateStoreSizeGL(gl_state);
 	for(gl_object *iter = gl_state->text_objects; iter !=NULL; iter = iter->next)
 	{
 		float x = iter->vertices[0], y = iter->vertices[1];
+		float alpha = iter->vertices[2];
 		float sx = 0.00085, sy = 0.00085;
 
   		char *p;
@@ -134,17 +161,18 @@ void drawTexts(game_state *state, gl_game_state *gl_state)
 			float w = (*face)->glyph->bitmap.width * sx;
 			float h = (*face)->glyph->bitmap.rows * sy;
 			
-			GLfloat text_box[40] = {x2,     -y2    , 0, 1, 1, 1, 1, 0, 0, 1,
-									x2 + w, -y2    , 0, 1, 1, 1, 1, 1, 0, 1,
-									x2,     -y2 - h, 0, 1, 1, 1, 1, 0, 1, 1,
-									x2 + w, -y2 - h, 0, 1, 1, 1, 1, 1, 1, 1};
+			GLfloat text_box[40] = {x2,     -y2    , 0, 1, 1, 1, alpha, 0, 0, 1,
+									x2 + w, -y2    , 0, 1, 1, 1, alpha, 1, 0, 1,
+									x2,     -y2 - h, 0, 1, 1, 1, alpha, 0, 1, 1,
+									x2 + w, -y2 - h, 0, 1, 1, 1, alpha, 1, 1, 1};
 			memcpy(iter->vertices, text_box, 40 * sizeof(GLfloat));
-		    
+		   
+		   	updateStoreSizeGL(4 * VERTEX_CHANNELS, gl_state);	
 			glBufferSubData(GL_ARRAY_BUFFER, 
-							iter->vertices_offset * sizeof(GLfloat), 
+							0, 
 							4 * VERTEX_CHANNELS * sizeof(GLfloat), 
 							iter->vertices);
-		    glDrawArrays(GL_TRIANGLE_STRIP, iter->vertices_offset/VERTEX_CHANNELS, 4);
+		    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 			
 			x += ((*face)->glyph->advance.x/64) * sx;
 			y += ((*face)->glyph->advance.y/64) * sy;

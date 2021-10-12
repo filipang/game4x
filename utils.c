@@ -12,6 +12,9 @@
 * START DATE :    2/10/2021
 *
 *******************************************************************************/
+#define ASSERT(a) if(!(a)) *((unsigned int*)0) = 0xDEAD; 
+
+
 
 // Loads entire file into a char* with malloc
 // NOTE(filip): This needs to be freed

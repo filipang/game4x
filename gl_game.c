@@ -34,7 +34,6 @@ typedef struct gl_game_state
 	GLfloat *colors;
 	int cursor_color;
 	int vertices_store_size;
-	int vertices_size;
 
 	FT_Library library;
 	FT_Face face;
@@ -354,38 +353,47 @@ void updateMapGL(game_state *state, gl_game_state *gl_state)
 	{
 		for(j = 0; j < state->size_x; j++)
 		{
-			float x;
-			float y;
-			hexGridToViewport(j, i, 
-							  state->map_offset_x, state->map_offset_y,
-							  state->map_hex_size,
-							  &x, &y);
-			int color = CYAN;	
-			float color_r = gl_state->colors[3 * color + 0];
-			float color_g = gl_state->colors[3 * color + 1];
-			float color_b = gl_state->colors[3 * color + 2];
-			float color_a = 1;
-			float tex_weight = 1;
-			if(state->terrain_map[i][j] == TILE_ESSENCE)
-				tex_weight = 0.3;
-			sub_texture temp = loadSubtextureBounds(TEXTURE_GRASS);
-			iter_v = buildHexagonVertices(x, y, 0,
-								    	  color_r, color_g, color_b, 
-										  1.0, 
-										  temp.start_x,
-										  temp.start_y,
-										  tex_weight,
-										  temp.width,
-										  temp.height,
+			int tile = state->terrain_map[i][j];
+			if(state->terrain_map[i][j]!=TILE_DISABLED)
+			{
+				float x;
+				float y;
+				hexGridToViewport(j, i, 
+								  state->map_offset_x, state->map_offset_y,
+								  state->map_hex_size,
+								  &x, &y);
+				int color;
+				if(tile == TILE_ESSENCE)
+					color = CYAN;
+				else if(tile == TILE_FIRE)
+					color = RED;
+				else if(tile == TILE_ICE)
+					color = CYAN;
+				else if(tile == TILE_WATER)
+					color = BLUE;
+
+				float color_r = gl_state->colors[3 * color + 0];
+				float color_g = gl_state->colors[3 * color + 1];
+				float color_b = gl_state->colors[3 * color + 2];
+				float color_a = 1;
+				float tex_weight = 1;
+				if(tile == TILE_ESSENCE)
+					tex_weight = 0.5;
+				if(tile != TILE_NORMAL && tile != TILE_ESSENCE)
+					tex_weight = 0;
+				sub_texture temp = loadSubtextureBounds(TEXTURE_GRASS);
+				iter_v = buildHexagonVertices(x, y, 0,
+											  color_r, color_g, color_b, 
+											  1.0, 
+											  temp.start_x,
+											  temp.start_y,
+											  tex_weight,
+											  temp.width,
+											  temp.height,
 								    	  state->map_hex_size * 0.9, 0, iter_v);
+			}
 		}
 	}
-	gl_state->vertices_size += gl_state->map_object->vertices_size;
-	gl_state->map_object->modified = 1;
-}
-
-void updateUnitGL(unit *u, game_state *state, gl_game_state *gl_state)
-{
 }
 
 void updateUnitListGL(game_state *state, gl_game_state *gl_state)
@@ -393,20 +401,16 @@ void updateUnitListGL(game_state *state, gl_game_state *gl_state)
 	int i;
 	unit *iter;
 	int vertices_size = VERTEX_CHANNELS * 6 * 2 * state->unit_count; 
-	int old_vertices_size; 
 	if(gl_state->units_object == NULL)
 	{
 
 		createGLObject(&gl_state->units_object, 
-					   vertices_size);
+					   VERTEX_CHANNELS * 6 * 2 * state->size_x * state->size_y);
+		gl_state->units_object->vertices_size = vertices_size;
 		gl_state->units_object->vertex_step = 6;
-		old_vertices_size = 0;
 		addGLObject(gl_state->units_object, &gl_state->gl_objects);
 	}
-	else
-	{
-		old_vertices_size = gl_state->units_object->vertices_size;
-	}
+	gl_state->units_object->vertices_size = vertices_size;
 	GLfloat *iter_v = gl_state->units_object->vertices;
 	for(i = 0; i < state->player_number; i++)
 	{
@@ -447,11 +451,6 @@ void updateUnitListGL(game_state *state, gl_game_state *gl_state)
 		}
 	}
 	gl_state->units_object->vertices_size = vertices_size;	
-	gl_state->units_object->resized =  gl_state->units_object->vertices_size - old_vertices_size;
-	gl_state->vertices_size += gl_state->units_object->vertices_size;
-	gl_state->units_object->modified = 1;
-	gl_state->units_object->deleted = 0;
-	markObjectsModified(gl_state->units_object);
 }
 
 void updateHighlight(game_state *state, gl_game_state *gl_state)
@@ -484,7 +483,6 @@ void updateHighlight(game_state *state, gl_game_state *gl_state)
 			addGLObject(gl_state->highlight_object, &gl_state->gl_objects);
 		}
 
-		gl_state->vertices_size+= gl_state->highlight_object->vertices_size;
 		glEnable(GL_LINE_SMOOTH);
 		glLineWidth(3);
 		buildHexagonVertices(position_x, position_y, 0.2f,
@@ -494,8 +492,6 @@ void updateHighlight(game_state *state, gl_game_state *gl_state)
 							 1.0 * state->map_hex_size,
 							 0,
 							 gl_state->highlight_object->vertices);
-		gl_state->highlight_object->modified = 1;
-		gl_state->highlight_object->deleted = 0;
 
 	}
 	else
@@ -503,7 +499,7 @@ void updateHighlight(game_state *state, gl_game_state *gl_state)
 		// Marks for deletion
 		if(gl_state->highlight_object!=NULL)
 		{
-			gl_state->highlight_object->deleted = 1;
+			removeGLObject(&gl_state->gl_objects, gl_state->highlight_object);
 			gl_state->highlight_object = NULL;
 		}
 	}
@@ -571,7 +567,6 @@ void updateCursor(game_state *state, gl_game_state *gl_state)
 			addGLObject(gl_state->cursor_object, &gl_state->gl_objects);
 		}
 		
-		gl_state->vertices_size+= gl_state->cursor_object->vertices_size;
 		buildHexagonVertices(position_x, position_y, 0.4,
 							 color_r, color_g, color_b, color_a, 
 							 0.0, 0.0, 0.0,
@@ -579,7 +574,6 @@ void updateCursor(game_state *state, gl_game_state *gl_state)
 							 0.55 * state->map_hex_size,
 							 0,
 							 gl_state->cursor_object->vertices);
-		gl_state->cursor_object->modified = 1;
 
 	}
 	else
@@ -587,7 +581,7 @@ void updateCursor(game_state *state, gl_game_state *gl_state)
 		// Marks for deletion
 		if(gl_state->cursor_object!=NULL)
 		{
-			gl_state->cursor_object->deleted = 1;
+			removeGLObject(&gl_state->gl_objects, gl_state->cursor_object);
 			gl_state->cursor_object = NULL;
 		}
 	}
@@ -597,7 +591,6 @@ void updateFogOfWar(game_state *state, gl_game_state *gl_state)
 {
 	int i, j;
 	gl_object *object;
-	int old_vertices_size = 0; 	
 	int vertices_size = state->size_x * state->size_y * VERTEX_CHANNELS * 6;
 
 	if(gl_state->fog_of_war_object == NULL)
@@ -609,7 +602,6 @@ void updateFogOfWar(game_state *state, gl_game_state *gl_state)
 	else
 	{
 		object = gl_state->fog_of_war_object; // DIFF
-		old_vertices_size = object->vertices_size; //DIFF
 		object->vertices_size = 0; //DIFF
 	}
 
@@ -621,15 +613,16 @@ void updateFogOfWar(game_state *state, gl_game_state *gl_state)
 		for(j = 0; j < state->size_x; j++)
 		{
 			int is_fog = 1;
+			int tile = state->terrain_map[i][j]; 
 			struct unit *iter = state->players[state->turn].units;
 			float x, y;
 			while(iter!=NULL)
 			{
-				if(hexDistance(iter->position_x, iter->position_y, j, i) <= 2)
+				if(hexDistance(iter->position_x, iter->position_y, j, i) <= iter->vision_range)
 					is_fog = 0;			
 				iter = iter->next;
 			}
-			if(is_fog)
+			if(is_fog && tile != TILE_DISABLED)
 			{
 				hexGridToViewport(j, i, 
 								  state->map_offset_x, state->map_offset_y, 
@@ -655,17 +648,7 @@ void updateFogOfWar(game_state *state, gl_game_state *gl_state)
 	{	
 		addGLObject(object, &gl_state->gl_objects);
 		gl_state->fog_of_war_object = object;
-		object->modified = 1;
 	}
-	else
-	{
-		if(old_vertices_size != object->vertices_size){
-			object->modified = 1;
-			object->resized =  object->vertices_size - old_vertices_size;
-		}
-	}
-	gl_state->vertices_size += object->vertices_size;
-	markObjectsModified(object);
 }
 
 void updateForeground(game_state *state, gl_game_state *gl_state)
@@ -688,13 +671,11 @@ void updateForeground(game_state *state, gl_game_state *gl_state)
 		addGLObject(gl_state->foreground_object, &gl_state->gl_objects);
 	}
 
-	gl_state->vertices_size+= gl_state->foreground_object->vertices_size;
 	buildRectVertices(position_x, position_y, -0.9f,
 					  size_x, size_y,
 					  color_r, color_g, color_b,
 					  0.0, 0.0, 0.0,
 					  gl_state->foreground_object->vertices);
-	gl_state->foreground_object->modified = 1;
 }
 
 // FIXME(filip): Highlight gets displayed over foreground
@@ -709,22 +690,13 @@ void updateUIGL(game_state *state, gl_game_state *gl_state)
 // NOTE(filip): This assumes the correct buffers are bound
 // NOTE(filip): This wipes the whole gl buffer and marks gl objects to
 // 				rewrite it
-void updateStoreSizeGL(gl_game_state *gl_state)
+void updateStoreSizeGL(int vertices_size, gl_game_state *gl_state)
 {
-	int vertices_size;
-	getTotalSizes(gl_state->gl_objects, &vertices_size);
-	int modified = 0;
-	if(vertices_size > gl_state->vertices_store_size)
+	if(vertices_size >= gl_state->vertices_store_size)
 	{
-		gl_state->vertices_store_size = nextPowerOf2(gl_state->vertices_size);
+		gl_state->vertices_store_size = nextPowerOf2(vertices_size);
 		printf("New data store: %d\n", gl_state->vertices_store_size);
 		glBufferData(GL_ARRAY_BUFFER, gl_state->vertices_store_size * sizeof(GLfloat), NULL, GL_DYNAMIC_DRAW);
-		modified = 1;
-	}
-
-	if(modified)
-	{
-		markObjectsModified(gl_state->gl_objects);	
 	}
 }
 
@@ -740,47 +712,20 @@ void updateGL(game_state *state, gl_game_state *gl_state)
 	glBindBuffer(GL_ARRAY_BUFFER, gl_state->VBO);
 
 	glUniform1i(glGetUniformLocation(gl_state->shader_program, "isText"), 0);
-	updateStoreSizeGL(gl_state);
 	gl_object *iter = gl_state->gl_objects;
 	while(iter!=NULL)
 	{
-		if(iter->deleted)
-		{
-			gl_object *temp = iter->next;
-			removeGLObject(&gl_state->gl_objects, iter);	
-			markObjectsModified(gl_state->gl_objects);
-			iter = temp;	
-		}
-		else 
-		{
-			if(iter->modified)
-			{
-				if(iter->resized!=0)
-				{
-					markObjectsModified(iter->next);
-					computeListOffsets(gl_state->gl_objects);
-					iter->resized = 0;
-					printf("store size: %d\nvertices_size:%d\n", gl_state->vertices_store_size, 
-							gl_state->vertices_size);
-				}
-				glBufferSubData(GL_ARRAY_BUFFER, 
-						iter->vertices_offset * sizeof(GLfloat), 
-						iter->vertices_size * sizeof(GLfloat), 
-						iter->vertices);
-				
-				iter->modified = 0;
-			}
-			if(iter->enabled)
-			{	
-				for(int i = iter->vertices_offset/VERTEX_CHANNELS; 
-					i < (iter->vertices_offset + iter->vertices_size) / VERTEX_CHANNELS; 
-					i = i + iter->vertex_step)
-					glDrawArrays(iter->drawing_mode, i, iter->vertex_step);
-			}
-			//iter->deleted = 1;
-			iter = iter->next;
-
-		}
+		updateStoreSizeGL(iter->vertices_size, gl_state);
+		glBufferSubData(GL_ARRAY_BUFFER, 
+				0, 
+				iter->vertices_size * sizeof(GLfloat), 
+				iter->vertices);
+		
+		for(int i = 0; 
+			i < iter->vertices_size / VERTEX_CHANNELS; 
+			i = i + iter->vertex_step)
+			glDrawArrays(iter->drawing_mode, i, iter->vertex_step);
+		iter = iter->next;
 	}
 	
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

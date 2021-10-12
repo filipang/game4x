@@ -17,6 +17,9 @@
 #define TILE_NORMAL	  1
 #define TILE_ESSENCE  2
 #define TILE_BLOCK	  3
+#define TILE_FIRE	  4
+#define TILE_WATER	  5
+#define TILE_ICE	  6
 
 #define MODE_NORMAL 0
 #define MODE_MOVE 1
@@ -81,6 +84,10 @@ typedef struct game_state
 	// 				3 into one vector
 	char **unit_names; 
 
+	char alert_message[200];
+	float alert_countdown;
+	float alert_countdown_max;
+
 	double delta_time;
 } game_state;
 
@@ -136,6 +143,7 @@ void initializeGameState(game_state* state)
 	state->turn_count = 1;
 	state->mode = MODE_NORMAL;
 	state->unit_count = 0;
+	state->alert_countdown = -1;
 
 	state->map_offset_x = -0.85;
 	state->map_offset_y = -0.60;
@@ -150,8 +158,14 @@ void initializeGameState(game_state* state)
 	state->unit_names[index] = malloc(40 * sizeof(char));\
 	strcpy(state->unit_names[index], string);
 	
-	BIND_UNIT_NAME(UNIT_GOLEM, "Golem");
 	BIND_UNIT_NAME(UNIT_WORKSHOP, "Workshop");
+	BIND_UNIT_NAME(UNIT_GOLEM, "Golem");
+	BIND_UNIT_NAME(UNIT_UNBOUND_ELEMENTAL, "Unbound Elemental");
+	BIND_UNIT_NAME(UNIT_FIRE_ELEMENTAL, "Fire Elemental");
+	BIND_UNIT_NAME(UNIT_WATER_ELEMENTAL, "Water Elemental");
+	BIND_UNIT_NAME(UNIT_ICE_ELEMENTAL, "Ice Elemental");
+	BIND_UNIT_NAME(UNIT_ARCANE_ELEMENTAL, "Arcane Elemental");
+	BIND_UNIT_NAME(UNIT_WISP, "Wisp");
 	#undef BIND_UNIT_NAME
 	
 }
@@ -169,7 +183,7 @@ void updateEssenceGeneration(int team, game_state *state)
 		int pos_y = iter->position_y;
 		if(iter->type == UNIT_GOLEM && 
 		   state->terrain_map[pos_y][pos_x] == TILE_ESSENCE)
-			state->players[team].essence_generation += 10;	
+			state->players[team].essence_generation += 20;	
 		iter = iter->next;
 	}
 }
@@ -180,6 +194,12 @@ void updateEssenceTotal(int team, game_state *state)
 		state->players[team].essence_generation;  
 }
 
+void alertMessage(char* message, float time, game_state *state)
+{
+	snprintf(state->alert_message, 100, "%s", message);
+	state->alert_countdown = time;
+	state->alert_countdown_max = time;
+}
 
 // End curent player turn and start next player turn
 void turn(game_state* state)
@@ -219,15 +239,12 @@ int isInMapBounds(int x, int y, game_state *state)
 {
 	if(x >= state->size_x || x < 0)
 		return 0;
+
 	if(y >= state->size_y || y < 0)
 		return 0;
 
-	// TODO(filip): uncomment this when you encode 0 as being not part of the
-	// 				map
-	/*
-	if(state->terrain_map[y][x] == 0)
+	if(state->terrain_map[y][x] == TILE_DISABLED)
 		return 0;
-	*/
 
 	return 1;
 }
@@ -455,6 +472,7 @@ void processInput(struct input_pressed *input, struct game_state *state)
 	{
 		if(input->button_ESCAPE)
 		{
+			state->mode = MODE_NORMAL;
 			state->selected_unit = NULL;
 			state->cursor_active = 0;
 		}
@@ -462,46 +480,54 @@ void processInput(struct input_pressed *input, struct game_state *state)
 		{
 			step(state);
 		}
-		if(input->key_pressed_W)
-		{	
-			state->map_offset_y += state->delta_time;
-		}
-		if(input->key_pressed_A)
-		{	
-			state->map_offset_x -= state->delta_time;
-		}
-		if(input->key_pressed_S)
-		{	
-			state->map_offset_y -= state->delta_time;
-		}
-		if(input->key_pressed_D)
-		{	
-			state->map_offset_x += state->delta_time;
-		}
 		if(input->button_1)
 		{
 			// TODO(filip): Check if space is obstructed and spawn somewhere 
 			// 				else if it is
-			if(state->players[state->turn].essence_total >= 30)
+			// SPAWNS WISP
+			if(state->players[state->turn].essence_total >= 50)
+			{
+				createWisp(state->selected_unit->position_x + 1, 
+						   state->selected_unit->position_y,
+						   state->turn,
+						   state);
+				state->players[state->turn].essence_total -= 50;
+			}
+			else
+			{
+				alertMessage("NOT ENOGH ESSENCE!", 2, state);
+			}
+		}
+		else if(input->button_2)
+		{
+			// SPAWNS GOLEM
+			if(state->players[state->turn].essence_total >= 100)
 			{
 				createGolem(state->selected_unit->position_x + 1, 
 							state->selected_unit->position_y,
 							state->turn,
 							state);
-				state->players[state->turn].essence_total -= 30;
+				state->players[state->turn].essence_total -= 100;
 			}
 			else
 			{
-				// TODO(filip): Fading alert - not enough essence
+				alertMessage("NOT ENOGH ESSENCE!", 2, state);
 			}
-		}
-		else if(input->button_2)
-		{
-
 		}
 		else if(input->button_3)
 		{
-
+			if(state->players[state->turn].essence_total >= 100)
+			{
+				createUnboundElemental(state->selected_unit->position_x + 1, 
+						   state->selected_unit->position_y,
+						   state->turn,
+						   state);
+				state->players[state->turn].essence_total -= 100;
+			}
+			else
+			{
+				alertMessage("NOT ENOGH ESSENCE!", 2, state);
+			}
 		}
 		else if(input->button_4)
 		{
@@ -521,13 +547,33 @@ void generateTestMap(struct game_state *state)
    	state->size_y = 10;	
 	allocMap(state->size_x, state->size_y, &state->terrain_map);
 
-	state->terrain_map[1][1] = TILE_ESSENCE;
-	state->terrain_map[8][8] = TILE_ESSENCE;
+	for(i = 0; i < state->size_y; i++)
+	{
+		for(j = 0; j < state->size_x; j++)
+		{
+			state->terrain_map[i][j] = TILE_NORMAL;	
+		}
+	}
+	state->terrain_map[0][0] = TILE_DISABLED;
+	state->terrain_map[1][0] = TILE_DISABLED;
+	state->terrain_map[0][1] = TILE_DISABLED;
+	state->terrain_map[state->size_y-1][state->size_x-1] = TILE_DISABLED;
+	state->terrain_map[state->size_y-2][state->size_x-1] = TILE_DISABLED;
+	state->terrain_map[state->size_y-1][state->size_x-2] = TILE_DISABLED;
+	state->terrain_map[2][2] = TILE_ESSENCE;
+	state->terrain_map[1][6] = TILE_ESSENCE;
+	state->terrain_map[6][1] = TILE_ESSENCE;
+	state->terrain_map[7][7] = TILE_ESSENCE;
+	state->terrain_map[8][3] = TILE_ESSENCE;
+	state->terrain_map[3][8] = TILE_ESSENCE;
+	state->terrain_map[3][6] = TILE_FIRE;
+	state->terrain_map[5][4] = TILE_WATER;
+	state->terrain_map[7][2] = TILE_ICE;
 
-	createWorkshop(3, 3, 0, state);
+	createWorkshop(1, 1, 0, state);
 	createGolem(0, 2, 0, state);
 	createGolem(2, 0, 0, state);
-	createWorkshop(state->size_x - 4, state->size_y - 4, 1, state);
+	createWorkshop(state->size_x - 3, state->size_y - 2, 1, state);
 	createGolem(state->size_x - 3, state->size_y - 1, 1, state);
 	createGolem(state->size_x - 1, state->size_y - 3, 1, state);
 

@@ -34,6 +34,7 @@ typedef struct unit
     float attack_damage;	// attack damage from 0.0 to 1.0
 	int mp_current;			// points left this turn
 	int mp_stat;			// total mp
+	int vision_range;
 	int rotation;
 
 	struct unit *next;		// next unit
@@ -99,26 +100,6 @@ unit* findUnit(unit *iter, int position_x, int position_y){
 	}
 }
 
-unit* createGolem(int pos_x, int pos_y, int team, struct game_state *state)
-{
-		unit *u;
-		createUnit(&u, pos_x, pos_y);
-		u->type = UNIT_GOLEM;
-		u->team = team;
-		u->health = 30;
-		u->attack_range = 2;
-		u->attack_damage = 5;
-		u->mp_stat = 2;
-		u->mp_current = 2;
-		if(team == 0)
-			u->rotation = 1;
-		else if(team == 1)
-			u->rotation = 4;
-		
-		addUnit(u, &state->players[team].units);
-		state->unit_count++;
-}
-
 unit* createWorkshop(int pos_x, int pos_y, int team, struct game_state *state)
 {
 		unit *u;
@@ -130,9 +111,120 @@ unit* createWorkshop(int pos_x, int pos_y, int team, struct game_state *state)
 		u->attack_damage = 0;
 		u->mp_stat = 0;
 		u->mp_current = 2;
+		u->vision_range = 1;
 		u->rotation = 0;
 
 		addUnit(u, &state->players[team].units);
 		state->unit_count++;
 }
 
+unit* createGolem(int pos_x, int pos_y, int team, struct game_state *state)
+{
+		unit *u;
+		createUnit(&u, pos_x, pos_y);
+		u->type = UNIT_GOLEM;
+		u->team = team;
+		u->health = 30;
+		u->attack_range = 2;
+		u->attack_damage = 10;
+		u->mp_stat = 1;
+		u->mp_current = 1;
+		u->vision_range = 2;
+		if(team == 0)
+			u->rotation = 1;
+		else if(team == 1)
+			u->rotation = 4;
+		
+		addUnit(u, &state->players[team].units);
+		state->unit_count++;
+}
+
+unit* createWisp(int pos_x, int pos_y, int team, struct game_state *state)
+{
+		unit *u;
+		createUnit(&u, pos_x, pos_y);
+		u->type = UNIT_WISP;
+		u->team = team;
+		u->health = 10;
+		u->attack_range = 2;
+		u->attack_damage = 5;
+		u->mp_stat = 3;
+		u->mp_current = 3;
+		u->vision_range = 3;
+		u->rotation = 0;
+
+		addUnit(u, &state->players[team].units);
+		state->unit_count++;
+}
+
+unit* createUnboundElemental(int pos_x, int pos_y, int team, struct game_state *state)
+{
+		unit *u;
+		createUnit(&u, pos_x, pos_y);
+		u->type = UNIT_UNBOUND_ELEMENTAL;
+		u->team = team;
+		u->health = 20;
+		u->attack_range = 2;
+		u->attack_damage = 10;
+		u->mp_stat = 2;
+		u->mp_current = 2;
+		u->vision_range = 3;
+		u->rotation = 0;
+
+		addUnit(u, &state->players[team].units);
+		state->unit_count++;
+}
+
+unit* createFireElemental(int pos_x, int pos_y, int team, struct game_state *state)
+{
+		unit *u;
+		createUnit(&u, pos_x, pos_y);
+		u->type = UNIT_UNBOUND_ELEMENTAL;
+		u->team = team;
+		u->health = 40;
+		u->attack_range = 2;
+		u->attack_damage = 20;
+		u->mp_stat = 2;
+		u->mp_current = 2;
+		u->vision_range = 3;
+		u->rotation = 0;
+
+		addUnit(u, &state->players[team].units);
+		state->unit_count++;
+}
+
+unit* createWaterElemental(int pos_x, int pos_y, int team, struct game_state *state)
+{
+		unit *u;
+		createUnit(&u, pos_x, pos_y);
+		u->type = UNIT_UNBOUND_ELEMENTAL;
+		u->team = team;
+		u->health = 40;
+		u->attack_range = 2;
+		u->attack_damage = 20;
+		u->mp_stat = 2;
+		u->mp_current = 2;
+		u->vision_range = 3;
+		u->rotation = 0;
+
+		addUnit(u, &state->players[team].units);
+		state->unit_count++;
+}
+
+unit* createIceElemental(int pos_x, int pos_y, int team, struct game_state *state)
+{
+		unit *u;
+		createUnit(&u, pos_x, pos_y);
+		u->type = UNIT_UNBOUND_ELEMENTAL;
+		u->team = team;
+		u->health = 40;
+		u->attack_range = 2;
+		u->attack_damage = 20;
+		u->mp_stat = 2;
+		u->mp_current = 2;
+		u->vision_range = 3;
+		u->rotation = 0;
+
+		addUnit(u, &state->players[team].units);
+		state->unit_count++;
+}

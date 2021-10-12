@@ -82,7 +82,6 @@ int main()
 		updateUIGL(&state, &gl_state);
 		// Write all updates to the VBO and draw elements to the back buffer
 		updateGL(&state, &gl_state);
-		gl_state.vertices_size = 0; // Resets vertices_size to 0
 
 		updateTexts(&state, &gl_state);
 		drawTexts(&state, &gl_state);
