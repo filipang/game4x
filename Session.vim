@@ -234,11 +234,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 162 - ((15 * winheight(0) + 26) / 53)
+let s:l = 111 - ((15 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 162
+keepjumps 111
 normal! 016|
 tabnext
 edit texture.c
@@ -288,12 +288,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 230 - ((15 * winheight(0) + 26) / 53)
+let s:l = 265 - ((37 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 230
-normal! 05|
+keepjumps 265
+normal! 0
 tabnext
 edit input.c
 set splitbelow splitright
@@ -375,7 +375,7 @@ keepjumps exe s:l
 normal! zt
 keepjumps 84
 normal! 0
-tabnext 10
+tabnext 8
 set stal=1
 badd +0 main.c
 badd +1 utils.c

@@ -201,12 +201,50 @@ void alertMessage(char* message, float time, game_state *state)
 	state->alert_countdown_max = time;
 }
 
+void updateAltars(int team, game_state *state)
+{
+	unit *iter = state->players[team].units;
+	while(iter!=NULL)
+	{
+		int pos_x = iter->position_x;
+		int pos_y = iter->position_y;
+		int deleted = 0;
+		unit* next = iter->next;
+		if(iter->type == UNIT_UNBOUND_ELEMENTAL)
+		{	
+			if(state->terrain_map[pos_y][pos_x] == TILE_FIRE)
+			{
+				removeUnit(&state->players[team].units, iter);
+				state->unit_count--;
+				createFireElemental(pos_x, pos_y, team, state);
+				alertMessage("Fire!", 2, state);
+			}
+			if(state->terrain_map[pos_y][pos_x] == TILE_WATER)
+			{
+				createWaterElemental(pos_x, pos_y, team, state);
+				removeUnit(&state->players[team].units, iter);
+				state->unit_count--;
+			}
+			if(state->terrain_map[pos_y][pos_x] == TILE_ICE)
+			{
+				createIceElemental(pos_x, pos_y, team, state);
+				removeUnit(&state->players[team].units, iter);
+				state->unit_count--;
+			}
+		}
+		iter = next;
+	}
+}
+
 // End curent player turn and start next player turn
 void turn(game_state* state)
 {
 	//state-> turn is -1 when the game starts
 	if(state->turn != -1)
+	{
 		updateEssenceTotal(state->turn, state);
+		updateAltars(state->turn, state);
+	}
 
 	state->turn = (state->turn + 1)%state->player_number;
 	state->turn_count++;

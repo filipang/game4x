@@ -179,7 +179,7 @@ unit* createFireElemental(int pos_x, int pos_y, int team, struct game_state *sta
 {
 		unit *u;
 		createUnit(&u, pos_x, pos_y);
-		u->type = UNIT_UNBOUND_ELEMENTAL;
+		u->type = UNIT_FIRE_ELEMENTAL;
 		u->team = team;
 		u->health = 40;
 		u->attack_range = 2;
@@ -197,7 +197,7 @@ unit* createWaterElemental(int pos_x, int pos_y, int team, struct game_state *st
 {
 		unit *u;
 		createUnit(&u, pos_x, pos_y);
-		u->type = UNIT_UNBOUND_ELEMENTAL;
+		u->type = UNIT_WATER_ELEMENTAL;
 		u->team = team;
 		u->health = 40;
 		u->attack_range = 2;
@@ -215,7 +215,7 @@ unit* createIceElemental(int pos_x, int pos_y, int team, struct game_state *stat
 {
 		unit *u;
 		createUnit(&u, pos_x, pos_y);
-		u->type = UNIT_UNBOUND_ELEMENTAL;
+		u->type = UNIT_ICE_ELEMENTAL;
 		u->team = team;
 		u->health = 40;
 		u->attack_range = 2;
