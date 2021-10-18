@@ -44,6 +44,7 @@ int main()
 
 	GLFWwindow* window;
 
+	// NOTE(check if save exists in memory and load it)
 	initializeGameState(&state);
 	initializeGraphics(&window, &state, &gl_state);
 
@@ -95,7 +96,6 @@ int main()
 
 
 	// EXIT SETUP --------------------------------------------------------------
-	freeMap(state.size_x, state.size_y, state.terrain_map);
 	// Free allocated memory
 	finalizeGraphics(window, &gl_state);
 	return 0;

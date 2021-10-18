@@ -11,12 +11,22 @@
 *
 *******************************************************************************/
 #define SUB_TEXTURE_COUNT 2
-#define TEXMAP_WIDTH 576
-#define TEXMAP_HEIGHT 256
+#define TEXMAP_WIDTH 768
+#define TEXMAP_HEIGHT 64
 
-#define TEXTURE_GOLEM	2
-#define TEXTURE_GRASS	1
-#define TEXTURE_FOG		0
+#define TEXTURE_GRASS				5
+#define TEXTURE_FOG					3
+#define TEXTURE_MOUNTAIN			7
+#define TEXTURE_ESSENCE				1
+#define TEXTURE_GOLEM				4
+#define TEXTURE_UNBOUND_ELEMENTAL	8
+#define TEXTURE_FIRE_ELEMENTAL		2
+#define TEXTURE_WATER_ELEMENTAL 	9
+#define TEXTURE_ICE_ELEMENTAL		6
+#define TEXTURE_ARCANE_ELEMENTAL	0
+#define TEXTURE_WORKSHOP			10
+#define TEXTURE_WISP				11
+
 
 typedef struct sub_texture
 {
@@ -38,27 +48,10 @@ char *loadTexture(const char *texture_location)
 sub_texture loadSubtextureBounds(int texture_index)
 {
 	sub_texture result;
-	if(texture_index == 0)	
-	{
-		result.start_x = ((GLfloat) (0.0 * 256.0 * 2 + 3.0)) / (2 * TEXMAP_WIDTH);
-		result.start_y = ((GLfloat) (0.0 * 256.0 * 2 + 3.0)) / (2 * TEXMAP_HEIGHT);
-		result.width = ((GLfloat) (2.0 * 256.0 - 6.0)) / (2 * TEXMAP_WIDTH);
-		result.height = ((GLfloat) (2.0 * 256.0 - 6.0)) / (2 * TEXMAP_HEIGHT);
-	}
-	else if(texture_index == 1)
-	{
-		result.start_x = ((GLfloat) (1.0 * 256.0 * 2 + 3.0)) / (2 * TEXMAP_WIDTH);
-		result.start_y = ((GLfloat) (0.0 * 256.0 * 2 + 3.0)) / (2 * TEXMAP_HEIGHT);
-		result.width = ((GLfloat) (2.0 * 256.0 - 6.0)) / (2 * TEXMAP_WIDTH);
-		result.height = ((GLfloat) (2.0 * 256.0 - 6.0)) / (2 * TEXMAP_HEIGHT);
-	}
-	else if(texture_index == 2)
-	{
-		result.start_x = ((GLfloat) (2.0 * 256.0 * 2 + 3.0)) / (2 * TEXMAP_WIDTH);
-		result.start_y = ((GLfloat) (1.0 * 192.0 * 2 + 3.0)) / (2 * TEXMAP_HEIGHT);
-		result.width = ((GLfloat) (2.0 * 64.0 - 6.0)) / (2 * TEXMAP_WIDTH);
-		result.height = ((GLfloat) (2.0 * 64.0 - 6.0)) / (2 * TEXMAP_HEIGHT);
-	}
+	result.start_x = ((float)texture_index) * (1.0/12.0);
+	result.start_y = 0;
+	result.width = 1.0/12; 
+	result.height = 1;
 
 	return result;
 }	

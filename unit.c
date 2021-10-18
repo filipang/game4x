@@ -23,208 +23,131 @@
 #define UNIT_ARCANE_PULSE		8
 
 // NOTE(filip): Everything has to be simplified to be re-written in ASM
-typedef struct unit
-{
-	int health; 			// from 0.0 to 1.0
-	int position_x;			// map position
-	int position_y;
-	int type; 				// 1, 2 or 3
-	int team; 				// from 0 to number of players
-	int attack_range;		// attack range
-    float attack_damage;	// attack damage from 0.0 to 1.0
-	int mp_current;			// points left this turn
-	int mp_stat;			// total mp
-	int vision_range;
-	int rotation;
-
-	struct unit *next;		// next unit
-} unit;
-
-void createUnit(unit **u, int position_x, int position_y)
+int createUnit(int position_x, int position_y, game_state *state)
 {	
-	*u = malloc(sizeof(unit));
-	(*u)->position_x = position_x;
-	(*u)->position_y = position_y;
-	(*u)->next = NULL;
+	state->units[state->unit_count].position_x = position_x;
+	state->units[state->unit_count].position_y = position_y;;
+	state->unit_count++;
+	return state->unit_count-1;
 }
 
-void addUnit(unit *src, unit **dst){
-	if((*dst) == NULL)
+void removeUnit(int index, game_state *state){
+	int i;
+	for(i = index + 1; i < state->unit_count; i++)
 	{
-		(*dst) = src;
+		state->units[i-1] = state->units[i];
 	}
-	else if((*dst)->next == NULL)
-	{
-		(*dst)->next = src;
-	}
-	else
-	{
-		addUnit(src, &(*dst)->next);
-	}
+	state->unit_count--;
 }
 
-// TODO(filip): Free unit list function
-void removeUnit(unit **base, unit *target){
-	unit *iter = (*base);
-	if(iter == target)
+int findUnit(int position_x, int position_y, game_state *state){
+	int i;
+	for(i = 0; i <= state->unit_count; i++)
 	{
-		unit *u = (*base)->next;
-		free(*base);
-		(*base) = u;
+		if(state->units[i].position_x == position_x &&
+		   state->units[i].position_y == position_y)
+			return i;	
 	}
-	else
-	{
-		while(iter != NULL)
-		{
-			if(iter->next == target)
-			{
-				iter->next = target->next;
-				free(target);
-			}
-			iter = iter->next;	
-		}
-	}
-}
-
-unit* findUnit(unit *iter, int position_x, int position_y){
-	if(iter == NULL){	
-		return NULL;
-	}
-	else if(iter->position_x == position_x && iter->position_y == position_y)
-	{
-		return iter;
-	}
-	else
-	{
-		return findUnit(iter->next, position_x, position_y);
-	}
+	return -1;
 }
 
 unit* createWorkshop(int pos_x, int pos_y, int team, struct game_state *state)
 {
-		unit *u;
-		createUnit(&u, pos_x, pos_y);
-		u->type = UNIT_WORKSHOP;
-		u->team = team;
-		u->health = 80;
-		u->attack_range = 0;
-		u->attack_damage = 0;
-		u->mp_stat = 0;
-		u->mp_current = 2;
-		u->vision_range = 1;
-		u->rotation = 0;
-
-		addUnit(u, &state->players[team].units);
-		state->unit_count++;
+		int u = createUnit(pos_x, pos_y, state);
+		state->units[u].type = UNIT_WORKSHOP;
+		state->units[u].team = team;
+		state->units[u].health = 80;
+		state->units[u].attack_range = 0;
+		state->units[u].attack_damage = 0;
+		state->units[u].mp_stat = 0;
+		state->units[u].mp_current = 2;
+		state->units[u].vision_range = 1;
+		state->units[u].rotation = 0;
 }
 
 unit* createGolem(int pos_x, int pos_y, int team, struct game_state *state)
 {
-		unit *u;
-		createUnit(&u, pos_x, pos_y);
-		u->type = UNIT_GOLEM;
-		u->team = team;
-		u->health = 30;
-		u->attack_range = 2;
-		u->attack_damage = 10;
-		u->mp_stat = 1;
-		u->mp_current = 1;
-		u->vision_range = 2;
+		int u = createUnit(pos_x, pos_y, state);
+		state->units[u].type = UNIT_GOLEM;
+		state->units[u].team = team;
+		state->units[u].health = 30;
+		state->units[u].attack_range = 2;
+		state->units[u].attack_damage = 10;
+		state->units[u].mp_stat = 1;
+		state->units[u].mp_current = 1;
+		state->units[u].vision_range = 2;
 		if(team == 0)
-			u->rotation = 1;
+			state->units[u].rotation = 1;
 		else if(team == 1)
-			u->rotation = 4;
-		
-		addUnit(u, &state->players[team].units);
-		state->unit_count++;
+			state->units[u].rotation = 4;
 }
 
 unit* createWisp(int pos_x, int pos_y, int team, struct game_state *state)
 {
-		unit *u;
-		createUnit(&u, pos_x, pos_y);
-		u->type = UNIT_WISP;
-		u->team = team;
-		u->health = 10;
-		u->attack_range = 2;
-		u->attack_damage = 5;
-		u->mp_stat = 3;
-		u->mp_current = 3;
-		u->vision_range = 3;
-		u->rotation = 0;
-
-		addUnit(u, &state->players[team].units);
-		state->unit_count++;
+		int u = createUnit(pos_x, pos_y, state);
+		state->units[u].type = UNIT_WISP;
+		state->units[u].team = team;
+		state->units[u].health = 10;
+		state->units[u].attack_range = 2;
+		state->units[u].attack_damage = 5;
+		state->units[u].mp_stat = 3;
+		state->units[u].mp_current = 3;
+		state->units[u].vision_range = 3;
+		state->units[u].rotation = 0;
 }
 
 unit* createUnboundElemental(int pos_x, int pos_y, int team, struct game_state *state)
 {
-		unit *u;
-		createUnit(&u, pos_x, pos_y);
-		u->type = UNIT_UNBOUND_ELEMENTAL;
-		u->team = team;
-		u->health = 20;
-		u->attack_range = 2;
-		u->attack_damage = 10;
-		u->mp_stat = 2;
-		u->mp_current = 2;
-		u->vision_range = 3;
-		u->rotation = 0;
-
-		addUnit(u, &state->players[team].units);
-		state->unit_count++;
+		int u = createUnit(pos_x, pos_y, state);
+		state->units[u].type = UNIT_UNBOUND_ELEMENTAL;
+		state->units[u].team = team;
+		state->units[u].health = 20;
+		state->units[u].attack_range = 2;
+		state->units[u].attack_damage = 10;
+		state->units[u].mp_stat = 2;
+		state->units[u].mp_current = 2;
+		state->units[u].vision_range = 3;
+		state->units[u].rotation = 0;
 }
 
 unit* createFireElemental(int pos_x, int pos_y, int team, struct game_state *state)
 {
-		unit *u;
-		createUnit(&u, pos_x, pos_y);
-		u->type = UNIT_FIRE_ELEMENTAL;
-		u->team = team;
-		u->health = 40;
-		u->attack_range = 2;
-		u->attack_damage = 20;
-		u->mp_stat = 2;
-		u->mp_current = 2;
-		u->vision_range = 3;
-		u->rotation = 0;
-
-		addUnit(u, &state->players[team].units);
-		state->unit_count++;
+		int u = createUnit(pos_x, pos_y, state);
+		state->units[u].type = UNIT_FIRE_ELEMENTAL;
+		state->units[u].team = team;
+		state->units[u].health = 40;
+		state->units[u].attack_range = 2;
+		state->units[u].attack_damage = 20;
+		state->units[u].mp_stat = 2;
+		state->units[u].mp_current = 2;
+		state->units[u].vision_range = 3;
+		state->units[u].rotation = 0;
 }
 
 unit* createWaterElemental(int pos_x, int pos_y, int team, struct game_state *state)
 {
-		unit *u;
-		createUnit(&u, pos_x, pos_y);
-		u->type = UNIT_WATER_ELEMENTAL;
-		u->team = team;
-		u->health = 40;
-		u->attack_range = 2;
-		u->attack_damage = 20;
-		u->mp_stat = 2;
-		u->mp_current = 2;
-		u->vision_range = 3;
-		u->rotation = 0;
-
-		addUnit(u, &state->players[team].units);
-		state->unit_count++;
+		int u = createUnit(pos_x, pos_y, state);
+		state->units[u].type = UNIT_WATER_ELEMENTAL;
+		state->units[u].team = team;
+		state->units[u].health = 40;
+		state->units[u].attack_range = 2;
+		state->units[u].attack_damage = 20;
+		state->units[u].mp_stat = 2;
+		state->units[u].mp_current = 2;
+		state->units[u].vision_range = 3;
+		state->units[u].rotation = 0;
 }
 
 unit* createIceElemental(int pos_x, int pos_y, int team, struct game_state *state)
 {
-		unit *u;
-		createUnit(&u, pos_x, pos_y);
-		u->type = UNIT_ICE_ELEMENTAL;
-		u->team = team;
-		u->health = 40;
-		u->attack_range = 2;
-		u->attack_damage = 20;
-		u->mp_stat = 2;
-		u->mp_current = 2;
-		u->vision_range = 3;
-		u->rotation = 0;
-
-		addUnit(u, &state->players[team].units);
-		state->unit_count++;
+		int u = createUnit(pos_x, pos_y, state);
+		state->units[u].type = UNIT_ICE_ELEMENTAL;
+		state->units[u].team = team;
+		state->units[u].health = 40;
+		state->units[u].attack_range = 2;
+		state->units[u].attack_damage = 20;
+		state->units[u].mp_stat = 2;
+		state->units[u].mp_current = 2;
+		state->units[u].vision_range = 3;
+		state->units[u].rotation = 0;
 }

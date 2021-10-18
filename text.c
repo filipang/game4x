@@ -70,28 +70,34 @@ void updateTexts(game_state *state, gl_game_state *gl_state)
 			state->players[state->turn].essence_generation);
 	updateText(message, 0.55, -0.90, gl_state);
 
-	if(state->selected_unit != NULL)
+	int displayed_unit = -1;
+	if(state->selected_unit != -1) 
+		displayed_unit = state->selected_unit;
+	if(state->target_unit != -1)
+		displayed_unit = state->target_unit;
+
+	if(displayed_unit != -1)
 	{
-		snprintf(message, 100, "Selected unit: %s", 
-				gl_state->state->unit_names[state->selected_unit->type]);
+		snprintf(message, 100, "Unit type: %s", 
+				gl_state->state->unit_names[state->units[displayed_unit].type]);
 		updateText(message, -0.96, -0.75, gl_state);
 
 		snprintf(message, 100, 
 				"Health points left: %d", 
-				state->selected_unit->health);
+				state->units[displayed_unit].health);
 		updateText(message, -0.96, -0.80, gl_state);
 
 
-		if(state->selected_unit->type != UNIT_WORKSHOP) 
+		if(state->units[displayed_unit].type != UNIT_WORKSHOP) 
 		{
 			snprintf(message, 100, 
 					"Movement points left: %d", 
-					state->selected_unit->mp_current); 
+					state->units[displayed_unit].mp_current); 
 			updateText(message, -0.96, -0.85, gl_state);
 
 			snprintf(message, 100, 
 					"Attack damage: %d", 
-					state->selected_unit->attack_damage); 
+					state->units[displayed_unit].attack_damage);
 			updateText(message, -0.96, -0.90, gl_state);
 
 			snprintf(message, 100, "Options: TAB-CycleUnits, V-Move, T-Attack");

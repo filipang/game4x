@@ -31,6 +31,8 @@ typedef struct input_pressed
 	unsigned char key_pressed_2;
 	unsigned char key_pressed_3;
 	unsigned char key_pressed_4;
+	unsigned char key_pressed_LMB;
+	unsigned char key_pressed_RMB;
 
 	unsigned char button_W;
 	unsigned char button_A;
@@ -48,6 +50,14 @@ typedef struct input_pressed
 	unsigned char button_2;
 	unsigned char button_3;
 	unsigned char button_4;
+	unsigned char button_LMB;
+	unsigned char button_RMB;
+
+
+	double mouse_x;
+	double mouse_y;
+	double mouse_delta_x;
+	double mouse_delta_y;
 
 } input_pressed;
 
@@ -81,4 +91,39 @@ void updateInput(struct GLFWwindow *window, input_pressed *input)
 	PROCESS_BUTTON_INPUT(2);
 	PROCESS_BUTTON_INPUT(3);
 	PROCESS_BUTTON_INPUT(4);
+	#undef PROCESS_BUTTON_INPUT
+	
+	if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+	{
+		if(input->key_pressed_LMB == 0)
+			input->button_LMB = 1;
+		else
+			input->button_LMB = 0;
+		input->key_pressed_LMB  = 1;
+	} else
+	{
+		input->button_LMB = 0; 
+		input->key_pressed_LMB = 0;
+	}
+
+	if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
+	{
+		if(input->key_pressed_RMB == 0)
+			input->button_RMB = 1;
+		else
+			input->button_RMB = 0;
+		input->key_pressed_RMB  = 1;
+	} else
+	{
+		input->button_RMB = 0; 
+		input->key_pressed_RMB = 0;
+	}
+
+	float old_mouse_x = input->mouse_x;
+	float old_mouse_y = input->mouse_y;
+
+	glfwGetCursorPos(window, &input->mouse_x, &input->mouse_y);
+
+	input->mouse_delta_x = input->mouse_x - old_mouse_x;
+	input->mouse_delta_y = input->mouse_y - old_mouse_y;
 }
