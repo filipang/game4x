@@ -60,15 +60,27 @@ void updateTexts(game_state *state, gl_game_state *gl_state)
 	updateText(message, 0.55, -0.75, gl_state);
 
 	snprintf(message, 100, "Player turn: %d", gl_state->state->turn);
-	updateText(message, 0.55, -0.80, gl_state);
+	updateText(message, 0.55, -0.79, gl_state);
 
 	snprintf(message, 100, "Turn count: %d", state->turn_count/state->player_number);
-	updateText(message, 0.55, -0.85, gl_state);
+	updateText(message, 0.55, -0.83, gl_state);
 
 	snprintf(message, 100, "Your essence: %d (+%d)", 
 			state->players[state->turn].essence_total, 
 			state->players[state->turn].essence_generation);
-	updateText(message, 0.55, -0.90, gl_state);
+	updateText(message, 0.55, -0.87, gl_state);
+
+	if(state->players[(state->turn+1)%2].turns_to_pulse == -1)
+		snprintf(message, 100, "Enemy Pulse: not detected");
+	else 
+		snprintf(message, 100, "Enemy Pulse: %d turns left", state->players[(state->turn+1)%2].turns_to_pulse);
+	updateText(message, 0.55, -0.91, gl_state);
+
+	if(state->players[state->turn].turns_to_pulse == -1)
+		snprintf(message, 100, "Your Pulse: not detected");
+	else 
+		snprintf(message, 100, "Your Pulse: %d turns left", state->players[state->turn].turns_to_pulse);
+	updateText(message, 0.55, -0.95, gl_state);
 
 	int displayed_unit = -1;
 	if(state->selected_unit != -1) 

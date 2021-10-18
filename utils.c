@@ -48,6 +48,19 @@ char* loadFile(const char* file_name)
 	return dest;
 }
 
+void writeFile(const char* file_name, unsigned char *data, int data_size)
+{
+	FILE *fp = fopen(file_name, "w");
+	if (fp != NULL) {
+		//Read the entire file into memory. 
+		size_t newLen = fwrite(data, sizeof(char), data_size, fp);
+		if ( ferror( fp ) != 0 ) {
+			fputs("Error reading file", stderr);
+		} 
+		fclose(fp);
+	}
+}
+
 // Finds smallest power of two greater than n
 int nextPowerOf2(int n)
 {

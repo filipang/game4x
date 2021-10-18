@@ -95,9 +95,21 @@ typedef struct game_state
 	float alert_countdown;
 	float alert_countdown_max;
 	double delta_time;
+	int end;
 } game_state;
 
 #include "unit.c"
+
+void saveState(game_state* state)
+{
+	writeFile("data.save", (char *)state, sizeof(game_state) + 1);
+}
+
+void loadState(game_state* state)
+{
+	char* data = loadFile("data.save");
+	memcpy(state, data, sizeof(game_state));
+}
 
 void printMap(int size_x, int size_y, 
 			  unsigned char **map)
@@ -129,6 +141,8 @@ void initializeGameState(game_state* state)
 	state->map_offset_x = -0.0;
 	state->map_offset_y = -0.0;
 	state->map_hex_size = 0.1;
+	state->players[0].turns_to_pulse = -1;
+	state->players[1].turns_to_pulse = -1;
 	
 	state->unit_names = malloc(10 * sizeof(char *));
 	#define BIND_UNIT_NAME(index, string)\
@@ -214,6 +228,88 @@ void updateAltars(int team, game_state *state)
 	}
 }
 
+void startArcanePulse(game_state *state)
+{
+	if(state->players[state->turn].essence_total >= 600)
+	{
+		state->players[state->turn].essence_total -= 600;
+		state->players[state->turn].turns_to_pulse = 6;
+
+	}
+	else
+		alertMessage("NOT ENOUGH ESSENCE!", 2, state);
+}
+
+void killAllEnemies(int team, game_state *state)
+{
+	int i;
+	for(i = 0; i < state->unit_count; i++)
+	{
+		if(state->units[i].team != team && state->units[i].type != UNIT_WORKSHOP)
+		{
+			removeUnit(i, state);
+			i--;
+		}
+	}
+}
+
+void updateArcanePulse(game_state *state)
+{
+	if(state->players[state->turn].turns_to_pulse != -1)
+	{
+		state->players[state->turn].turns_to_pulse--;
+		if(state->players[state->turn].turns_to_pulse == 0)
+		{
+			killAllEnemies(state->turn, state);
+			state->players[state->turn].turns_to_pulse = -1;
+			alertMessage("ALL YOUR UNITS WERE DESTROYED!", 4, state);
+		}
+	}
+}
+
+int unitDistance(int u1, int u2, game_state *state)
+{
+	return hexDistance(state->units[u1].position_x, state->units[u1].position_y,
+					   state->units[u2].position_x, state->units[u2].position_y);
+}
+
+void updateArcaneElemental(game_state *state)
+{
+	int i, j, k;
+	for(i = 0; i < state->unit_count; i++)
+	{
+		if(state->units[i].type == UNIT_FIRE_ELEMENTAL)
+		{
+			for(j = 0; j < state->unit_count; j++)
+			{
+				if(state->units[j].type == UNIT_WATER_ELEMENTAL
+				   && unitDistance(i, j, state) == 1)
+				{
+					for(k = 0; k < state->unit_count; k++)
+					{
+						if(state->units[k].type == UNIT_ICE_ELEMENTAL
+						   && unitDistance(j, k, state) == 1 && unitDistance(i, k, state) == 1)
+							{
+							int x = state->units[i].position_x;
+							int y = state->units[i].position_y;
+							removeUnit(i, state);
+							removeUnit(j, state);
+							removeUnit(k, state);
+							i--;
+							j--;
+							k--;
+							createArcaneElemental(x, y, 
+												  state->turn,
+												  state);
+						}
+					}
+				}
+				
+			}
+		}
+	}
+}
+
 int isUnitInVisionRange(int target, game_state *state)
 {
 	int in_range = 0;
@@ -241,6 +337,12 @@ void turn(game_state* state)
 	{
 		updateEssenceTotal(state->turn, state);
 		updateAltars(state->turn, state);
+		updateArcanePulse(state);
+		updateArcaneElemental(state);
+		if(state->players[state->turn].turns_to_pulse!=-1)
+		{
+			alertMessage("ENEMY IS WINDING UP AN ARCANE PULSE!", 3, state);
+		}
 	}
 
 	state->turn = (state->turn + 1)%state->player_number;
@@ -255,6 +357,7 @@ void turn(game_state* state)
 	state->selected_unit = -1;
 	state->cursor_active = 0;
 	state->mode = MODE_NORMAL;
+
 }
 
 int isInMapBounds(int x, int y, game_state *state)
@@ -396,6 +499,20 @@ void attackSelectedUnit(struct game_state *state)
 
 void processInput(struct input_pressed *input, struct game_state *state)
 {
+	if(input->button_S && input->key_pressed_LEFT_CONTROL)
+	{
+		saveState(state);
+		alertMessage("Saving game...", 2, state);
+	}
+	if(input->button_L && input->key_pressed_LEFT_CONTROL)
+	{
+		loadState(state);
+		alertMessage("Loaded game!", 2, state);
+	}
+	if(input->key_pressed_ESCAPE >= 100)
+	{
+		state->end = 1;
+	}
 	if(state->mode == MODE_NORMAL)
 	{
 		if(input->key_pressed_LMB)
@@ -578,7 +695,7 @@ void processInput(struct input_pressed *input, struct game_state *state)
 		}
 		else if(input->button_4)
 		{
-
+			startArcanePulse(state);
 		}
 	}
 

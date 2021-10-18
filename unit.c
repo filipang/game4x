@@ -151,3 +151,17 @@ unit* createIceElemental(int pos_x, int pos_y, int team, struct game_state *stat
 		state->units[u].vision_range = 3;
 		state->units[u].rotation = 0;
 }
+
+unit* createArcaneElemental(int pos_x, int pos_y, int team, struct game_state *state)
+{
+		int u = createUnit(pos_x, pos_y, state);
+		state->units[u].type = UNIT_ARCANE_ELEMENTAL;
+		state->units[u].team = team;
+		state->units[u].health = 150;
+		state->units[u].attack_range = 3;
+		state->units[u].attack_damage = 80;
+		state->units[u].mp_stat = 4;
+		state->units[u].mp_current = 4;
+		state->units[u].vision_range = 6;
+		state->units[u].rotation = 0;
+}

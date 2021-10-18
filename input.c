@@ -33,6 +33,8 @@ typedef struct input_pressed
 	unsigned char key_pressed_4;
 	unsigned char key_pressed_LMB;
 	unsigned char key_pressed_RMB;
+	unsigned char key_pressed_L;
+	unsigned char key_pressed_LEFT_CONTROL;
 
 	unsigned char button_W;
 	unsigned char button_A;
@@ -52,7 +54,8 @@ typedef struct input_pressed
 	unsigned char button_4;
 	unsigned char button_LMB;
 	unsigned char button_RMB;
-
+	unsigned char button_L;
+	unsigned char button_LEFT_CONTROL;
 
 	double mouse_x;
 	double mouse_y;
@@ -71,7 +74,7 @@ void updateInput(struct GLFWwindow *window, input_pressed *input)
 			input->button_##button = 1;								\
 		else														\
 			input->button_##button = 0;								\
-		input->key_pressed_##button = 1;							\
+		input->key_pressed_##button += 1;							\
 	}else 															\
 	{input->button_##button = 0;input->key_pressed_##button = 0;}
 
@@ -91,6 +94,8 @@ void updateInput(struct GLFWwindow *window, input_pressed *input)
 	PROCESS_BUTTON_INPUT(2);
 	PROCESS_BUTTON_INPUT(3);
 	PROCESS_BUTTON_INPUT(4);
+	PROCESS_BUTTON_INPUT(L);
+	PROCESS_BUTTON_INPUT(LEFT_CONTROL);
 	#undef PROCESS_BUTTON_INPUT
 	
 	if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)

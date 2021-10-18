@@ -57,7 +57,7 @@ int main()
 	double deltaTime = 0, nowTime = 0;
     int frames = 0 , updates = 0;
 	// MAIN LOOP  --------------------------------------------------------------
-	while (!glfwWindowShouldClose(window))
+	while (!glfwWindowShouldClose(window) && !state.end)
 	{
 	    // Measure frame 
         nowTime = glfwGetTime();
