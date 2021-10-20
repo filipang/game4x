@@ -676,6 +676,7 @@ void updateFogOfWar(game_state *state, gl_game_state *gl_state)
 				   && state->turn == iter->team)
 					is_fog = 0;			
 			}
+			if(state->mode == MODE_TRANSITION) is_fog = 1;
 			if(is_fog && tile != TILE_DISABLED)
 			{
 				hexGridToViewport(j, i, 

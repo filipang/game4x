@@ -21,10 +21,11 @@
 #define TILE_WATER	  5
 #define TILE_ICE	  6
 
-#define MODE_NORMAL 0
-#define MODE_MOVE 	1
-#define MODE_ATTACK 2
-#define MODE_BUILD	3
+#define MODE_NORMAL 	0
+#define MODE_MOVE 		1
+#define MODE_ATTACK		2
+#define MODE_BUILD		3
+#define MODE_TRANSITION	4
 
 #define MAX_MAP_SIZE_X 100
 #define MAX_MAP_SIZE_Y 100
@@ -58,6 +59,8 @@ typedef struct player_state
 	int essence_total;
 	int essence_generation;
 	int turns_to_pulse;
+	int spawn_tile_x;
+	int spawn_tile_y;
 	unsigned char team;
 
 } player_state;
@@ -137,6 +140,8 @@ void initializeGameState(game_state* state)
 	state->mode = MODE_NORMAL;
 	state->unit_count = 0;
 	state->alert_countdown = -1;
+	state->selected_unit = -1;
+	state->target_unit = -1;
 
 	state->map_offset_x = -0.0;
 	state->map_offset_y = -0.0;
@@ -343,6 +348,7 @@ void turn(game_state* state)
 		{
 			alertMessage("ENEMY IS WINDING UP AN ARCANE PULSE!", 3, state);
 		}
+		state->mode = MODE_TRANSITION;
 	}
 
 	state->turn = (state->turn + 1)%state->player_number;
@@ -356,7 +362,6 @@ void turn(game_state* state)
 
 	state->selected_unit = -1;
 	state->cursor_active = 0;
-	state->mode = MODE_NORMAL;
 
 }
 
@@ -499,6 +504,10 @@ void attackSelectedUnit(struct game_state *state)
 
 void processInput(struct input_pressed *input, struct game_state *state)
 {
+	if(input->key_pressed_S && input->key_pressed_LEFT_CONTROL)
+	{
+		input->key_pressed_S = 0;
+	}
 	if(input->button_S && input->key_pressed_LEFT_CONTROL)
 	{
 		saveState(state);
@@ -513,7 +522,14 @@ void processInput(struct input_pressed *input, struct game_state *state)
 	{
 		state->end = 1;
 	}
-	if(state->mode == MODE_NORMAL)
+	if(state->mode == MODE_TRANSITION)
+	{
+		if(input->button_ENTER)
+		{
+			state->mode = MODE_NORMAL;
+		}
+	}
+	else if(state->mode == MODE_NORMAL)
 	{
 		if(input->key_pressed_LMB)
 		{
@@ -644,62 +660,78 @@ void processInput(struct input_pressed *input, struct game_state *state)
 		{
 			step(state);
 		}
-		if(input->button_1)
+		if(findUnit(state->players[state->turn].spawn_tile_x,
+					state->players[state->turn].spawn_tile_y,
+					state) == -1
+			&&
+			isInMapBounds(state->players[state->turn].spawn_tile_x,
+						  state->players[state->turn].spawn_tile_y,
+						  state))
 		{
-			// TODO(filip): Check if space is obstructed and spawn somewhere 
-			// 				else if it is
-			// SPAWNS WISP
-			if(state->players[state->turn].essence_total >= 50)
+			if(input->button_1)
 			{
-				createWisp(state->units[state->selected_unit].position_x + 1, 
-						   state->units[state->selected_unit].position_y,
-						   state->turn,
-						   state);
-				state->players[state->turn].essence_total -= 50;
+				// TODO(filip): Check if space is obstructed and spawn somewhere 
+				// 				else if it is
+				// SPAWNS WISP
+				if(state->players[state->turn].essence_total >= 50)
+				{
+					createWisp(state->players[state->turn].spawn_tile_x, 
+							   state->players[state->turn].spawn_tile_y,
+							   state->turn,
+							   state);
+					state->players[state->turn].essence_total -= 50;
+				}
+				else
+				{
+					alertMessage("NOT ENOGH ESSENCE!", 2, state);
+				}
 			}
-			else
+			else if(input->button_2)
 			{
-				alertMessage("NOT ENOGH ESSENCE!", 2, state);
+				// SPAWNS GOLEM
+				if(state->players[state->turn].essence_total >= 100)
+				{
+					createGolem(state->players[state->turn].spawn_tile_x, 
+							    state->players[state->turn].spawn_tile_y,
+							    state->turn,
+							    state);
+					state->players[state->turn].essence_total -= 100;
+				}
+				else
+				{
+					alertMessage("NOT ENOGH ESSENCE!", 2, state);
+				}
+			}
+			else if(input->button_3)
+			{
+				if(state->players[state->turn].essence_total >= 100)
+				{
+					createUnboundElemental(state->players[state->turn].spawn_tile_x, 
+										   state->players[state->turn].spawn_tile_y,
+										   state->turn,
+										   state);
+					state->players[state->turn].essence_total -= 100;
+				}
+				else
+				{
+					alertMessage("NOT ENOGH ESSENCE!", 2, state);
+				}
 			}
 		}
-		else if(input->button_2)
-		{
-			// SPAWNS GOLEM
-			if(state->players[state->turn].essence_total >= 100)
-			{
-				createGolem(state->units[state->selected_unit].position_x + 1, 
-							state->units[state->selected_unit].position_y,
-							state->turn,
-							state);
-				state->players[state->turn].essence_total -= 100;
-			}
-			else
-			{
-				alertMessage("NOT ENOGH ESSENCE!", 2, state);
-			}
-		}
-		else if(input->button_3)
-		{
-			if(state->players[state->turn].essence_total >= 100)
-			{
-				createUnboundElemental(state->units[state->selected_unit].position_x + 1, 
-						   state->units[state->selected_unit].position_y,
-						   state->turn,
-						   state);
-				state->players[state->turn].essence_total -= 100;
-			}
-			else
-			{
-				alertMessage("NOT ENOGH ESSENCE!", 2, state);
-			}
-		}
-		else if(input->button_4)
+		else if(findUnit(state->players[state->turn].spawn_tile_x,
+					state->players[state->turn].spawn_tile_y,
+					state) != -1 && (input->button_1 || input->button_2 ||
+									 input->button_3))
+			alertMessage("Your spawn tile is occupied!!!", 2, state);
+
+		if(input->button_4)
 		{
 			startArcanePulse(state);
 		}
 	}
 
-	if(state->mode == MODE_ATTACK || state->mode == MODE_MOVE)
+	if((state->mode == MODE_ATTACK || state->mode == MODE_MOVE) && 
+		state->mode != MODE_TRANSITION)
 	{
 		float viewport_x, viewport_y;
 		int hex_x, hex_y;
@@ -712,7 +744,9 @@ void processInput(struct input_pressed *input, struct game_state *state)
 		setMoveCursor(hex_x, hex_y, state);
 	}
 
-	if(state->mode != MODE_ATTACK && state->mode != MODE_MOVE)
+	if(state->mode != MODE_ATTACK && 
+	   state->mode != MODE_MOVE && 
+	   state->mode != MODE_TRANSITION)
 	{	
 		if(input->button_LMB)
 		{
@@ -770,9 +804,13 @@ void generateTestMap(struct game_state *state)
 	state->terrain_map[7][2] = TILE_ICE;
 
 	createWorkshop(1, 1, 0, state);
+	state->players[0].spawn_tile_x = 1;
+	state->players[0].spawn_tile_y = 2;
 	createGolem(0, 2, 0, state);
 	createGolem(2, 0, 0, state);
 	createWorkshop(state->size_x - 3, state->size_y - 2, 1, state);
+	state->players[1].spawn_tile_x = state->size_x-3;
+	state->players[1].spawn_tile_y = state->size_y-3;
 	createGolem(state->size_x - 3, state->size_y - 1, 1, state);
 	createGolem(state->size_x - 1, state->size_y - 3, 1, state);
 

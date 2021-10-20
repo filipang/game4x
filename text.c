@@ -135,6 +135,13 @@ void updateTexts(game_state *state, gl_game_state *gl_state)
 						state->alert_countdown/state->alert_countdown_max, 
 						gl_state);
 	}
+
+	if(state->mode == MODE_TRANSITION)
+	{	
+		snprintf(message, 100, 
+				 "Press ENTER to start your turn");
+			updateText(message, -0.2, 0, gl_state);
+	}
 }
 
 void drawTexts(game_state *state, gl_game_state *gl_state) 
