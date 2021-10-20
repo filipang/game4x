@@ -81,7 +81,11 @@ void initializeGraphics(GLFWwindow **window,
 	glfwSetInputMode(*window, GLFW_STICKY_KEYS, GLFW_TRUE);
 	// TODO(filip): fix mouse lag
 	// Load GLAD so it configures OpenGL
-	gladLoadGL();
+	// gladLoadGL();
+	if (GLEW_OK != glewInit()) 
+	{ 
+	  printf("Failed to initialize GLEW\n"); 
+	} 
 	// Specify the viewport of OpenGL in the Window
 	// In this case the viewport goes from x = 0, y = 0, to x = 800, y = 800
 	glViewport(0, 0, 900, 900);

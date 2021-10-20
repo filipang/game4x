@@ -24,7 +24,6 @@ tabnew
 tabnew
 tabnew
 tabnew
-tabnew
 tabrewind
 edit utils.c
 set splitbelow splitright
@@ -46,11 +45,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 16 - ((15 * winheight(0) + 21) / 42)
+let s:l = 1 - ((0 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 16
+keepjumps 1
 normal! 0
 tabnext
 edit main.c
@@ -73,38 +72,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 18 - ((16 * winheight(0) + 21) / 42)
+let s:l = 18 - ((15 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 18
-normal! 0
-tabnext
-edit /usr/include/freetype2/ft2build.h
-set splitbelow splitright
-set nosplitbelow
-set nosplitright
-wincmd t
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-argglobal
-balt main.c
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let s:l = 42 - ((36 * winheight(0) + 21) / 42)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 42
 normal! 0
 tabnext
 edit text.c
@@ -181,11 +153,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 18 - ((15 * winheight(0) + 21) / 42)
+let s:l = 64 - ((18 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 18
+keepjumps 64
 normal! 05|
 tabnext
 edit colors.c
@@ -240,7 +212,7 @@ if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 1
-normal! 0142|
+normal! 0136|
 tabnext
 edit unit.c
 set splitbelow splitright
@@ -376,27 +348,27 @@ keepjumps exe s:l
 normal! zt
 keepjumps 41
 normal! 0
-tabnext 8
+tabnext 7
 set stal=1
-badd +19 main.c
 badd +1 utils.c
+badd +19 main.c
+badd +42 /usr/include/freetype2/ft2build.h
 badd +1 text.c
 badd +1 main.S
 badd +1 gl_game.c
 badd +1 colors.c
+badd +0 linux_build_c_debug.sh
 badd +1 unit.c
 badd +1 texture.c
-badd +0 game.c
+badd +1 game.c
 badd +1 input.c
 badd +1 gl_object.c
+badd +1 new_build_c.sh
 badd +1 shader.frag
 badd +1 shader.vert
 badd +84 outpost.c
-badd +0 glad.c
-badd +1 new_build_c.sh
-badd +0 build_c_debug.sh
-badd +0 /usr/include/freetype2/ft2build.h
-badd +1 linux_build_c_debug.sh
+badd +1 glad.c
+badd +1 build_c_debug.sh
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0
   silent exe 'bwipe ' . s:wipebuf
 endif
@@ -408,6 +380,7 @@ if filereadable(s:sx)
   exe "source " . fnameescape(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
+nohlsearch
 let g:this_session = v:this_session
 let g:this_obsession = v:this_session
 doautoall SessionLoadPost

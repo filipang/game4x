@@ -13,15 +13,16 @@
 *
 *******************************************************************************/
 
+#define GLEW_STATIC 
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
-#include "glad.c"
+#include <freetype2/ft2build.h>
 #include <stdio.h>
-#include <GLFW/glfw3.h>
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
-#include <freetype2/ft2build.h>
 #include FT_FREETYPE_H
 
 // NOTE(filip): Don't define DEBUG when releasing
