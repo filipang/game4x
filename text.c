@@ -95,16 +95,18 @@ void updateTexts(game_state *state, gl_game_state *gl_state)
 		updateText(message, -0.96, -0.75, gl_state);
 
 		snprintf(message, 100, 
-				"Health points left: %d", 
-				state->units[displayed_unit].health);
+				"Health points left: %d/%d", 
+				state->units[displayed_unit].health,
+				state->units[displayed_unit].health_stat);
 		updateText(message, -0.96, -0.80, gl_state);
 
 
 		if(state->units[displayed_unit].type != UNIT_WORKSHOP) 
 		{
 			snprintf(message, 100, 
-					"Movement points left: %d", 
-					state->units[displayed_unit].mp_current); 
+					"Movement points: %d/%d", 
+					state->units[displayed_unit].mp_current,
+					state->units[displayed_unit].mp_stat); 
 			updateText(message, -0.96, -0.85, gl_state);
 
 			snprintf(message, 100, 
@@ -141,6 +143,52 @@ void updateTexts(game_state *state, gl_game_state *gl_state)
 		snprintf(message, 100, 
 				 "Press ENTER to start your turn");
 			updateText(message, -0.2, 0, gl_state);
+	}
+
+	snprintf(message, 100, "Press H to see key bindings.."); 
+	updateText(message, -0.96, -0.65, gl_state);
+
+	if(state->help == 1)
+	{
+
+		snprintf(message, 100, "Help menu");
+		updateText(message, -0.7, 0.70, gl_state);
+
+		snprintf(message, 100, "General:");
+		updateText(message, -0.7, 0.50, gl_state);
+
+		snprintf(message, 100, "H - Help menu, ESC(hold) - Exit game, CTRL+S - Save, CTRL+L - Load");
+		updateText(message, -0.7, 0.45, gl_state);
+
+		snprintf(message, 100, "Normal mode (no unit selected):");
+		updateText(message, -0.7, 0.35, gl_state);
+
+		snprintf(message, 100, "WASD/LeftClick - Move camera, TAB - Select next unit, ENTER - End your turn");
+		updateText(message, -0.7, 0.30, gl_state);
+
+		snprintf(message, 100, "Normal mode (unit selected):");
+		updateText(message, -0.7, 0.20, gl_state);
+
+		snprintf(message, 100, "T - Attack mode, V - Move mode");
+		updateText(message, -0.7, 0.15, gl_state);
+
+		snprintf(message, 100, "Move mode:");
+		updateText(message, -0.7, 0.05, gl_state);
+
+		snprintf(message, 100, "WASD/Mouse - move cursor, Click/Space - confirm movement");
+		updateText(message, -0.7, 0.0, gl_state);
+
+		snprintf(message, 100, "Attack mode:");
+		updateText(message, -0.7, -0.1, gl_state);
+
+		snprintf(message, 100, "WASD/Mouse - move attack cursor, Click/Space - confirm attack");
+		updateText(message, -0.7, -0.15, gl_state);
+
+		snprintf(message, 100, "Build mode (workshop selected):");
+		updateText(message, -0.7, -0.25, gl_state);
+
+		snprintf(message, 100, "1 - Wisp, 2 - Golem, 3 - Unbound Elemental, 4 - Arcane Pulse");
+		updateText(message, -0.7, -0.30, gl_state);
 	}
 }
 
@@ -202,6 +250,7 @@ void drawTexts(game_state *state, gl_game_state *gl_state)
 			x += ((*face)->glyph->advance.x/64) * sx;
 			y += ((*face)->glyph->advance.y/64) * sy;
 		}
+		free(iter->text);
 	}	
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);

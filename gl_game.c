@@ -22,15 +22,16 @@ typedef struct gl_game_state
 	game_state *state;
 
 	struct gl_object *gl_objects;
+	struct gl_object *text_objects;
 
 	struct gl_object *map_object;
 	struct gl_object *highlight_object;
 	struct gl_object *fog_of_war_object;
 	struct gl_object *foreground_object;
-	struct gl_object *text_objects;
 	struct gl_object *units_object;
 	struct gl_object *unit_team_colors_object;
 	struct gl_object *cursor_object;
+	struct gl_object *help_object;
 
 	GLfloat *colors;
 	int cursor_color;
@@ -279,7 +280,8 @@ GLfloat* buildHexagonVertices(float offset_x, float offset_y, float z_index,
 
 GLfloat* buildRectVertices(float offset_x, float offset_y, float z_index, 
 						   float size_x, float size_y,
-			 			   float color_r, float color_b, float color_g, 
+			 			   float color_r, float color_b, float color_g,
+						   float color_a, 
 						   float tex_x, float tex_y, float tex_weight, 
 						   GLfloat* dest)
 {
@@ -289,7 +291,7 @@ GLfloat* buildRectVertices(float offset_x, float offset_y, float z_index,
 	*(dest++) = color_r;
 	*(dest++) = color_b;
 	*(dest++) = color_g;
-	*(dest++) = 1.0;
+	*(dest++) = color_a;
 	*(dest++) = tex_x + 0.5;
 	*(dest++) = tex_y + 1.0;
 	*(dest++) = tex_weight;
@@ -300,7 +302,7 @@ GLfloat* buildRectVertices(float offset_x, float offset_y, float z_index,
 	*(dest++) = color_r;
 	*(dest++) = color_b;
 	*(dest++) = color_g;
-	*(dest++) = 1.0;
+	*(dest++) = color_a;
 	*(dest++) = tex_x + 1.0;
 	*(dest++) = tex_y + sqrt(3)/2;
 	*(dest++) = tex_weight;
@@ -311,7 +313,7 @@ GLfloat* buildRectVertices(float offset_x, float offset_y, float z_index,
 	*(dest++) = color_r;
 	*(dest++) = color_b;
 	*(dest++) = color_g;
-	*(dest++) = 1.0;
+	*(dest++) = color_a;
 	*(dest++) = tex_x + 1.0;
 	*(dest++) = tex_y + sqrt(3)/6;
 	*(dest++) = tex_weight;
@@ -322,7 +324,7 @@ GLfloat* buildRectVertices(float offset_x, float offset_y, float z_index,
 	*(dest++) = color_r;
 	*(dest++) = color_b;
 	*(dest++) = color_g;
-	*(dest++) = 1.0;
+	*(dest++) = color_a;
 	*(dest++) = tex_x + 0.5;
 	*(dest++) = tex_y + 0.0;
 	*(dest++) = tex_weight;
@@ -732,9 +734,44 @@ void updateForeground(game_state *state, gl_game_state *gl_state)
 
 	buildRectVertices(position_x, position_y, -0.9f,
 					  size_x, size_y,
-					  color_r, color_g, color_b,
+					  color_r, color_g, color_b, 1.0,
 					  0.0, 0.0, 0.0,
 					  gl_state->foreground_object->vertices);
+}
+
+void updateHelp(game_state *state, gl_game_state *gl_state)
+{
+	float position_x = -0.8; 
+	float position_y = -0.8;
+	float size_x = 1.6;
+	float size_y = 1.6;
+	float color_r = 0.1;
+	float color_g = 0.1;
+	float color_b = 0.1; 
+	
+	if(state->help == 1)
+	{
+		if(gl_state->help_object == NULL)
+		{
+			int vertices_size = VERTEX_CHANNELS * 4; // Hexagon has 6 vertices, each with 10 float values
+
+			createGLObject(&gl_state->help_object, 
+						   vertices_size);
+			gl_state->help_object->vertex_step = 4;
+			addGLObject(gl_state->help_object, &gl_state->gl_objects);
+		}
+
+		buildRectVertices(position_x, position_y, -0.9f,
+						  size_x, size_y,
+						  color_r, color_g, color_b, 0.6,
+						  0.0, 0.0, 0.0,
+						  gl_state->help_object->vertices);
+	}
+	else{
+		if(gl_state->help_object != NULL)
+			removeGLObject(&gl_state->gl_objects, gl_state->help_object);
+			gl_state->help_object = NULL;
+	}
 }
 
 // FIXME(filip): Highlight gets displayed over foreground
@@ -744,6 +781,7 @@ void updateUIGL(game_state *state, gl_game_state *gl_state)
 	updateCursor(state, gl_state);
 	updateHighlight(state, gl_state);
 	updateForeground(state, gl_state);
+	updateHelp(state, gl_state);
 }
 
 // NOTE(filip): This assumes the correct buffers are bound
@@ -754,13 +792,18 @@ void updateStoreSizeGL(int vertices_size, gl_game_state *gl_state)
 	if(vertices_size >= gl_state->vertices_store_size)
 	{
 		gl_state->vertices_store_size = nextPowerOf2(vertices_size);
-		printf("New data store: %d\n", gl_state->vertices_store_size);
 		glBufferData(GL_ARRAY_BUFFER, gl_state->vertices_store_size * sizeof(GLfloat), NULL, GL_DYNAMIC_DRAW);
 	}
 }
 
 void updateGL(game_state *state, gl_game_state *gl_state) 
 {
+	// Update map gl
+	updateMapGL(state, gl_state);		
+	// Update units gl
+	updateUnitListGL(state, gl_state);
+	// Update UI gl
+	updateUIGL(state, gl_state);
 	// Specify the color of the background
 	glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 	// Clean the back buffer and assign the new color to it
@@ -789,6 +832,26 @@ void updateGL(game_state *state, gl_game_state *gl_state)
 	
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
-	glBindTexture(GL_TEXTURE_2D, 0);	
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	updateTexts(state, gl_state);
+	drawTexts(state, gl_state);
+}
+
+void freeGL(gl_game_state *gl_state)
+{
+	gl_object *iter = gl_state->gl_objects;
+	while(iter != NULL)
+	{
+		free(iter->vertices);
+		iter = iter->next;
+	}
+	iter = gl_state->text_objects;
+	while(iter != NULL)
+	{
+		free(iter->vertices);
+		iter = iter->next;
+	}
+	free(gl_state->colors);
 }
 

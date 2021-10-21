@@ -45,11 +45,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 21) / 42)
+let s:l = 5 - ((4 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
+keepjumps 5
 normal! 0
 tabnext
 edit main.c
@@ -72,12 +72,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 18 - ((15 * winheight(0) + 21) / 42)
+let s:l = 58 - ((16 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 18
-normal! 0
+keepjumps 58
+normal! 038|
 tabnext
 edit text.c
 set splitbelow splitright
@@ -99,12 +99,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 21) / 42)
+let s:l = 34 - ((24 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
-normal! 05|
+keepjumps 34
+normal! 022|
 tabnext
 edit main.S
 set splitbelow splitright
@@ -126,11 +126,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 18 - ((17 * winheight(0) + 21) / 42)
+let s:l = 23 - ((22 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 18
+keepjumps 23
 normal! 0
 tabnext
 edit gl_game.c
@@ -153,12 +153,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 64 - ((18 * winheight(0) + 21) / 42)
+let s:l = 754 - ((24 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 64
-normal! 05|
+keepjumps 754
+normal! 041|
 tabnext
 edit colors.c
 set splitbelow splitright
@@ -180,11 +180,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 20 - ((15 * winheight(0) + 21) / 42)
+let s:l = 30 - ((29 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 20
+keepjumps 30
 normal! 0
 tabnext
 edit linux_build_c_debug.sh
@@ -207,12 +207,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 21) / 42)
+let s:l = 1 - ((0 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 1
-normal! 0136|
+normal! 0131|
 tabnext
 edit unit.c
 set splitbelow splitright
@@ -234,12 +234,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 44 - ((24 * winheight(0) + 21) / 42)
+let s:l = 31 - ((30 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 44
-normal! 010|
+keepjumps 31
+normal! 0
 tabnext
 edit texture.c
 set splitbelow splitright
@@ -261,7 +261,7 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 57 - ((41 * winheight(0) + 21) / 42)
+let s:l = 57 - ((52 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -278,7 +278,7 @@ set winheight=1
 set winminwidth=0
 set winwidth=1
 argglobal
-balt unit.c
+balt \'
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -288,12 +288,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 583 - ((15 * winheight(0) + 21) / 42)
+let s:l = 235 - ((37 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 583
-normal! 09|
+keepjumps 235
+normal! 030|
 tabnext
 edit input.c
 set splitbelow splitright
@@ -315,12 +315,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 46 - ((26 * winheight(0) + 21) / 42)
+let s:l = 73 - ((27 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 46
-normal! 0
+keepjumps 73
+normal! 034|
 tabnext
 edit gl_object.c
 set splitbelow splitright
@@ -342,28 +342,28 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 41 - ((15 * winheight(0) + 21) / 42)
+let s:l = 41 - ((19 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 41
 normal! 0
-tabnext 7
+tabnext 5
 set stal=1
 badd +1 utils.c
 badd +19 main.c
-badd +42 /usr/include/freetype2/ft2build.h
 badd +1 text.c
 badd +1 main.S
 badd +1 gl_game.c
 badd +1 colors.c
-badd +0 linux_build_c_debug.sh
+badd +1 linux_build_c_debug.sh
 badd +1 unit.c
 badd +1 texture.c
 badd +1 game.c
-badd +1 input.c
+badd +0 input.c
 badd +1 gl_object.c
 badd +1 new_build_c.sh
+badd +42 /usr/include/freetype2/ft2build.h
 badd +1 shader.frag
 badd +1 shader.vert
 badd +84 outpost.c
@@ -380,7 +380,6 @@ if filereadable(s:sx)
   exe "source " . fnameescape(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
-nohlsearch
 let g:this_session = v:this_session
 let g:this_obsession = v:this_session
 doautoall SessionLoadPost

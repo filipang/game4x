@@ -148,7 +148,7 @@ void initializeGameState(game_state* state)
 	state->min_offset_x = -5.0;
 	state->min_offset_y = -2.0;
 	state->max_offset_x = 0.0;
-	state->max_offset_y = -0.0;
+	state->max_offset_y = -0.3;
 
 	state->min_hex_size = 0.05;
 	state->max_hex_size = 0.2;
@@ -820,12 +820,15 @@ void processInput(struct input_pressed *input, struct game_state *state)
 		}
 	}
 
-	//FIXME(filip): Obvious camera zoom bug
-	state->map_hex_size += 0.01*input->scroll_delta;
-	input->scroll_delta = 0;
 
-	state->min_offset_x = -5.0 * (state->map_hex_size / 0.1);	
-	state->min_offset_y = -2.5 * (state->map_hex_size / 0.1);	
+	state->map_hex_size += 0.01*input->scroll_delta;
+	char msg[50];
+	sprintf(msg, "Scroll delta: %f", input->scroll_delta);
+	input->scroll_delta = 0;
+	alertMessage(msg, 10, state);
+
+	state->min_offset_x = -5.0 * (0.1 / state->map_hex_size);	
+	state->min_offset_y = -2.0 * (0.1 / state->map_hex_size);	
 	clampHexSize(state);
 	clampMapOffset(state);
 }

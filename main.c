@@ -19,11 +19,11 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
 #include <freetype2/ft2build.h>
+#include FT_FREETYPE_H
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
-#include FT_FREETYPE_H
 
 // NOTE(filip): Don't define DEBUG when releasing
 #define DEBUG
@@ -35,7 +35,6 @@
 #include "game.c"
 #include "gl_game.c"
 
-// FIXME(filip): !!!!!! SOLVE MEMORY LEAKS FROM MALLOC !!!!!!!! 
 int main()
 {
 	// SETUP -------------------------------------------------------------------
@@ -48,7 +47,8 @@ int main()
 	// NOTE(check if save exists in memory and load it)
 	initializeGameState(&state);
 	initializeGraphics(&window, &state, &gl_state);
-
+	glfwSetWindowUserPointer(window, (void *)&input);	
+	glfwSetScrollCallback(window, scrollCallback);
 	
 	// Load test map and start the turn of player 0
 	generateTestMap(&state);
@@ -56,7 +56,6 @@ int main()
 	// Main while loop
 	double lastTime = glfwGetTime(), timer = lastTime;	
 	double deltaTime = 0, nowTime = 0;
-    int frames = 0 , updates = 0;
 	// MAIN LOOP  --------------------------------------------------------------
 	while (!glfwWindowShouldClose(window) && !state.end)
 	{
@@ -73,20 +72,12 @@ int main()
 		updateInput(window, &input);
 
 		// GAME LAYER ----------------------------------------------------------
+		// Update the game state by checking the input
 		processInput(&input, &state);
 
 		// GRAPHICS LAYER ------------------------------------------------------
-		// Update map gl
-		updateMapGL(&state, &gl_state);		
-		// Update units gl
-		updateUnitListGL(&state, &gl_state);
-		// Update UI gl
-		updateUIGL(&state, &gl_state);
-		// Write all updates to the VBO and draw elements to the back buffer
+		// Update grapchics
 		updateGL(&state, &gl_state);
-
-		updateTexts(&state, &gl_state);
-		drawTexts(&state, &gl_state);
 		// ---------------------------------------------------------------------
 
 		glfwSwapBuffers(window);
@@ -95,9 +86,9 @@ int main()
 		glfwPollEvents();
 	}
 
-
 	// EXIT SETUP --------------------------------------------------------------
 	// Free allocated memory
+	freeGL(&gl_state);
 	finalizeGraphics(window, &gl_state);
 	return 0;
 }
