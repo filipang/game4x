@@ -587,23 +587,6 @@ void processInput(struct input_pressed *input, struct game_state *state)
 			state->map_offset_y -= 0.0022 * input->mouse_delta_y;
 		}
 
-		if(input->button_ESCAPE)
-		{
-			selectUnit(-1, state);
-			state->cursor_active = 0;
-		}
-		if(input->button_TAB)
-		{
-			step(state);
-		}
-		if(input->button_V && state->selected_unit != -1)
-		{
-			state->mode = MODE_MOVE;
-		}
-		if(input->button_T && state->selected_unit != -1)
-		{
-			state->mode = MODE_ATTACK;
-		}
 		if(input->key_pressed_W)
 		{	
 			state->map_offset_y -= state->delta_time;
@@ -625,93 +608,24 @@ void processInput(struct input_pressed *input, struct game_state *state)
 	}
 	else if(state->mode == MODE_MOVE) 
 	{
-		if(input->button_TAB)
-			step(state);
-
 		if(input->button_SPACE || input->button_LMB)
 		{
 			moveSelectedUnit(state);
 			if(state->units[state->selected_unit].mp_current == 0)
 				step(state);
 		}
-		// TODO(filip): Implement pathfinding
-		// TODO(filip): Highlight path from unit to move cursor
-		// TODO(filip): Make unit go up left if it can't go up right and vice
-		// 				versa	
-
-		// NOTE(filip): moves cursor up
-		if(input->button_W)	
-			setMoveCursor(state->cursor_x - (state->cursor_y + 1) % 2, 
-						  state->cursor_y + 1, 
-						  state);
-		// NOTE(filip): moves cursor down
-		if(input->button_S)			
-			setMoveCursor(state->cursor_x + state->cursor_y % 2, 
-						  state->cursor_y - 1, 
-						  state);
-		// NOTE(filip): moves cursor left
-		if(input->button_A)			
-			setMoveCursor(state->cursor_x - 1, state->cursor_y, state);
-		// NOTE(filip): moves cursor right
-		if(input->button_D)
-			setMoveCursor(state->cursor_x + 1, state->cursor_y, state);
-
-		if(input->button_ESCAPE){
-			selectUnit(-1, state);
-			state->cursor_active = 0;
-		}
-		if(input->button_T && state->selected_unit != -1)
-		{
-			state->mode = MODE_ATTACK;
-			setMoveCursor(state->cursor_x, state->cursor_y, state);
-		}
-
 	} 
 	else if(state->mode == MODE_ATTACK)
 	{
-		if(input->button_ESCAPE)
-		{
-			selectUnit(-1, state);
-			state->cursor_active = 0;
-			state->cursor_active = 0;
-		}
-		if(input->button_TAB)
-			step(state);
-
-		if(input->button_V && state->selected_unit != -1){
-			state->mode = MODE_MOVE;
-			setMoveCursor(state->cursor_x, state->cursor_y, state);
-		}
 		if(input->button_SPACE || input->button_LMB)
+		{
 			attackSelectedUnit(state);
-		// Move cursor up
-		if(input->button_W)	
-			setMoveCursor(state->cursor_x - (state->cursor_y + 1) % 2, 
-						  state->cursor_y + 1, 
-						  state);
-		// Move cursor down
-		if(input->button_S)			
-			setMoveCursor(state->cursor_x + state->cursor_y % 2, 
-						  state->cursor_y - 1, 
-						  state);
-		// Move cursor left 
-		if(input->button_A)			
-			setMoveCursor(state->cursor_x - 1, state->cursor_y, state);
-		// Move cursor right
-		if(input->button_D)
-			setMoveCursor(state->cursor_x + 1, state->cursor_y, state);
+			if(state->units[state->selected_unit].mp_current == 0)
+				step(state);
+		}
 	} 
 	else if(state->mode == MODE_BUILD)
 	{
-		if(input->button_ESCAPE)
-		{
-			selectUnit(-1, state);
-			state->cursor_active = 0;
-		}
-		if(input->button_TAB)
-		{
-			step(state);
-		}
 		if(findUnit(state->players[state->turn].spawn_tile_x,
 					state->players[state->turn].spawn_tile_y,
 					state) == -1
@@ -782,6 +696,30 @@ void processInput(struct input_pressed *input, struct game_state *state)
 		}
 	}
 
+	if(state->mode == MODE_ATTACK || state->mode == MODE_MOVE || state->mode == MODE_NORMAL)
+	{
+		if(input->button_V && state->selected_unit != -1)
+		{
+			state->mode = MODE_MOVE;
+		}
+		if(input->button_T && state->selected_unit != -1)
+		{
+			state->mode = MODE_ATTACK;
+		}
+	}
+
+	if(state->mode != MODE_TRANSITION)
+	{
+		if(input->button_ESCAPE)
+		{
+			selectUnit(-1, state);
+			state->cursor_active = 0;
+		}
+	}
+	if(input->button_TAB)
+	{
+		step(state);
+	}
 	if((state->mode == MODE_ATTACK || state->mode == MODE_MOVE) && 
 		state->mode != MODE_TRANSITION)
 	{
@@ -793,6 +731,24 @@ void processInput(struct input_pressed *input, struct game_state *state)
 						  state->map_hex_size,
 						  &hex_x, &hex_y);
 		setMoveCursor(hex_x, hex_y, state);
+
+		// Move cursor up
+		if(input->button_W)	
+			setMoveCursor(state->cursor_x - (state->cursor_y + 1) % 2, 
+						  state->cursor_y + 1, 
+						  state);
+		// Move cursor down
+		if(input->button_S)			
+			setMoveCursor(state->cursor_x + state->cursor_y % 2, 
+						  state->cursor_y - 1, 
+						  state);
+		// Move cursor left 
+		if(input->button_A)			
+			setMoveCursor(state->cursor_x - 1, state->cursor_y, state);
+		// Move cursor right
+		if(input->button_D)
+			setMoveCursor(state->cursor_x + 1, state->cursor_y, state);
+		
 	}
 
 	if(state->mode != MODE_ATTACK && 
@@ -808,6 +764,7 @@ void processInput(struct input_pressed *input, struct game_state *state)
 							  state->map_offset_x, state->map_offset_y,
 							  state->map_hex_size,
 							  &hex_x, &hex_y);
+			printf("hex_x = %d, hex_y = %d\n", hex_x, hex_y);
 			int target = findUnit(hex_x, hex_y, state);
 			if(target!=-1 && state->units[target].team == state->turn)
 			{

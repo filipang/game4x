@@ -26,7 +26,7 @@
 
 // Loads entire file into a char* with malloc
 // NOTE(filip): This needs to be freed
-char* loadFile(const char* file_name)
+/*char* loadFile(const char* file_name)
 {
 	char *dest = NULL;
 	FILE *fp = fopen(file_name, "r");
@@ -54,8 +54,9 @@ char* loadFile(const char* file_name)
 		fclose(fp);
 	}
 	return dest;
-}
+}*/
 
+/*
 void writeFile(const char* file_name, unsigned char *data, int data_size)
 {
 	FILE *fp = fopen(file_name, "w");
@@ -67,8 +68,9 @@ void writeFile(const char* file_name, unsigned char *data, int data_size)
 		} 
 		fclose(fp);
 	}
-}
+}*/
 
+/*
 // Finds smallest power of two greater than n
 int nextPowerOf2(int n)
 {
@@ -77,8 +79,9 @@ int nextPowerOf2(int n)
         k = k << 1;
     }
     return k;
-}
+}*/
 
+/*
 void hexGridToViewport(int grid_x, int grid_y, 
 					   float offset_x, float offset_y,
 					   float hex_size,
@@ -87,18 +90,18 @@ void hexGridToViewport(int grid_x, int grid_y,
 	*viewport_x = offset_x + (grid_x + grid_y * 0.5) * sqrt(3) * hex_size;
 	*viewport_y = offset_y + grid_y * hex_size * 3/2;	
 
-}
+}*/
 
-
-void viewportToHexGrid(float viewport_x, float viewport_y, 
+/*void viewportToHexGrid(float viewport_x, float viewport_y, 
 					   float offset_x, float offset_y,
 					   float hex_size,
 					   int *grid_x, int *grid_y)
 {
 	*grid_y = round((viewport_y - offset_y )/ (hex_size * (3.0/2.0)));	
 	*grid_x = round((viewport_x - offset_x) / (sqrt(3) * hex_size) - 0.5 * (*grid_y)); 
-}
+}*/
 
+/*
 void mouseCoordsToViewport(double mouse_x, double mouse_y,
 						   float *viewport_x, float *viewport_y)
 {
@@ -106,6 +109,8 @@ void mouseCoordsToViewport(double mouse_x, double mouse_y,
 	*viewport_x = 2*(mouse_x/900 - 0.5);
 	*viewport_y = -2*(mouse_y/900 - 0.5);
 }
+*/
+
 /*
 int calculateRotation(int position_x, int position_y, int cursor_x, int cursor_y)
 {

@@ -28,6 +28,7 @@ tabnew
 tabnew
 tabnew
 tabnew
+tabnew
 tabrewind
 edit utils.c
 set splitbelow splitright
@@ -49,11 +50,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 143 - ((42 * winheight(0) + 21) / 43)
+let s:l = 1 - ((0 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 143
+keepjumps 1
 normal! 03|
 tabnext
 edit utils.S
@@ -69,10 +70,10 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 67 + 80) / 161)
-exe 'vert 2resize ' . ((&columns * 93 + 80) / 161)
+exe 'vert 1resize ' . ((&columns * 90 + 79) / 158)
+exe 'vert 2resize ' . ((&columns * 67 + 79) / 158)
 argglobal
-balt utils.c
+balt \\
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -82,12 +83,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 67 - ((26 * winheight(0) + 21) / 42)
+let s:l = 75 - ((36 * winheight(0) + 26) / 52)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 67
-normal! 015|
+keepjumps 75
+normal! 014|
 wincmd w
 argglobal
 if bufexists("utils.c") | buffer utils.c | else | edit utils.c | endif
@@ -101,16 +102,15 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 123 - ((24 * winheight(0) + 21) / 42)
+let s:l = 44 - ((23 * winheight(0) + 26) / 52)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 123
-normal! 05|
+keepjumps 44
+normal! 0
 wincmd w
-2wincmd w
-exe 'vert 1resize ' . ((&columns * 67 + 80) / 161)
-exe 'vert 2resize ' . ((&columns * 93 + 80) / 161)
+exe 'vert 1resize ' . ((&columns * 90 + 79) / 158)
+exe 'vert 2resize ' . ((&columns * 67 + 79) / 158)
 tabnext
 edit utils.s
 set splitbelow splitright
@@ -132,12 +132,39 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 340 - ((23 * winheight(0) + 21) / 43)
+let s:l = 41 - ((33 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 340
-normal! 018|
+keepjumps 41
+normal! 014|
+tabnext
+edit ~/Downloads/decode.s
+set splitbelow splitright
+set nosplitbelow
+set nosplitright
+wincmd t
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+argglobal
+balt utils.s
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let s:l = 44 - ((34 * winheight(0) + 26) / 53)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 44
+normal! 0
 tabnext
 edit build_asm.sh
 set splitbelow splitright
@@ -159,12 +186,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 8 - ((7 * winheight(0) + 21) / 43)
+let s:l = 8 - ((7 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 8
-normal! 089|
+normal! 010|
 tabnext
 edit linux_build_asm_debug.sh
 set splitbelow splitright
@@ -213,12 +240,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 35 - ((15 * winheight(0) + 26) / 53)
+let s:l = 41 - ((35 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 35
-normal! 0
+keepjumps 41
+normal! 018|
 tabnext
 edit text.c
 set splitbelow splitright
@@ -240,12 +267,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 34 - ((24 * winheight(0) + 26) / 53)
+let s:l = 39 - ((34 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 34
-normal! 022|
+keepjumps 39
+normal! 0
 tabnext
 edit main.S
 set splitbelow splitright
@@ -294,11 +321,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 26) / 53)
+let s:l = 10 - ((9 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
+keepjumps 10
 normal! 04|
 tabnext
 edit colors.c
@@ -321,7 +348,7 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 30 - ((29 * winheight(0) + 26) / 53)
+let s:l = 30 - ((28 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -375,7 +402,7 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 31 - ((30 * winheight(0) + 26) / 53)
+let s:l = 31 - ((29 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -429,12 +456,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 452 - ((35 * winheight(0) + 26) / 53)
+let s:l = 767 - ((37 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 452
-normal! 06|
+keepjumps 767
+normal! 061|
 tabnext
 edit input.c
 set splitbelow splitright
@@ -456,12 +483,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 144 - ((52 * winheight(0) + 26) / 53)
+let s:l = 66 - ((34 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 144
-normal! 0
+keepjumps 66
+normal! 024|
 tabnext
 edit gl_object.c
 set splitbelow splitright
@@ -483,7 +510,7 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 41 - ((19 * winheight(0) + 26) / 53)
+let s:l = 41 - ((18 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -493,6 +520,11 @@ tabnext 2
 set stal=1
 badd +1 utils.c
 badd +19 main.c
+badd +1 utils.S
+badd +1 utils.s
+badd +1 ~/Downloads/decode.s
+badd +1 build_asm.sh
+badd +1 linux_build_asm_debug.sh
 badd +1 text.c
 badd +1 main.S
 badd +1 gl_game.c
@@ -504,16 +536,14 @@ badd +1 game.c
 badd +1 input.c
 badd +1 gl_object.c
 badd +1 new_build_c.sh
+badd +0 \'
 badd +1 /usr/include/freetype2/ft2build.h
 badd +1 shader.frag
 badd +1 shader.vert
 badd +84 outpost.c
 badd +1 glad.c
 badd +1 build_c_debug.sh
-badd +0 utils.S
-badd +0 build_asm.sh
-badd +0 linux_build_asm_debug.sh
-badd +0 utils.s
+badd +1 ~Downloads/decode.s
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0
   silent exe 'bwipe ' . s:wipebuf
 endif

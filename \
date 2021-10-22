@@ -1,15 +1,14 @@
 #define M_PROLOGUE\
-	pushq	%rbp;\
-	movq	%rsp, %rbp;\
+	pushq	%rbp\
+	movq	%rsp, %rbp
 
 #define M_EPILOGUE\
-	movq	%rbp, %rsp;\
-	popq	%rbp;\
-	ret		;\
+	movq	%rbp, %rsp\
+	popq	%rbp\
+	ret
 
 .data
 WSTR:	.asciz "w"
-RSTR:	.asciz "r"
 ERF:	.asciz "Error reading file!\n"
 ZERO: 	.float 0.0
 THREE:	.float 3.0
@@ -22,168 +21,14 @@ V900:	.float 900.0
 SQRT3:  .float 1.73205080757
 .text
 
-#define FALSE
-#ifdef FALSE
+
 # Params:
 # rdi - file_name
-# Params end;
-# rsi - dest
-# rdx - fp
-# rcx - bufsize
-# r8  - newLen
 .global loadFile
 loadFile:
 	M_PROLOGUE
-
-	#char *dest = NULL
-	movq $0, %rsi
-
-	#FILE *fp = fopen(file_name, "r");
-	pushq	%rdi
-	pushq	%rsi
-
-	movq	$RSTR, %rsi	
-	call	fopen
-	movq	%rax, %rdx
-
-	popq	%rsi
-	popq	%rdi
-
-	# mif(fp != NULL) {
-	cmpq	$0, %rdx
-	je		IFNULL
-	pushq	%rdi	
-	pushq	%rsi	
-	pushq	%rdx
-	subq	$8, %rsp
-
-	movq	%rdx, %rdi
-	movq	$0, %rsi
-	movq	$SEEK_END, %rdx
-	call	fseek
-
-	addq	$8, %rsp
-	popq	%rdx
-	popq	%rsi
-	popq	%rdi
-	cmpq	$0, %rax 
-	jne		IFNOTNULL
-	pushq	%rdi
-	pushq	%rsi
-	pushq	%rdx
-	subq	$8, %rsp
-	movq	%rdx, %rdi
-	call	ftell
-	addq	$8, %rsp
-	popq	%rdx
-	popq	%rsi
-	popq	%rdi
 	
-	movq	%rax, %rcx	
-
-	// dest = malloc(sizeof(char) * (bufsize + 1))	
-	pushq	%rdi
-	pushq	%rsi
-	pushq	%rdx
-	pushq	%rcx
-
-	movq	%rcx, %rdi
-
-
-	call	malloc	
-
-	popq	%rcx
-	popq	%rdx
-	popq	%rsi
-	popq	%rdi
-	movq	%rax, %rsi
-
-	#fseek(fp)	
-	pushq	%rdi
-	pushq	%rsi
-	pushq	%rdx
-	pushq	%rcx
-	movq	%rdx, %rdi
-	movq	$0, %rsi
-	movq	$SEEK_SET, %rdx
-	call	fseek
-	popq	%rcx
-	popq	%rdx
-	popq	%rsi
-	popq	%rdi
-
-	//if
-	pushq	%rdi
-	pushq	%rsi
-	pushq	%rdx
-	pushq	%rcx
-	movq	%rsi, %rdi
-	movq	$1, %rsi
-	xchgq	%rcx, %rdx
-	call	fread
-	movq	%rax, %r8
-
-	popq	%rcx
-	popq	%rdx
-	popq	%rsi
-	popq	%rdi
-
-	#call ferror(fp)
-	pushq	%rdi
-	pushq	%rsi
-	pushq	%rdx
-	pushq	%rcx
-	pushq	%r8
-	subq	$8, %rsp
-
-	movq	%rdx, %rdi
-	call	ferror
-
-	addq	$8, %rsp
-	popq	%r8
-	popq	%rcx
-	popq	%rdx
-	popq	%rsi
-	popq	%rdi
-	cmpq	$0, %rax
-	je		ELSEERROR
-IFERROR:
-	
-	pushq	%rdi
-	pushq	%rsi
-	pushq	%rdx
-	pushq	%rcx
-	pushq	%r8
-	subq	$8, %rsp
-	movq	$ERF, %rdi
-	movq	$2, %rsi
- 	call	fputs
-	addq	$8, %rsp
-	popq	%r8
-	popq	%rcx
-	popq	%rdx
-	popq	%rsi
-	popq	%rdi
-	jmp ENDIF
-ELSEERROR:
-	movq	%r8, %r9
-	addq	%rsi, %r9
-	movb	$0, (%r9)
-	incq	%r8	
-
-ENDIF:
-IFNOTNULL:
-	movq	%rdx, %rdi
-	pushq	%rsi
-	pushq	%rdi
-	call	fclose
-	popq	%rdi
-	popq	%rsi	
-
-IFNULL:
-	movq %rsi, %rax
 	M_EPILOGUE	
-#endif
 
 # params:
 # RDI: file_name
