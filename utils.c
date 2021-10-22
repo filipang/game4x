@@ -12,8 +12,16 @@
 * START DATE :    2/10/2021
 *
 *******************************************************************************/
-#define ASSERT(a) if(!(a)) *((unsigned int*)0) = 0xDEAD; 
+#include <stdio.h>
+#include <math.h>
+#include <string.h>
+#include <stdlib.h>
 
+// NOTE(filip): Don't define DEBUG when releasing
+#define DEBUG
+
+// NOTE(filip): Consider moving these defines in include files that use them
+#define ASSERT(a) if(!(a)) *((unsigned int*)0) = 0xDEAD; 
 
 
 // Loads entire file into a char* with malloc
@@ -98,7 +106,7 @@ void mouseCoordsToViewport(double mouse_x, double mouse_y,
 	*viewport_x = 2*(mouse_x/900 - 0.5);
 	*viewport_y = -2*(mouse_y/900 - 0.5);
 }
-
+/*
 int calculateRotation(int position_x, int position_y, int cursor_x, int cursor_y)
 {
 	float result_y = cursor_y - position_y;
@@ -125,11 +133,11 @@ int calculateRotation(int position_x, int position_y, int cursor_x, int cursor_y
 		return 4;
 	else if(result_ratio < -0.5 && result_x < 0)
 		return 5;
-}
+}*/
 
-int hexDistance(int x1, int y1, int x2, int y2)
+/*int hexDistance(int x1, int y1, int x2, int y2)
 {
 	return (abs(x1 - x2) + 
 		abs(y1 - y2) +
 		abs(x1 + y1 - x2 - y2)) / 2;
-}
+}*/

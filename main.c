@@ -20,17 +20,28 @@
 #include <stb/stb_image.h>
 #include <freetype2/ft2build.h>
 #include FT_FREETYPE_H
-#include <stdio.h>
-#include <math.h>
-#include <string.h>
-#include <stdlib.h>
+// UTILS HEADERS ---------------------------------------------------------------
+char* loadFile(const char* file_name);
+void writeFile(const char* file_name, unsigned char *data, int data_size);
+int nextPowerOf2(int n);
+void hexGridToViewport(int grid_x, int grid_y, 
+					   float offset_x, float offset_y,
+					   float hex_size,
+					   float *viewport_x, float *viewport_y);
 
-// NOTE(filip): Don't define DEBUG when releasing
-#define DEBUG
-
-// NOTE(filip): Consider moving these defines in include files that use them
+void viewportToHexGrid(float viewport_x, float viewport_y, 
+					   float offset_x, float offset_y,
+					   float hex_size,
+					   int *grid_x, int *grid_y);
+void mouseCoordsToViewport(double mouse_x, double mouse_y,
+						   float *viewport_x, float *viewport_y);
+int calculateRotation(int position_x, int position_y, int cursor_x, int cursor_y);
+int hexDistance(int x1, int y1, int x2, int y2);
 
 #include "utils.c"
+// END UTILS HEADERS -----------------------------------------------------------
+
+
 #include "input.c"
 #include "game.c"
 #include "gl_game.c"
