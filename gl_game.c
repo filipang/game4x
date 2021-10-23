@@ -16,7 +16,7 @@
 #define VERTEX_CHANNELS (3+4+3)
 #define PI 3.14159265359
 #define MAXBUF 1000
-
+#define LIBGL_DEBUG
 typedef struct gl_game_state
 {
 	game_state *state;
@@ -59,15 +59,15 @@ void initializeGraphics(GLFWwindow **window,
 	initFreetype(&gl_state->library, &gl_state->face);
 	// GENERAL START SETUP -----------------------------------------------------
 	// Initialize GLFW
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 	glfwInit();
 
 	// Tell GLFW what version of OpenGL we are using
 	// In this case we are using OpenGL 3.3
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	// Tell GLFW we are using the CORE profile
 	// So that means we only have the modern functions
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE);
 
 	// Create a GLFWwindow object
 	*window = glfwCreateWindow(900, 900, "Game4X", NULL, NULL);
@@ -100,6 +100,12 @@ void initializeGraphics(GLFWwindow **window,
 	glShaderSource(vertex_shader, 1, &vertex_shader_src, NULL);
 	// Compile the Vertex Shader into machine code
 	glCompileShader(vertex_shader);
+  GLint compile_ok = GL_FALSE;
+  glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &compile_ok);
+  if (0 == compile_ok)
+  {
+    fprintf(stderr, "Error in vertex shader");
+  }
 	glEnable(GL_BLEND);
 
 	// Create Fragment Shader Object and get its reference
@@ -108,6 +114,16 @@ void initializeGraphics(GLFWwindow **window,
 	glShaderSource(fragment_shader, 1, &fragment_shader_src, NULL);
 	// Compile the Vertex Shader into machine code
 	glCompileShader(fragment_shader);
+  glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &compile_ok);
+  GLchar errorLog[1000];
+  if (0 == compile_ok)
+  {
+    fprintf(stderr, "Error in fragment shader");
+    GLint logSize = 0;
+    glGetShaderiv(fragment_shader, GL_INFO_LOG_LENGTH, &logSize);
+    glGetShaderInfoLog(fragment_shader, logSize, &logSize, &errorLog[0]);
+    printf("%s", errorLog);
+  }
 
 	// Create Shader Program Object and get its reference
 	gl_state->shader_program = glCreateProgram();
@@ -145,15 +161,18 @@ void initializeGraphics(GLFWwindow **window,
 	glBindBuffer(GL_ARRAY_BUFFER, gl_state->VBO);
 	
 	// Configure the Vertex Attributes so that OpenGL knows how to read the VBO
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 
+  GLint mPosition = glGetAttribLocation(gl_state->shader_program,"aPos");
+  glVertexAttribPointer(mPosition, 3, GL_FLOAT, GL_FALSE, 
 						  10 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 
+  GLint mColor = glGetAttribLocation(gl_state->shader_program,"aCol");
+	glVertexAttribPointer(mColor, 4, GL_FLOAT, GL_FALSE, 
 						  10 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 
+  GLint mTexCoord = glGetAttribLocation(gl_state->shader_program,"aTexCoord");
+	glVertexAttribPointer(mTexCoord, 3, GL_FLOAT, GL_FALSE, 
 						  10 * sizeof(float), (void*)(7 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 	
