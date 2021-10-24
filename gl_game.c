@@ -17,6 +17,18 @@
 #define PI 3.14159265359
 #define MAXBUF 1000
 #define LIBGL_DEBUG
+
+typedef struct gl_glyph
+{
+  int width;
+  int rows;
+  int left;
+  int top;
+  int advance_x;
+  int advance_y;
+  unsigned int texture;
+} gl_glyph;
+
 typedef struct gl_game_state
 {
 	game_state *state;
@@ -44,6 +56,8 @@ typedef struct gl_game_state
 	GLuint VBO;
    	GLuint shader_program;
    	GLuint texture;
+  int initFonts;
+  gl_glyph gl_glyphs[129];
 } gl_game_state;
 
 #include "colors.c"
@@ -188,6 +202,7 @@ void initializeGraphics(GLFWwindow **window,
 
 	gl_state->state = state;
 	loadColors(&gl_state->colors);
+	glEnable(GL_LINE_SMOOTH);
 	glLineWidth(3);
 }
 
@@ -569,7 +584,6 @@ void updateHighlight(game_state *state, gl_game_state *gl_state)
 			addGLObject(gl_state->highlight_object, &gl_state->gl_objects);
 		}
 
-		glEnable(GL_LINE_SMOOTH);
 		buildHexagonVertices(position_x, position_y, 0.2f,
 							 color_r, color_g, color_b, color_a,
 							 0.0, 0.0, 0.0,
@@ -796,7 +810,7 @@ void updateHelp(game_state *state, gl_game_state *gl_state)
 // FIXME(filip): Highlight gets displayed over foreground
 void updateUIGL(game_state *state, gl_game_state *gl_state)	
 {
-	updateFogOfWar(state, gl_state);
+	//updateFogOfWar(state, gl_state);
 	updateCursor(state, gl_state);
 	updateHighlight(state, gl_state);
 	updateForeground(state, gl_state);
@@ -817,6 +831,8 @@ void updateStoreSizeGL(int vertices_size, gl_game_state *gl_state)
 
 void updateGL(game_state *state, gl_game_state *gl_state) 
 {
+	glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
 	// Update map gl
 	updateMapGL(state, gl_state);		
 	// Update units gl
@@ -824,9 +840,7 @@ void updateGL(game_state *state, gl_game_state *gl_state)
 	// Update UI gl
 	updateUIGL(state, gl_state);
 	// Specify the color of the background
-	glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 	// Clean the back buffer and assign the new color to it
-	glClear(GL_COLOR_BUFFER_BIT);
 
 	glBindTexture(GL_TEXTURE_2D, gl_state->texture);	
 	glBindVertexArray(gl_state->VAO);
@@ -841,7 +855,7 @@ void updateGL(game_state *state, gl_game_state *gl_state)
 				0, 
 				iter->vertices_size * sizeof(GLfloat), 
 				iter->vertices);
-		
+	
 		for(int i = 0; 
 			i < iter->vertices_size / VERTEX_CHANNELS; 
 			i = i + iter->vertex_step)
@@ -852,7 +866,6 @@ void updateGL(game_state *state, gl_game_state *gl_state)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
-
 	updateTexts(state, gl_state);
 	drawTexts(state, gl_state);
 }

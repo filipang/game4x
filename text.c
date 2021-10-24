@@ -45,6 +45,32 @@ void updateTextAlpha(char message[], float x, float y, float alpha, struct gl_ga
 	object->vertices[2] = alpha; 
 }
 
+const char* glGetErrorString(GLenum error)
+{
+    switch (error)
+    {
+    case GL_NO_ERROR:          return "No Error";
+    case GL_INVALID_ENUM:      return "Invalid Enum";
+    case GL_INVALID_VALUE:     return "Invalid Value";
+    case GL_INVALID_OPERATION: return "Invalid Operation";
+    case GL_INVALID_FRAMEBUFFER_OPERATION: return "Invalid Framebuffer Operation";
+    case GL_OUT_OF_MEMORY:     return "Out of Memory";
+    case GL_STACK_UNDERFLOW:   return "Stack Underflow";
+    case GL_STACK_OVERFLOW:    return "Stack Overflow";
+    case GL_CONTEXT_LOST:      return "Context Lost";
+    default:                   return "Unknown Error";
+    }
+}
+
+void _glCheckErrors(const char *filename, int line)
+{
+    GLenum err;
+    while ((err = glGetError()) != GL_NO_ERROR)
+        printf("OpenGL Error: %s (%d) [%u] %s\n", filename, line, err, glGetErrorString(err));
+}
+
+#define glCheckErrors() _glCheckErrors(__FILE__, __LINE__)
+
 void updateStoreSizeGL(int vertices_size, gl_game_state *gl_state);
 
 void updateTexts(game_state *state, gl_game_state *gl_state)
@@ -199,56 +225,83 @@ void drawTexts(game_state *state, gl_game_state *gl_state)
 	glBindVertexArray(gl_state->VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, gl_state->VBO);
 	glUniform1i(glGetUniformLocation(gl_state->shader_program, "isText"), 1);
+	glCheckErrors(); 
+  if(gl_state->initFonts == 0)
+  {
+    unsigned char p = 1;
+    for(p = 0; p<=128; p++)
+    {
+      if(FT_Load_Char(*face, p, FT_LOAD_RENDER))
+      {
+        printf("CHAR %x NOT FOUND ERROR\n", p);
+        //return;
+      }		
+      int error = FT_Render_Glyph( (*face)->glyph,   /* glyph slot  */
+                 FT_RENDER_MODE_NORMAL ); /* render mode */
+		  unsigned int texture;
+      glGenTextures(1, &texture);
+      glBindTexture(GL_TEXTURE_2D, texture);
+      glTexImage2D(GL_TEXTURE_2D, 0, 1,
+		  				 (*face)->glyph->bitmap.width,
+		  				 (*face)->glyph->bitmap.rows, 0, GL_RED,
+		  				 GL_UNSIGNED_BYTE,
+		  				 (*face)->glyph->bitmap.buffer);
+
+		  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 1); 
+		  
+      gl_state->gl_glyphs[p].texture = texture;
+		  gl_state->gl_glyphs[p].width = (*face)->glyph->bitmap.width;
+		  gl_state->gl_glyphs[p].rows = (*face)->glyph->bitmap.rows;
+		  gl_state->gl_glyphs[p].left = (*face)->glyph->bitmap_left;
+		  gl_state->gl_glyphs[p].top = (*face)->glyph->bitmap_top;
+		  gl_state->gl_glyphs[p].advance_x = (*face)->glyph->advance.x;
+		  gl_state->gl_glyphs[p].advance_y = (*face)->glyph->advance.y;
+    }
+    gl_state->initFonts = 1;
+  }
 	for(gl_object *iter = gl_state->text_objects; iter !=NULL; iter = iter->next)
 	{
 		float x = iter->vertices[0], y = iter->vertices[1];
 		float alpha = iter->vertices[2];
 		float sx = 0.00085, sy = 0.00085;
 
-  		char *p;
+  	char *p;
 		int string_length = strlen(iter->text);
 		for(p = iter->text; *p; p++)
 		{
+      /*
 			if(FT_Load_Char(*face, *p, FT_LOAD_RENDER))
 			{
 				printf("CHAR %x NOT FOUND ERROR\n", *p);
 				//return;
 			}		
-			int error = FT_Render_Glyph( (*face)->glyph,   /* glyph slot  */
-								 FT_RENDER_MODE_NORMAL ); /* render mode */
-
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RED,
-		  				 (*face)->glyph->bitmap.width,
-		  				 (*face)->glyph->bitmap.rows, 0, GL_RED,
-		  				 GL_UNSIGNED_BYTE,
-		  				 (*face)->glyph->bitmap.buffer);
-
-		    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glPixelStorei(GL_UNPACK_ALIGNMENT, 1); 
-
-			float x2 = x + (*face)->glyph->bitmap_left * sx;
-			float y2 = -y - (*face)->glyph->bitmap_top * sy;
-			float w = (*face)->glyph->bitmap.width * sx;
-			float h = (*face)->glyph->bitmap.rows * sy;
+			int error = FT_Render_Glyph( (*face)->glyph,    glyph slot  
+								 FT_RENDER_MODE_NORMAL ); render mode */
+      float x2 = x + gl_state->gl_glyphs[*p].left * sx;
+			float y2 = -y - gl_state->gl_glyphs[*p].top * sy;
+			float w = gl_state->gl_glyphs[*p].width * sx;
+			float h = gl_state->gl_glyphs[*p].rows * sy;
 			
 			GLfloat text_box[40] = {x2,     -y2    , 0, 1, 1, 1, alpha, 0, 0, 1,
 									x2 + w, -y2    , 0, 1, 1, 1, alpha, 1, 0, 1,
 									x2,     -y2 - h, 0, 1, 1, 1, alpha, 0, 1, 1,
 									x2 + w, -y2 - h, 0, 1, 1, 1, alpha, 1, 1, 1};
-			memcpy(iter->vertices, text_box, 40 * sizeof(GLfloat));
+			//memcpy(iter->vertices, text_box, 40 * sizeof(GLfloat));
 		   
-		   	updateStoreSizeGL(4 * VERTEX_CHANNELS, gl_state);	
-			glBufferSubData(GL_ARRAY_BUFFER, 
+		  updateStoreSizeGL(4 * VERTEX_CHANNELS, gl_state);	
+			glBindTexture(GL_TEXTURE_2D, gl_state->gl_glyphs[*p].texture);
+      glBufferSubData(GL_ARRAY_BUFFER, 
 							0, 
 							4 * VERTEX_CHANNELS * sizeof(GLfloat), 
-							iter->vertices);
-		    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+							text_box);
+       glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 			
-			x += ((*face)->glyph->advance.x/64) * sx;
-			y += ((*face)->glyph->advance.y/64) * sy;
+			x += (gl_state->gl_glyphs[*p].advance_x/64) * sx;
+			y += (gl_state->gl_glyphs[*p].advance_y/64) * sy;
 		}
 		free(iter->text);
 	}	
@@ -267,7 +320,7 @@ void initFreetype(FT_Library *library, FT_Face *face)
 		printf("Freetype failed to initialize\n");
 	}
 	error = FT_New_Face( *library,
-                     "/usr/share/fonts/truetype/freefont/FreeSans.ttf",
+                     "/usr/share/fonts/truetype/freefont/FreeMono.ttf",
                      0,
                      face);
 	if ( error == FT_Err_Unknown_File_Format )
