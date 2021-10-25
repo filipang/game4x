@@ -222,47 +222,67 @@ void drawTexts(game_state *state, gl_game_state *gl_state)
 {
 	FT_Face *face = &gl_state->face;
 	FT_Library *library = &gl_state->library;
-	glBindVertexArray(gl_state->VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, gl_state->VBO);
-	glUniform1i(glGetUniformLocation(gl_state->shader_program, "isText"), 1);
 	glCheckErrors(); 
-  if(gl_state->initFonts == 0)
-  {
-    unsigned char p = 1;
-    for(p = 0; p<=128; p++)
-    {
-      if(FT_Load_Char(*face, p, FT_LOAD_RENDER))
-      {
-        printf("CHAR %x NOT FOUND ERROR\n", p);
-        //return;
-      }		
-      int error = FT_Render_Glyph( (*face)->glyph,   /* glyph slot  */
-                 FT_RENDER_MODE_NORMAL ); /* render mode */
-		  unsigned int texture;
-      glGenTextures(1, &texture);
-      glBindTexture(GL_TEXTURE_2D, texture);
-      glTexImage2D(GL_TEXTURE_2D, 0, 1,
-		  				 (*face)->glyph->bitmap.width,
-		  				 (*face)->glyph->bitmap.rows, 0, GL_RED,
-		  				 GL_UNSIGNED_BYTE,
-		  				 (*face)->glyph->bitmap.buffer);
+	if(gl_state->initFonts == 0)
+	{
 
-		  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glPixelStorei(GL_UNPACK_ALIGNMENT, 1); 
-		  
-      gl_state->gl_glyphs[p].texture = texture;
-		  gl_state->gl_glyphs[p].width = (*face)->glyph->bitmap.width;
-		  gl_state->gl_glyphs[p].rows = (*face)->glyph->bitmap.rows;
-		  gl_state->gl_glyphs[p].left = (*face)->glyph->bitmap_left;
-		  gl_state->gl_glyphs[p].top = (*face)->glyph->bitmap_top;
-		  gl_state->gl_glyphs[p].advance_x = (*face)->glyph->advance.x;
-		  gl_state->gl_glyphs[p].advance_y = (*face)->glyph->advance.y;
-    }
-    gl_state->initFonts = 1;
-  }
+		FT_GlyphSlot g = (*face)->glyph;
+		int w = 0;
+		int h = 0;
+
+		for(int i = 32; i < 128; i++) {
+		  if(FT_Load_Char(*face, i, FT_LOAD_RENDER)) {
+			fprintf(stderr, "Loading character %c failed!\n", i);
+			continue;
+		  }
+
+		  w += g->bitmap.width;
+		  if(g->bitmap.rows > h)
+			  h = g->bitmap.rows;
+		}
+
+		/* you might as well save this value as it is needed later on */
+		gl_state->atlas_w = w;
+		gl_state->atlas_h = h;
+
+		glBindVertexArray(gl_state->VAO);
+		glBindBuffer(GL_ARRAY_BUFFER, gl_state->VBO);
+		glActiveTexture(GL_TEXTURE0);
+		glGenTextures(1, &gl_state->font_texture);
+		glBindTexture(GL_TEXTURE_2D, gl_state->font_texture);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, 1, w, h, 0, GL_RED, GL_UNSIGNED_BYTE, 0);
+		
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1); 
+		int x = 0;
+
+		for(int i = 32; i < 128; i++) {
+		  if(FT_Load_Char(*face, i, FT_LOAD_RENDER))
+			continue;
+
+		  glTexSubImage2D(GL_TEXTURE_2D, 0, x, 0, g->bitmap.width, g->bitmap.rows, GL_RED, GL_UNSIGNED_BYTE, g->bitmap.buffer);
+		  gl_state->gl_glyphs[i].ax = g->advance.x >> 6;
+		  gl_state->gl_glyphs[i].ay = g->advance.y >> 6;
+
+		  gl_state->gl_glyphs[i].bw = g->bitmap.width;
+		  gl_state->gl_glyphs[i].bh = g->bitmap.rows;
+
+		  gl_state->gl_glyphs[i].bl = g->bitmap_left;
+		  gl_state->gl_glyphs[i].bt = g->bitmap_top;
+
+		  gl_state->gl_glyphs[i].tx = (float)x / w;
+		  x += g->bitmap.width;
+		}
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+		glBindTexture(GL_TEXTURE_2D, 0);	
+		glActiveTexture(GL_TEXTURE0);
+		gl_state->initFonts = 1;
+	}
 	for(gl_object *iter = gl_state->text_objects; iter !=NULL; iter = iter->next)
 	{
 		float x = iter->vertices[0], y = iter->vertices[1];
@@ -271,42 +291,65 @@ void drawTexts(game_state *state, gl_game_state *gl_state)
 
 		char *p;
 		int string_length = strlen(iter->text);
+		typedef struct point {
+			GLfloat x;
+			GLfloat y;
+			GLfloat z;
+			GLfloat r;
+			GLfloat g;
+			GLfloat b;
+			GLfloat a;
+			GLfloat s;
+			GLfloat t;
+			GLfloat w;
+		} point;
+		point coords[6000];
+		int n = 0;
 		for(p = iter->text; *p != '\0'; p++)
 		{
-      /*
+
 			if(FT_Load_Char(*face, *p, FT_LOAD_RENDER))
 			{
 				printf("CHAR %x NOT FOUND ERROR\n", *p);
 				//return;
 			}		
-			int error = FT_Render_Glyph( (*face)->glyph,    glyph slot  
-								 FT_RENDER_MODE_NORMAL ); render mode */
-			float x2 = x + gl_state->gl_glyphs[*p].left * sx;
-			float y2 = -y - gl_state->gl_glyphs[*p].top * sy;
-			float w = gl_state->gl_glyphs[*p].width * sx;
-			float h = gl_state->gl_glyphs[*p].rows * sy;
-			
-			GLfloat text_box[40] = {x2,     -y2    , 0, 1, 1, 1, alpha, 0, 0, 1,
-									x2 + w, -y2    , 0, 1, 1, 1, alpha, 1, 0, 1,
-									x2,     -y2 - h, 0, 1, 1, 1, alpha, 0, 1, 1,
-									x2 + w, -y2 - h, 0, 1, 1, 1, alpha, 1, 1, 1};
-			//memcpy(iter->vertices, text_box, 40 * sizeof(GLfloat));
-		   
-		  updateStoreSizeGL(4 * VERTEX_CHANNELS, gl_state);	
-		  glBindTexture(GL_TEXTURE_2D, gl_state->gl_glyphs[*p].texture);
-		  glBufferSubData(GL_ARRAY_BUFFER, 
-							0, 
-							4 * VERTEX_CHANNELS * sizeof(GLfloat), 
-							text_box);
-		   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-			
-			x += (gl_state->gl_glyphs[*p].advance_x/64) * sx;
-			y += (gl_state->gl_glyphs[*p].advance_y/64) * sy;
+			int error = FT_Render_Glyph( (*face)->glyph,  //glyph slot  
+								 FT_RENDER_MODE_NORMAL ); //render mode 
+		    
+			float x2 =  x + gl_state->gl_glyphs[*p].bl * sx;
+			float y2 = -y - gl_state->gl_glyphs[*p].bt * sy;
+			float w = gl_state->gl_glyphs[*p].bw * sx;
+			float h = gl_state->gl_glyphs[*p].bh * sy;
+
+			if(!w || !h)
+      			continue;
+		  	coords[n++] = (point){x2,     -y2    , 0, 1, 1, 1, alpha, gl_state->gl_glyphs[*p].tx, 0, 1};
+			coords[n++] = (point){x2 + w, -y2    , 0, 1, 1, 1, alpha, gl_state->gl_glyphs[*p].tx + gl_state->gl_glyphs[*p].bw / gl_state->atlas_w, 0, 1};
+
+			coords[n++] = (point){x2,     -y2 - h, 0, 1, 1, 1, alpha, gl_state->gl_glyphs[*p].tx,gl_state->gl_glyphs[*p].bh / gl_state->atlas_h, 1}; //remember: each glyph occupies a different amount of vertical space
+			coords[n++] = (point){x2 + w, -y2    , 0, 1, 1, 1, alpha, gl_state->gl_glyphs[*p].tx + gl_state->gl_glyphs[*p].bw / gl_state->atlas_w,   0, 1};
+			coords[n++] = (point){x2,     -y2 - h, 0, 1, 1, 1, alpha, gl_state->gl_glyphs[*p].tx, gl_state->gl_glyphs[*p].bh / gl_state->atlas_h, 1};
+			coords[n++] = (point){x2 + w, -y2 - h, 0, 1, 1, 1, alpha, gl_state->gl_glyphs[*p].tx + gl_state->gl_glyphs[*p].bw / gl_state->atlas_w, gl_state->gl_glyphs[*p].bh / gl_state->atlas_h, 1};
+
+
+			x += gl_state->gl_glyphs[*p].ax * sx;
+			y += gl_state->gl_glyphs[*p].ay * sy;	
 		}
+		glBindVertexArray(gl_state->VAO);
+		glBindBuffer(GL_ARRAY_BUFFER, gl_state->VBO);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, gl_state->font_texture);
+
+		glUniform1i(glGetUniformLocation(gl_state->shader_program, "isText"), 1);
+		updateStoreSizeGL(string_length * 10 * 6 * sizeof(GLfloat), gl_state);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, n * 10  * sizeof(GLfloat), coords);
+  		glDrawArrays(GL_TRIANGLES, 0, n);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+		glBindTexture(GL_TEXTURE_2D, 0);	
+		glActiveTexture(GL_TEXTURE0);
 	}	
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-	glBindTexture(GL_TEXTURE_2D, 0);	
 }
 
 void initFreetype(FT_Library *library, FT_Face *face)

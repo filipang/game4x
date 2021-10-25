@@ -20,13 +20,16 @@
 
 typedef struct gl_glyph
 {
-  int width;
-  int rows;
-  int left;
-  int top;
-  int advance_x;
-  int advance_y;
-  unsigned int texture;
+  float ax; // advance.x
+  float ay; // advance.y
+
+  float bw; // bitmap.width;
+  float bh; // bitmap.rows;
+
+  float bl; // bitmap_left;
+  float bt; // bitmap_top;
+
+  float tx; // x offset of glyph in texture coordinates
 } gl_glyph;
 
 typedef struct gl_game_state
@@ -48,6 +51,8 @@ typedef struct gl_game_state
 	GLfloat *colors;
 	int cursor_color;
 	int vertices_store_size;
+	int atlas_w;
+	int atlas_h;
 
 	FT_Library library;
 	FT_Face face;
@@ -56,6 +61,7 @@ typedef struct gl_game_state
 	GLuint VBO;
    	GLuint shader_program;
    	GLuint texture;
+	GLuint font_texture;
   int initFonts;
   gl_glyph gl_glyphs[129];
 } gl_game_state;
@@ -842,6 +848,7 @@ void updateGL(game_state *state, gl_game_state *gl_state)
 	// Specify the color of the background
 	// Clean the back buffer and assign the new color to it
 
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, gl_state->texture);	
 	glBindVertexArray(gl_state->VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, gl_state->VBO);
