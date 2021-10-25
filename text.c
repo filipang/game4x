@@ -263,7 +263,7 @@ void drawTexts(game_state *state, gl_game_state *gl_state)
 		for(int i = 32; i < 128; i++) {
 		  if(FT_Load_Char(*face, i, FT_LOAD_RENDER))
 			continue;
-
+		  
 		  glTexSubImage2D(GL_TEXTURE_2D, 0, x, 0, g->bitmap.width, g->bitmap.rows, GL_RED, GL_UNSIGNED_BYTE, g->bitmap.buffer);
 		  gl_state->gl_glyphs[i].ax = g->advance.x >> 6;
 		  gl_state->gl_glyphs[i].ay = g->advance.y >> 6;
@@ -321,8 +321,8 @@ void drawTexts(game_state *state, gl_game_state *gl_state)
 			float w = gl_state->gl_glyphs[*p].bw * sx;
 			float h = gl_state->gl_glyphs[*p].bh * sy;
 
-			if(!w || !h)
-      			continue;
+			/*if(!w)
+      			continue;*/
 		  	coords[n++] = (point){x2,     -y2    , 0, 1, 1, 1, alpha, gl_state->gl_glyphs[*p].tx, 0, 1};
 			coords[n++] = (point){x2 + w, -y2    , 0, 1, 1, 1, alpha, gl_state->gl_glyphs[*p].tx + gl_state->gl_glyphs[*p].bw / gl_state->atlas_w, 0, 1};
 
