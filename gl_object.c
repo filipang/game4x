@@ -70,12 +70,15 @@ void addGLObject(gl_object *src, gl_object **dst)
 
 // TODO(filip): Free unit list function
 
+void printGLObject(gl_object *object);
 void removeGLObject(gl_object **base, gl_object *target)
 {
 	if(base == NULL || target == NULL) return;
 	gl_object *iter = *base;
 	if(iter == target)
 	{
+		if(target->text != NULL)
+			free(target->text);
 		*base = target->next;
 		free(target);
 	}
@@ -86,6 +89,9 @@ void removeGLObject(gl_object **base, gl_object *target)
 			if(iter->next == target)
 			{
 				iter->next = target->next;
+				if(target->text != NULL)
+					free(target->text);
+
 				free(target);
 			}
 			iter = iter->next;
@@ -95,11 +101,19 @@ void removeGLObject(gl_object **base, gl_object *target)
 
 void printGLObject(gl_object *object)
 {
-	printf("gl_object: %x\nvertex_size: %d\n"
-			"next:%x\n",
-			object,
-			object->vertices_size,
-			object->next);
+	if(object->text != NULL)
+		printf("gl_object: %x\nvertex_size: %d\n"
+				"next:%x\ntext:%c\n",
+				object,
+				object->vertices_size,
+				object->next,
+				*object->text);
+	else
+		printf("gl_object: %x\nvertex_size: %d\n"
+				"next:%x\n",
+				object,
+				object->vertices_size,
+				object->next);
 }
 
 void printGLObjectList(gl_object *iter)

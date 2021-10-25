@@ -810,7 +810,7 @@ void updateHelp(game_state *state, gl_game_state *gl_state)
 // FIXME(filip): Highlight gets displayed over foreground
 void updateUIGL(game_state *state, gl_game_state *gl_state)	
 {
-	//updateFogOfWar(state, gl_state);
+	updateFogOfWar(state, gl_state);
 	updateCursor(state, gl_state);
 	updateHighlight(state, gl_state);
 	updateForeground(state, gl_state);

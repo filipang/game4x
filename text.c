@@ -18,11 +18,11 @@ void updateText(char message[], float x, float y, struct gl_game_state *gl_state
 	gl_object *object;
 	int string_length = strlen(message);
 
-	createGLObject(&object, string_length*4*VERTEX_CHANNELS);
+	createGLObject(&object, string_length * 4 * VERTEX_CHANNELS);
 	object->vertex_step = 4;
-	object->text = malloc(string_length+1);
+	object->text = malloc(string_length + 1);
 	strcpy(object->text, message);
-	
+
 	addGLObject(object, &gl_state->text_objects);
 	object->vertices[0] = x;
 	object->vertices[1] = y;
@@ -269,9 +269,9 @@ void drawTexts(game_state *state, gl_game_state *gl_state)
 		float alpha = iter->vertices[2];
 		float sx = 0.00085, sy = 0.00085;
 
-  	char *p;
+		char *p;
 		int string_length = strlen(iter->text);
-		for(p = iter->text; *p; p++)
+		for(p = iter->text; *p != '\0'; p++)
 		{
       /*
 			if(FT_Load_Char(*face, *p, FT_LOAD_RENDER))
@@ -281,7 +281,7 @@ void drawTexts(game_state *state, gl_game_state *gl_state)
 			}		
 			int error = FT_Render_Glyph( (*face)->glyph,    glyph slot  
 								 FT_RENDER_MODE_NORMAL ); render mode */
-      float x2 = x + gl_state->gl_glyphs[*p].left * sx;
+			float x2 = x + gl_state->gl_glyphs[*p].left * sx;
 			float y2 = -y - gl_state->gl_glyphs[*p].top * sy;
 			float w = gl_state->gl_glyphs[*p].width * sx;
 			float h = gl_state->gl_glyphs[*p].rows * sy;
@@ -293,17 +293,16 @@ void drawTexts(game_state *state, gl_game_state *gl_state)
 			//memcpy(iter->vertices, text_box, 40 * sizeof(GLfloat));
 		   
 		  updateStoreSizeGL(4 * VERTEX_CHANNELS, gl_state);	
-			glBindTexture(GL_TEXTURE_2D, gl_state->gl_glyphs[*p].texture);
-      glBufferSubData(GL_ARRAY_BUFFER, 
+		  glBindTexture(GL_TEXTURE_2D, gl_state->gl_glyphs[*p].texture);
+		  glBufferSubData(GL_ARRAY_BUFFER, 
 							0, 
 							4 * VERTEX_CHANNELS * sizeof(GLfloat), 
 							text_box);
-       glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 			
 			x += (gl_state->gl_glyphs[*p].advance_x/64) * sx;
 			y += (gl_state->gl_glyphs[*p].advance_y/64) * sy;
 		}
-		free(iter->text);
 	}	
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -320,7 +319,7 @@ void initFreetype(FT_Library *library, FT_Face *face)
 		printf("Freetype failed to initialize\n");
 	}
 	error = FT_New_Face( *library,
-                     "/usr/share/fonts/truetype/freefont/FreeMono.ttf",
+                     "/usr/share/fonts/truetype/freefont/FreeSans.ttf",
                      0,
                      face);
 	if ( error == FT_Err_Unknown_File_Format )

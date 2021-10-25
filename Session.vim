@@ -24,7 +24,6 @@ tabnew
 tabnew
 tabnew
 tabnew
-tabnew
 tabrewind
 edit utils.c
 set splitbelow splitright
@@ -107,33 +106,6 @@ normal! 0
 wincmd w
 exe 'vert 1resize ' . ((&columns * 110 + 58) / 116)
 exe 'vert 2resize ' . ((&columns * 5 + 58) / 116)
-tabnext
-edit utils.s
-set splitbelow splitright
-set nosplitbelow
-set nosplitright
-wincmd t
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-argglobal
-balt utils.S
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 26) / 53)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 1
-normal! 0
 tabnext
 edit build_asm.sh
 set splitbelow splitright
@@ -391,8 +363,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 114 + 58) / 116)
-exe 'vert 2resize ' . ((&columns * 1 + 58) / 116)
+exe 'vert 1resize ' . ((&columns * 58 + 58) / 116)
+exe 'vert 2resize ' . ((&columns * 57 + 58) / 116)
 argglobal
 balt input.S
 setlocal fdm=manual
@@ -430,15 +402,14 @@ normal! zt
 keepjumps 1
 normal! 0
 wincmd w
-exe 'vert 1resize ' . ((&columns * 114 + 58) / 116)
-exe 'vert 2resize ' . ((&columns * 1 + 58) / 116)
-tabnext 4
+exe 'vert 1resize ' . ((&columns * 58 + 58) / 116)
+exe 'vert 2resize ' . ((&columns * 57 + 58) / 116)
+tabnext 10
 set stal=1
 badd +1 utils.c
-badd +0 main.c
+badd +1 main.c
 badd +1 utils.S
-badd +1 utils.s
-badd +1 build_asm.sh
+badd +0 build_asm.sh
 badd +1 linux_build_asm_debug.sh
 badd +39 text.c
 badd +1 shader.vert
@@ -448,6 +419,7 @@ badd +140 gl_game.c
 badd +2 main.S
 badd +1 input.c
 badd +1 \\
+badd +1 utils.s
 badd +16 ~/Downloads/decode.s
 badd +30 colors.c
 badd +1 linux_build_c_debug.sh
@@ -464,6 +436,7 @@ badd +1 glad.c
 badd +1 build_c_debug.sh
 badd +1 ~Downloads/decode.s
 badd +646 main_asm.s
+badd +1 \[Command\ Line]
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0
   silent exe 'bwipe ' . s:wipebuf
 endif
