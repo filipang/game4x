@@ -5658,7 +5658,6 @@ updateButton:
  pushq %rsi
  pushq %rdx
  pushq %rcx
- subq $16, %rsp
  pushq %r12
  pushq %r13
 
@@ -5717,13 +5716,12 @@ updateInput:
  pushq %rsi
  subq $16, %rsp
  movq %rsi, -24(%rbp);
-# 119 "input.S"
+# 118 "input.S"
  movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $87, %rdx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);;
  movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $65, %rdx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);;
  movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $83, %rdx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);;
  movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $68, %rdx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);;
- movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $0, %rdx; movl KEYCODE_TAB, %edx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);;
-# 140 "input.S"
+# 139 "input.S"
  addq $32, %rsp
  movq %rbp, %rsp
  popq %rbp
