@@ -29,7 +29,7 @@
 
 #define MAX_MAP_SIZE_X 100
 #define MAX_MAP_SIZE_Y 100
-#define MAX_UNIT_COUNT 25
+#define MAX_UNIT_COUNT 100
 
 #define MAX_PLAYERS 8
 
@@ -40,18 +40,18 @@
 
 typedef struct unit
 {
-	int health; 			// from 0.0 to 1.0
-	int health_stat;
-	int position_x;			// map position
-	int position_y;
-	int type; 				// 1, 2 or 3
-	int team; 				// from 0 to number of players
-	int attack_range;		// attack range
-    int attack_damage;		
-	int mp_current;			// points left this turn
-	int mp_stat;			// total mp
-	int vision_range;
-	int rotation;
+	unsigned char health; 			// from 0.0 to 1.0
+	unsigned char health_stat;
+	unsigned char position_x;			// map position
+	unsigned char position_y;
+	unsigned char type; 				// 1, 2 or 3
+	unsigned char team; 				// from 0 to number of players
+	unsigned char attack_range;		// attack range
+    unsigned char attack_damage;		
+	unsigned char mp_current;			// points left this turn
+	unsigned char mp_stat;			// total mp
+	unsigned char vision_range;
+	unsigned char rotation;
 } unit;
 
 
@@ -115,6 +115,10 @@ typedef struct game_state
 	int end;
 } game_state;
 
+// UNIT HEADERS ----------------------------------------------------
+int createUnit(int position_x, int position_y, game_state *state);
+
+// END UNIT HEADERS ------------------------------------------------
 #include "unit.c"
 
 void saveState(game_state* state)

@@ -21,7 +21,7 @@
 #define UNIT_ICE_ELEMENTAL		6
 #define	UNIT_ARCANE_ELEMENTAL	7
 #define UNIT_ARCANE_PULSE		8
-
+/*
 // NOTE(filip): Everything has to be simplified to be re-written in ASM
 int createUnit(int position_x, int position_y, game_state *state)
 {	
@@ -30,7 +30,7 @@ int createUnit(int position_x, int position_y, game_state *state)
 	state->unit_count++;
 	return state->unit_count-1;
 }
-
+*/
 void removeUnit(int index, game_state *state){
 	int i;
 	for(i = index + 1; i < state->unit_count; i++)
