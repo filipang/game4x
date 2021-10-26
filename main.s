@@ -5627,6 +5627,7 @@ hexDistance:
 KEYCODE_TAB: .long 258
 KEYCODE_ENTER: .long 257
 KEYCODE_ESCAPE: .long 256
+KEYCODE_LEFT_CONTROL: .long 341
 MESSAGE: .asciz "key: %d button: %d key_enum: %d\n"
 .text
 
@@ -5645,6 +5646,57 @@ scrollCallback:
  call glfwGetWindowUserPointer
 
  movsd %xmm15, 80(%rax)
+
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+updateMouseButton:
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rdi
+ pushq %rsi
+ pushq %rdx
+ pushq %rcx
+ pushq %r12
+ pushq %r13
+
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+
+ movq -32(%rbp), %rdx
+ movq %rdx, %r12
+ addq $21, %rdx
+ movq %rdx, %r13
+ movq -8(%rbp), %rdi
+ movq -24(%rbp), %rsi
+ call glfwGetMouseButton
+ cmpq $1, %rax
+ jne ELSE1UB
+ IF1UMB:
+  cmpb $0, (%r12)
+  jne ELSE2UB
+  IF2UMB:
+   movb $1, (%r13)
+   jmp END2UB
+  ELSE2UMB:
+   movb $0, (%r13)
+  END2UMB:
+  incb (%r12)
+  jmp END1UB
+ ELSE1UMB:
+  movb $0, (%r13)
+  movb $0, (%r12)
+
+ END1UMB:
+
+ popq %r13
+ popq %r12
+ popq %r9
+ popq %r9
+ popq %r9
+ popq %r9
 
  movq %rbp, %rsp
  popq %rbp
@@ -5674,25 +5726,27 @@ updateButton:
  cmpq $1, %rax
  jne ELSE1UB
  IF1UB:
-  cmpq $0, (%r12)
+  cmpb $0, (%r12)
   jne ELSE2UB
   IF2UB:
-   movq $1, (%r13)
+   movb $1, (%r13)
    jmp END2UB
   ELSE2UB:
-   movq $0, (%r13)
+   movb $0, (%r13)
   END2UB:
-  incq (%r12)
+  incb (%r12)
   jmp END1UB
  ELSE1UB:
-  movq $0, (%r13)
-  movq $0, (%r12)
+  movb $0, (%r13)
+  movb $0, (%r12)
 
  END1UB:
  movq $0, %rax
  movq $MESSAGE, %rdi
- movq (%r12), %rsi
- movq (%r13), %rdx
+ movq $0, %rsi
+ movq $0, %rdx
+ movb (%r12), %sil
+ movb (%r13), %dl
  movq -24(%rbp), %rcx
  call printf
 
@@ -5716,13 +5770,72 @@ updateInput:
  pushq %rsi
  subq $16, %rsp
  movq %rsi, -24(%rbp);
-# 118 "input.S"
- movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $87, %rdx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);;
- movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $65, %rdx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);;
- movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $83, %rdx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);;
- movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $68, %rdx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);;
-# 139 "input.S"
- addq $32, %rsp
+# 184 "input.S"
+ movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $87, %rdx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);
+ movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $65, %rdx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);
+ movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $83, %rdx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);
+ movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $68, %rdx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);
+ movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $0, %rdx; movl KEYCODE_TAB, %edx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);
+ movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $0, %rdx; movl KEYCODE_ENTER, %edx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);
+ movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $32, %rdx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);
+ movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $0, %rdx; movl KEYCODE_ESCAPE, %edx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);
+ movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $84, %rdx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);
+ movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $77, %rdx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);
+ movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $86, %rdx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);
+ movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $66, %rdx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);
+ movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $49, %rdx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);
+ movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $50, %rdx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);
+ movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $51, %rdx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);
+ movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $52, %rdx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);
+ movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $76, %rdx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);
+ movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $0, %rdx; movl KEYCODE_LEFT_CONTROL, %edx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);
+ movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $72, %rdx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);
+ movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $0, %rdx; movq -24(%rbp), %rcx; call updateMouseButton; incq -24(%rbp);
+ movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $1, %rdx; movq -24(%rbp), %rcx; call updateMouseButton; incq -24(%rbp);
+
+
+
+
+
+
+ subq $16, %rsp
+
+ movq -16(%rbp), %rax
+
+ movsd 48(%rax), %xmm0
+cvtsd2ss %xmm0, %xmm3
+ movq $0, -40(%rbp)
+ movss %xmm3, -40(%rbp)
+
+
+ movsd 56(%rax), %xmm0
+cvtsd2ss %xmm0, %xmm3
+ movq $0, -48(%rbp)
+ movss %xmm3, -48(%rbp)
+
+
+ movq -8(%rbp), %rdi
+ leaq 48(%rax), %rsi
+ leaq 56(%rax), %rdx
+ call glfwGetCursorPos
+
+
+ movq -16(%rbp), %rax
+
+ movss -40(%rbp), %xmm0
+ movsd 48(%rax), %xmm1
+cvtss2sd %xmm0, %xmm0
+ subsd %xmm0, %xmm1
+
+ movsd %xmm1, 64(%rax)
+
+ movss -48(%rbp), %xmm0
+ movsd 56(%rax), %xmm1
+cvtss2sd %xmm0, %xmm0
+ subsd %xmm0, %xmm1
+
+ movsd %xmm1, 72(%rax)
+
  movq %rbp, %rsp
  popq %rbp
  ret

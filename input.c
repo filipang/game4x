@@ -57,13 +57,13 @@ typedef struct input_pressed
 	unsigned char button_LEFT_CONTROL;
 	unsigned char button_H;
 	unsigned char button_LMB;
-	unsigned char button_RMB;
+	unsigned char button_RMB; //41
 
-	double mouse_x;
-	double mouse_y;
-	double mouse_delta_x;
-	double mouse_delta_y;
-	double scroll_delta;
+	double mouse_x; //48
+	double mouse_y; //56
+	double mouse_delta_x; //64
+	double mouse_delta_y; //72
+	double scroll_delta; //80
 
 } input_pressed;
 

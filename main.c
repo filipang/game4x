@@ -84,16 +84,16 @@ int main()
 
 		// INPUT LAYER ---------------------------------------------------------
 		// Update and process input
-    updateInput(window, &input);
+		updateInput(window, &input);
 
 
 		// GAME LAYER ----------------------------------------------------------
 		// Update the game state by checking the input
-    processInput(&input, &state);
+		processInput(&input, &state);
 
 		// GRAPHICS LAYER ------------------------------------------------------
 		// Update grapchics
-    updateGL(&state, &gl_state);
+		updateGL(&state, &gl_state);
 		// ---------------------------------------------------------------------
 
 		glfwSwapBuffers(window);

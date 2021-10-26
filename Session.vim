@@ -4,7 +4,7 @@ let s:so_save = &g:so | let s:siso_save = &g:siso | setg so=0 siso=0 | setl so=-
 let v:this_session=expand("<sfile>:p")
 silent only
 silent tabonly
-cd ~
+cd ~/Work/Assembly/game4x
 if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
@@ -18,14 +18,8 @@ tabnew
 tabnew
 tabnew
 tabnew
-tabnew
-tabnew
-tabnew
-tabnew
-tabnew
-tabnew
 tabrewind
-edit utils.c
+edit main.c
 set splitbelow splitright
 set nosplitbelow
 set nosplitright
@@ -35,7 +29,6 @@ set winheight=1
 set winminwidth=0
 set winwidth=1
 argglobal
-balt main.c
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -45,14 +38,14 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 27) / 55)
+let s:l = 44 - ((15 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
-normal! 0
+keepjumps 44
+normal! 017|
 tabnext
-edit utils.S
+edit input.c
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -65,10 +58,10 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 225 + 118) / 236)
-exe 'vert 2resize ' . ((&columns * 10 + 118) / 236)
+exe 'vert 1resize ' . ((&columns * 73 + 74) / 148)
+exe 'vert 2resize ' . ((&columns * 74 + 74) / 148)
 argglobal
-balt \\
+balt input.S
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -78,16 +71,16 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 27) / 54)
+let s:l = 22 - ((14 * winheight(0) + 26) / 52)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
+keepjumps 22
 normal! 0
 wincmd w
 argglobal
-if bufexists("utils.c") | buffer utils.c | else | edit utils.c | endif
-balt utils.S
+if bufexists("input.S") | buffer input.S | else | edit input.S | endif
+balt input.c
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -97,15 +90,15 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 27) / 54)
+let s:l = 1 - ((0 * winheight(0) + 26) / 52)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 1
 normal! 0
 wincmd w
-exe 'vert 1resize ' . ((&columns * 225 + 118) / 236)
-exe 'vert 2resize ' . ((&columns * 10 + 118) / 236)
+exe 'vert 1resize ' . ((&columns * 73 + 74) / 148)
+exe 'vert 2resize ' . ((&columns * 74 + 74) / 148)
 tabnext
 edit build_asm.sh
 set splitbelow splitright
@@ -117,7 +110,7 @@ set winheight=1
 set winminwidth=0
 set winwidth=1
 argglobal
-balt utils.S
+balt input.c
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -127,14 +120,14 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 27) / 55)
+let s:l = 9 - ((8 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
+keepjumps 9
 normal! 0
 tabnext
-edit linux_build_asm_debug.sh
+edit gl_game.c
 set splitbelow splitright
 set nosplitbelow
 set nosplitright
@@ -154,203 +147,14 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 27) / 55)
+let s:l = 813 - ((15 * winheight(0) + 26) / 53)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
-normal! 0
+keepjumps 813
+normal! 05|
 tabnext
-edit text.c
-set splitbelow splitright
-set nosplitbelow
-set nosplitright
-wincmd t
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-argglobal
-balt linux_build_asm_debug.sh
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 27) / 55)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 1
-normal! 0
-tabnext
-edit shader.vert
-set splitbelow splitright
-set nosplitbelow
-set nosplitright
-wincmd t
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-argglobal
-balt text.c
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 27) / 55)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 1
-normal! 0
-tabnext
-edit input.S
-set splitbelow splitright
-set nosplitbelow
-set nosplitright
-wincmd t
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-argglobal
-balt shader.vert
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 27) / 55)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 1
-normal! 0
-tabnext
-edit main_asm.S
-set splitbelow splitright
-set nosplitbelow
-set nosplitright
-wincmd t
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-argglobal
-balt linux_build_asm_debug.sh
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 27) / 55)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 1
-normal! 0
-tabnext
-edit gl_game.c
-set splitbelow splitright
-set nosplitbelow
-set nosplitright
-wincmd t
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-argglobal
-balt main_asm.S
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 27) / 55)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 1
-normal! 0
-tabnext
-edit main.c
-set splitbelow splitright
-set nosplitbelow
-set nosplitright
-wincmd t
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-argglobal
-balt utils.c
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 27) / 55)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 1
-normal! 0
-tabnext
-edit main.S
-set splitbelow splitright
-set nosplitbelow
-set nosplitright
-wincmd t
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-argglobal
-balt text.c
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 27) / 55)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 1
-normal! 0
-tabnext
-edit input.c
+edit game.c
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -363,10 +167,10 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 119 + 118) / 236)
-exe 'vert 2resize ' . ((&columns * 116 + 118) / 236)
+exe 'vert 1resize ' . ((&columns * 73 + 74) / 148)
+exe 'vert 2resize ' . ((&columns * 74 + 74) / 148)
 argglobal
-balt input.S
+balt game.S
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -376,16 +180,16 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 27) / 54)
+let s:l = 134 - ((36 * winheight(0) + 26) / 52)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
+keepjumps 134
 normal! 0
 wincmd w
 argglobal
-if bufexists("input.S") | buffer input.S | else | edit input.S | endif
-balt input.c
+if bufexists("game.S") | buffer game.S | else | edit game.S | endif
+balt game.c
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -395,48 +199,53 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 27) / 54)
+let s:l = 1 - ((0 * winheight(0) + 26) / 52)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 1
 normal! 0
 wincmd w
-exe 'vert 1resize ' . ((&columns * 119 + 118) / 236)
-exe 'vert 2resize ' . ((&columns * 116 + 118) / 236)
+2wincmd w
+exe 'vert 1resize ' . ((&columns * 73 + 74) / 148)
+exe 'vert 2resize ' . ((&columns * 74 + 74) / 148)
+tabnext
+edit main.S
+set splitbelow splitright
+set nosplitbelow
+set nosplitright
+wincmd t
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+argglobal
+balt game.S
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let s:l = 1 - ((0 * winheight(0) + 26) / 53)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 1
+normal! 0
 tabnext 5
 set stal=1
-badd +1 utils.c
-badd +0 main.c
-badd +1 utils.S
-badd +1 build_asm.sh
-badd +1 linux_build_asm_debug.sh
-badd +39 text.c
-badd +1 shader.vert
-badd +1 input.S
-badd +1 main_asm.S
-badd +140 gl_game.c
-badd +2 main.S
+badd +1 main.c
 badd +1 input.c
-badd +1 \\
-badd +1 utils.s
-badd +16 ~/Downloads/decode.s
-badd +30 colors.c
-badd +1 linux_build_c_debug.sh
-badd +31 unit.c
-badd +28 texture.c
-badd +767 game.c
-badd +41 gl_object.c
-badd +1 new_build_c.sh
-badd +1 \'
-badd +1 /usr/include/freetype2/ft2build.h
-badd +1 shader.frag
-badd +84 outpost.c
-badd +1 glad.c
-badd +1 build_c_debug.sh
-badd +1 ~Downloads/decode.s
-badd +646 main_asm.s
-badd +1 \[Command\ Line]
+badd +1 build_asm.sh
+badd +1 gl_game.c
+badd +1 input.S
+badd +0 game.c
+badd +0 game.S
+badd +0 main.S
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0
   silent exe 'bwipe ' . s:wipebuf
 endif
