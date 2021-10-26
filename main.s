@@ -5890,18 +5890,27 @@ createUnit:
 # RDI: int index
 # RSI: *game_state
 
-
+#.global removeUnit
 removeUnit:
-
 # prologue
-pushq %rbp
-movq %rsp, %rbp
+ pushq %rbp
+ movq %rsp, %rbp
 
+ pushq %rsi
+ addq $11808, %rsi
+ movq $0, %rax
+ movl (%rsi), %eax
+ decq %rax
+ movq $12, %r10
+ mulq %r10
+ addq %rsi, %rax
+ popq %rsi
+RULOOP:
 
 
 
 # epilogue
-movq %rbp, %rsp
-popq %rbp
-ret
+ movq %rbp, %rsp
+ popq %rbp
+ ret
 # 4 "main.S" 2
