@@ -20,6 +20,7 @@
 #include <stb/stb_image.h>
 #include <freetype2/ft2build.h>
 #include FT_FREETYPE_H
+
 // UTILS HEADERS ---------------------------------------------------------------
 char* loadFile(const char* file_name);
 void writeFile(const char* file_name, unsigned char *data, int data_size);
@@ -38,11 +39,15 @@ void mouseCoordsToViewport(double mouse_x, double mouse_y,
 int calculateRotation(int position_x, int position_y, int cursor_x, int cursor_y);
 int hexDistance(int x1, int y1, int x2, int y2);
 
-#include "utils.c"
 // END UTILS HEADERS -----------------------------------------------------------
 
-
+// INPUT  HEADERS --------------------------------------------------------------
 #include "input.c"
+void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+void updateInput(struct GLFWwindow *window, input_pressed *input);
+
+// END INPUT  HEADERS ----------------------------------------------------------
+
 #include "game.c"
 #include "gl_game.c"
 

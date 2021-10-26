@@ -31,11 +31,11 @@ typedef struct input_pressed
 	unsigned char key_pressed_2;
 	unsigned char key_pressed_3;
 	unsigned char key_pressed_4;
-	unsigned char key_pressed_LMB;
-	unsigned char key_pressed_RMB;
 	unsigned char key_pressed_L;
 	unsigned char key_pressed_LEFT_CONTROL;
 	unsigned char key_pressed_H;
+	unsigned char key_pressed_LMB;
+	unsigned char key_pressed_RMB;
 
 	unsigned char button_W;
 	unsigned char button_A;
@@ -53,11 +53,11 @@ typedef struct input_pressed
 	unsigned char button_2;
 	unsigned char button_3;
 	unsigned char button_4;
-	unsigned char button_LMB;
-	unsigned char button_RMB;
 	unsigned char button_L;
 	unsigned char button_LEFT_CONTROL;
 	unsigned char button_H;
+	unsigned char button_LMB;
+	unsigned char button_RMB;
 
 	double mouse_x;
 	double mouse_y;
@@ -67,13 +67,15 @@ typedef struct input_pressed
 
 } input_pressed;
 
+/*
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	input_pressed *input = (input_pressed *)glfwGetWindowUserPointer(window);
 	input->scroll_delta = yoffset;
 }
-
+*/
 // NOTE(filip): This needs to be called every frame to work
+/*
 void updateInput(struct GLFWwindow *window, input_pressed *input)
 {
 	#define PROCESS_BUTTON_INPUT(button) 							\
@@ -141,4 +143,4 @@ void updateInput(struct GLFWwindow *window, input_pressed *input)
 
 	input->mouse_delta_x = input->mouse_x - old_mouse_x;
 	input->mouse_delta_y = input->mouse_y - old_mouse_y;
-}
+}*/

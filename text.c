@@ -303,7 +303,7 @@ void drawTexts(game_state *state, gl_game_state *gl_state)
 			GLfloat t;
 			GLfloat w;
 		} point;
-		point coords[6000];
+		point coords[6*100];
 		int n = 0;
 		for(p = iter->text; *p != '\0'; p++)
 		{
