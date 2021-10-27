@@ -92,7 +92,6 @@ void initializeGraphics(GLFWwindow **window,
 				  		gl_game_state *gl_state)
 {
 	char* sprite_data = loadTexture("tex.bmp");
-	initFreetype(&gl_state->library, &gl_state->face);
 	// GENERAL START SETUP -----------------------------------------------------
 	// Initialize GLFW
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
@@ -226,6 +225,9 @@ void initializeGraphics(GLFWwindow **window,
 	loadColors(&gl_state->colors);
 	glEnable(GL_LINE_SMOOTH);
 	glLineWidth(3);
+	
+	initFreetype(&gl_state->library, &gl_state->face);
+	initializeFontGL(state, gl_state);
 }
 
 void finalizeGraphics(GLFWwindow *window, gl_game_state* gl_state)
@@ -570,7 +572,6 @@ void updateUnitListGL(game_state *state, gl_game_state *gl_state)
 
 	GLfloat *iter_v1 = gl_state->units_object->vertices;
 	GLfloat *iter_v2 = gl_state->unit_team_colors_object->vertices;
-	printf("%d\n", state->unit_count);
 	for(i = 0; i < state->unit_count; i++)
 	{
 		updateUnitGL(i, &iter_v1, &iter_v2, state, gl_state);
