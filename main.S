@@ -1,3 +1,5 @@
 #include "utils.S"
 #include "input.S"
 #include "unit.S"
+#include "colors.S"
+#include "gl_object.S"

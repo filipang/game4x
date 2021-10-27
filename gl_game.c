@@ -66,8 +66,24 @@ typedef struct gl_game_state
   gl_glyph gl_glyphs[129];
 } gl_game_state;
 
+// COLORS HEADERS --------------------------------------------------------------
+
 #include "colors.c"
+void loadColors(GLfloat **colors);
+int getUnitTeamColor(int team, GLfloat* colors);
+
+// END COLORS HEADERS ----------------------------------------------------------
+
+// GL OBJECT HEADERS -----------------------------------------------------------
+
 #include "gl_object.c"
+void createGLObject(gl_object **o, int vertices_size);
+void createGLObjectEmpty(gl_object **o);
+void addGLObject(gl_object *src, gl_object **dst);
+void removeGLObject(gl_object **base, gl_object *target);
+
+// END GL OBJECT HEADERS -------------------------------------------------------
+
 #include "text.c"
 #include "texture.c"
 
@@ -105,7 +121,7 @@ void initializeGraphics(GLFWwindow **window,
 	// gladLoadGL();
 	if (GLEW_OK != glewInit()) 
 	{ 
-	  printf("Failed to initialize GLEW\n"); 
+		printf("Failed to initialize GLEW\n"); 
 	} 
 	// Specify the viewport of OpenGL in the Window
 	// In this case the viewport goes from x = 0, y = 0, to x = 800, y = 800
@@ -120,12 +136,12 @@ void initializeGraphics(GLFWwindow **window,
 	glShaderSource(vertex_shader, 1, &vertex_shader_src, NULL);
 	// Compile the Vertex Shader into machine code
 	glCompileShader(vertex_shader);
-  GLint compile_ok = GL_FALSE;
-  glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &compile_ok);
-  if (0 == compile_ok)
-  {
-    fprintf(stderr, "Error in vertex shader");
-  }
+	GLint compile_ok = GL_FALSE;
+	glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &compile_ok);
+	if (0 == compile_ok)
+	{
+		fprintf(stderr, "Error in vertex shader");
+	}
 	glEnable(GL_BLEND);
 
 	// Create Fragment Shader Object and get its reference
@@ -134,16 +150,16 @@ void initializeGraphics(GLFWwindow **window,
 	glShaderSource(fragment_shader, 1, &fragment_shader_src, NULL);
 	// Compile the Vertex Shader into machine code
 	glCompileShader(fragment_shader);
-  glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &compile_ok);
-  GLchar errorLog[1000];
-  if (0 == compile_ok)
-  {
-    fprintf(stderr, "Error in fragment shader");
-    GLint logSize = 0;
-    glGetShaderiv(fragment_shader, GL_INFO_LOG_LENGTH, &logSize);
-    glGetShaderInfoLog(fragment_shader, logSize, &logSize, &errorLog[0]);
-    printf("%s", errorLog);
-  }
+	glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &compile_ok);
+	GLchar errorLog[1000];
+	if (0 == compile_ok)
+	{
+		fprintf(stderr, "Error in fragment shader");
+		GLint logSize = 0;
+		glGetShaderiv(fragment_shader, GL_INFO_LOG_LENGTH, &logSize);
+		glGetShaderInfoLog(fragment_shader, logSize, &logSize, &errorLog[0]);
+		printf("%s", errorLog);
+	}
 
 	// Create Shader Program Object and get its reference
 	gl_state->shader_program = glCreateProgram();
@@ -181,17 +197,17 @@ void initializeGraphics(GLFWwindow **window,
 	glBindBuffer(GL_ARRAY_BUFFER, gl_state->VBO);
 	
 	// Configure the Vertex Attributes so that OpenGL knows how to read the VBO
-  GLint mPosition = glGetAttribLocation(gl_state->shader_program,"aPos");
-  glVertexAttribPointer(mPosition, 3, GL_FLOAT, GL_FALSE, 
+ 	GLint mPosition = glGetAttribLocation(gl_state->shader_program,"aPos");
+ 	glVertexAttribPointer(mPosition, 3, GL_FLOAT, GL_FALSE, 
 						  10 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
-  GLint mColor = glGetAttribLocation(gl_state->shader_program,"aCol");
+ 	GLint mColor = glGetAttribLocation(gl_state->shader_program,"aCol");
 	glVertexAttribPointer(mColor, 4, GL_FLOAT, GL_FALSE, 
 						  10 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
-  GLint mTexCoord = glGetAttribLocation(gl_state->shader_program,"aTexCoord");
+	GLint mTexCoord = glGetAttribLocation(gl_state->shader_program,"aTexCoord");
 	glVertexAttribPointer(mTexCoord, 3, GL_FLOAT, GL_FALSE, 
 						  10 * sizeof(float), (void*)(7 * sizeof(float)));
 	glEnableVertexAttribArray(2);
@@ -396,68 +412,74 @@ int getTileTexture(int tile_type)
 	};
 }
 
+void updateObjectGL(int vertices_size, int step, gl_object **object, gl_game_state *gl_state)
+{
+	if(*object == NULL)
+	{
+		createGLObject(object, 
+					   vertices_size);
+		(*object)->vertex_step = step;
+		addGLObject(*object, &gl_state->gl_objects);
+	}
+}
+
+void updateMapTileGL(int i, int j, GLfloat **iter_v, game_state *state, gl_game_state *gl_state)
+{
+	int tile = state->terrain_map[i][j];
+	if(state->terrain_map[i][j]!=TILE_DISABLED)
+	{
+		float x;
+		float y;
+		hexGridToViewport(j, i, 
+						  state->map_offset_x, state->map_offset_y,
+						  state->map_hex_size,
+						  &x, &y);
+		int color = WHITE;
+		if(tile == TILE_ESSENCE)
+			color = CYAN;
+		else if(tile == TILE_FIRE)
+			color = RED;
+		else if(tile == TILE_ICE)
+			color = CYAN;
+		else if(tile == TILE_WATER)
+			color = BLUE;
+
+		float color_r = gl_state->colors[3 * color + 0];
+		float color_g = gl_state->colors[3 * color + 1];
+		float color_b = gl_state->colors[3 * color + 2];
+		float color_a = 1;
+		float tex_weight = 1;
+		if(tile != TILE_NORMAL && tile != TILE_ESSENCE)
+			tex_weight = 0;
+		sub_texture temp = 
+			loadSubtextureBounds(getTileTexture(tile));
+		*iter_v = buildHexagonVertices(x, y, 0,
+									  color_r, color_g, color_b, 
+									  1.0, 
+									  temp.start_x,
+									  temp.start_y,
+									  tex_weight,
+									  temp.width,
+									  temp.height,
+								  	  state->map_hex_size * 0.9, 0, *iter_v);
+	
+	}
+}
+
 // Called everytime the map needs to be rendered
 void updateMapGL(game_state *state, gl_game_state *gl_state)
 {
 	int i, j, k;
 
-	if(gl_state->map_object == NULL)
-	{
-			
-		int vertices_size = state->size_x * state->size_y * VERTEX_CHANNELS * 6;
-
-		createGLObject(&gl_state->map_object, 
-					   vertices_size);
-		gl_state->map_object->vertex_step = 6;
-		addGLObject(gl_state->map_object, &gl_state->gl_objects);
-	}
-
+	int vertices_size = state->size_x * state->size_y * VERTEX_CHANNELS * 6;
+	updateObjectGL(vertices_size, 6, &gl_state->map_object, gl_state);
 	GLfloat *iter_v = gl_state->map_object->vertices;
-	GLfloat *beginWrite=NULL, *endWrite=NULL;
 	
-	// TODO(filip): Optimize this
 	for(i = 0; i < state->size_y; i++)
 	{
 		for(j = 0; j < state->size_x; j++)
 		{
-			int tile = state->terrain_map[i][j];
-			if(state->terrain_map[i][j]!=TILE_DISABLED)
-			{
-				float x;
-				float y;
-				hexGridToViewport(j, i, 
-								  state->map_offset_x, state->map_offset_y,
-								  state->map_hex_size,
-								  &x, &y);
-				int color = WHITE;
-				if(tile == TILE_ESSENCE)
-					color = CYAN;
-				else if(tile == TILE_FIRE)
-					color = RED;
-				else if(tile == TILE_ICE)
-					color = CYAN;
-				else if(tile == TILE_WATER)
-					color = BLUE;
-
-				float color_r = gl_state->colors[3 * color + 0];
-				float color_g = gl_state->colors[3 * color + 1];
-				float color_b = gl_state->colors[3 * color + 2];
-				float color_a = 1;
-				float tex_weight = 1;
-				if(tile != TILE_NORMAL && tile != TILE_ESSENCE)
-					tex_weight = 0;
-				sub_texture temp = 
-					loadSubtextureBounds(getTileTexture(tile));
-				iter_v = buildHexagonVertices(x, y, 0,
-											  color_r, color_g, color_b, 
-											  1.0, 
-											  temp.start_x,
-											  temp.start_y,
-											  tex_weight,
-											  temp.width,
-											  temp.height,
-								    	  state->map_hex_size * 0.9, 0, iter_v);
-			}
+			updateMapTileGL(i, j, &iter_v, state, gl_state);
 		}
 	}
 }
@@ -498,67 +520,63 @@ int getUnitTexture(int unit_type)
 	}
 }
 
+void updateUnitGL(int i, GLfloat **iter_v1, GLfloat **iter_v2, game_state *state, gl_game_state *gl_state)
+{
+	unit* iter = &state->units[i];
+	float position_x; 
+	float position_y;
+	hexGridToViewport(iter->position_x, iter->position_y, 
+					  state->map_offset_x, state->map_offset_y,
+					  state->map_hex_size, 
+					  &position_x, &position_y);
+	int color = getUnitTeamColor(iter->team, gl_state->colors);
+	float color_r = gl_state->colors[color * 3 + 0];
+	float color_g = gl_state->colors[color * 3 + 1];
+	float color_b = gl_state->colors[color * 3 + 2];
+	float color_a = 1;
+	sub_texture temp = 
+		loadSubtextureBounds(getUnitTexture(iter->type));
+
+	*iter_v2 = buildHexagonVertices(position_x, position_y, 0.2f,
+								 color_r, color_g, color_b, color_a,
+								 0, 0, 0, 0, 0,
+								 0.9 * state->map_hex_size,
+								 iter->rotation,
+								 *iter_v2);
+	color_a = 1;
+	*iter_v1 = buildHexagonVertices(position_x, position_y, 0.2f,
+								 color_r, color_g, color_b, color_a,
+								 temp.start_x,
+								 temp.start_y,
+								 1.0,
+								 temp.width,
+								 temp.height,
+								 0.80 * state->map_hex_size,
+								 iter->rotation,
+								 *iter_v1);
+
+}
+
 void updateUnitListGL(game_state *state, gl_game_state *gl_state)
 {
 	int i;
 	unit *iter;
 	int vertices_size = VERTEX_CHANNELS * 6 * state->unit_count; 
-	if(gl_state->units_object == NULL && gl_state->unit_team_colors_object == NULL)
-	{
-
-		createGLObject(&gl_state->units_object, 
-					   VERTEX_CHANNELS * 6 * 2 * state->size_x * state->size_y);
-		gl_state->units_object->vertices_size = vertices_size;
-		gl_state->units_object->vertex_step = 6;
-		addGLObject(gl_state->units_object, &gl_state->gl_objects);
-
-		createGLObject(&gl_state->unit_team_colors_object, 
-					   VERTEX_CHANNELS * 6 * 2 * state->size_x * state->size_y);
-		gl_state->unit_team_colors_object->vertices_size = vertices_size;
-		gl_state->unit_team_colors_object->vertex_step = 6;
-		gl_state->unit_team_colors_object->drawing_mode = GL_LINE_LOOP;
-		addGLObject(gl_state->unit_team_colors_object, &gl_state->gl_objects);
-	}
+	updateObjectGL(VERTEX_CHANNELS*6*state->size_x*state->size_y, 6, &gl_state->units_object, gl_state);
+	updateObjectGL(VERTEX_CHANNELS*6*state->size_x*state->size_y, 6, &gl_state->unit_team_colors_object, gl_state);
+	gl_state->unit_team_colors_object->drawing_mode = GL_LINE_LOOP;
+	gl_state->unit_team_colors_object->vertices_size = vertices_size;
 	gl_state->units_object->vertices_size = vertices_size;
+
 	GLfloat *iter_v1 = gl_state->units_object->vertices;
 	GLfloat *iter_v2 = gl_state->unit_team_colors_object->vertices;
+	printf("%d\n", state->unit_count);
 	for(i = 0; i < state->unit_count; i++)
 	{
-		unit* iter = &state->units[i];
-		float position_x; 
-		float position_y;
-		hexGridToViewport(iter->position_x, iter->position_y, 
-						  state->map_offset_x, state->map_offset_y,
-						  state->map_hex_size, 
-						  &position_x, &position_y);
-		int color = getUnitTeamColor(iter->team, gl_state->colors);
-		float color_r = gl_state->colors[color * 3 + 0];
-		float color_g = gl_state->colors[color * 3 + 1];
-		float color_b = gl_state->colors[color * 3 + 2];
-		float color_a = 1;
-		sub_texture temp = 
-			loadSubtextureBounds(getUnitTexture(iter->type));
-
-		iter_v2 = buildHexagonVertices(position_x, position_y, 0.2f,
-							 color_r, color_g, color_b, color_a,
-							 0, 0, 0, 0, 0,
-							 0.9 * state->map_hex_size,
-							 iter->rotation,
-							 iter_v2);
-		color_a = 1;
-		iter_v1 = buildHexagonVertices(position_x, position_y, 0.2f,
-							 color_r, color_g, color_b, color_a,
-							 temp.start_x,
-							 temp.start_y,
-							 1.0,
-							 temp.width,
-							 temp.height,
-							 0.80 * state->map_hex_size,
-							 iter->rotation,
-							 iter_v1);
+		updateUnitGL(i, &iter_v1, &iter_v2, state, gl_state);
 	}
 	gl_state->units_object->vertices_size = vertices_size;	
-	gl_state->unit_team_colors_object->vertices_size = vertices_size;	
+	gl_state->unit_team_colors_object->vertices_size = 2*vertices_size;	
 }
 
 void updateHighlight(game_state *state, gl_game_state *gl_state)
@@ -579,16 +597,9 @@ void updateHighlight(game_state *state, gl_game_state *gl_state)
 		float color_b = gl_state->colors[3 * color + 2];
 		float color_a = 1;
 
-		if(gl_state->highlight_object == NULL)
-		{
-			int vertices_size = VERTEX_CHANNELS * 6; // Hexagon has 6 vertices, each with 10 float values
-
-			createGLObject(&gl_state->highlight_object, 
-						   vertices_size);
-			gl_state->highlight_object->drawing_mode = GL_LINE_LOOP;
-			gl_state->highlight_object->vertex_step = 6;
-			addGLObject(gl_state->highlight_object, &gl_state->gl_objects);
-		}
+		int vertices_size = VERTEX_CHANNELS * 6; // Hexagon has 6 vertices, each with 10 float values
+		updateObjectGL(vertices_size, 6, &gl_state->highlight_object, gl_state);
+		gl_state->highlight_object->drawing_mode = GL_LINE_LOOP;
 
 		buildHexagonVertices(position_x, position_y, 0.2f,
 							 color_r, color_g, color_b, color_a,
@@ -610,12 +621,43 @@ void updateHighlight(game_state *state, gl_game_state *gl_state)
 	}
 }
 
+int getCursorColor(game_state *state)
+{
+	int target = findUnit(state->cursor_x, state->cursor_y, state);
+	int color;
+	if(state->mode == MODE_MOVE)
+	{
+		if(state->cursor_distance > state->units[state->selected_unit].mp_current)
+			color = RED;
+
+		if(state->cursor_distance == state->units[state->selected_unit].mp_current)
+			color = YELLOW;
+
+		if(state->cursor_distance < state->units[state->selected_unit].mp_current)
+			color = WHITE;
+
+		if(target != -1)	
+			color = RED;
+	}
+	if(state->mode == MODE_ATTACK)
+	{
+		if(target == -1 && 
+		   state->cursor_distance <= state->units[state->selected_unit].attack_range)
+			color = LIGHT_GREY;
+		else if(target != -1 && 
+				state->cursor_distance <= state->units[state->selected_unit].attack_range &&
+				state->units[target].team != state->units[state->selected_unit].team)
+			color = GREEN;
+		else
+			color =  RED;
+	}
+	return color;
+}
+
 void updateCursor(game_state *state, gl_game_state *gl_state)
 {
 	if(state->cursor_active != 0)
 	{
-		int target = findUnit(state->cursor_x, state->cursor_y, state);
-		
 		float position_x;		
 		float position_y;
 		hexGridToViewport(state->cursor_x, state->cursor_y,
@@ -623,49 +665,15 @@ void updateCursor(game_state *state, gl_game_state *gl_state)
 						  state->map_hex_size, 
 						  &position_x, &position_y);
 		
-		int color;	
-		if(state->mode == MODE_MOVE)
-		{
-			if(state->cursor_distance > state->units[state->selected_unit].mp_current)
-				color = RED;
-
-			if(state->cursor_distance == state->units[state->selected_unit].mp_current)
-				color = YELLOW;
-
-			if(state->cursor_distance < state->units[state->selected_unit].mp_current)
-				color = WHITE;
-
-			if(target != -1)	
-				color = RED;
-		}
-		if(state->mode == MODE_ATTACK)
-		{
-			if(target == -1 && 
-			   state->cursor_distance <= state->units[state->selected_unit].attack_range)
-				color = LIGHT_GREY;
-			else if(target != -1 && 
-			   		state->cursor_distance <= state->units[state->selected_unit].attack_range &&
-			   		state->units[target].team != state->units[state->selected_unit].team)
-				color = GREEN;
-			else
-				color =  RED;
-		}
+		int color = getCursorColor(state);	
 
 		float color_r = gl_state->colors[3 * color + 0];
 		float color_g = gl_state->colors[3 * color + 1];
 		float color_b = gl_state->colors[3 * color + 2];
 		float color_a = 0.6;
-		
-		if(gl_state->cursor_object == NULL)
-		{
-			int vertices_size = VERTEX_CHANNELS * 6; // Hexagon has 6 vertices, each with 10 float values
-			createGLObject(&gl_state->cursor_object, 
-						   vertices_size);
-			gl_state->cursor_object->vertex_step = 6;
-			GLfloat *iter_v = gl_state->cursor_object->vertices;
-			addGLObject(gl_state->cursor_object, &gl_state->gl_objects);
-		}
-		
+
+		int vertices_size = VERTEX_CHANNELS * 6; // Hexagon has 6 vertices, each with 10 float values
+		updateObjectGL(vertices_size, 6, &gl_state->cursor_object, gl_state);
 		buildHexagonVertices(position_x, position_y, 0.4,
 							 color_r, color_g, color_b, color_a, 
 							 0.0, 0.0, 0.0,
@@ -686,68 +694,56 @@ void updateCursor(game_state *state, gl_game_state *gl_state)
 	}
 }
 
+void updateFogTileGL(int i, int j, GLfloat **iter_v, game_state *state, gl_game_state *gl_state)
+{
+	int is_fog = 1;
+	int tile = state->terrain_map[i][j]; 
+	float x, y;
+	for(int k = 0; k < state->unit_count; k++)
+	{
+		unit *iter = &state->units[k];
+		if(hexDistance(iter->position_x, iter->position_y, j, i) <= iter->vision_range
+		   && state->turn == iter->team)
+			is_fog = 0;			
+	}
+	if(state->mode == MODE_TRANSITION) is_fog = 1;
+	if(is_fog && tile != TILE_DISABLED)
+	{
+		hexGridToViewport(j, i, 
+						  state->map_offset_x, state->map_offset_y, 
+						  state->map_hex_size, 
+						  &x, &y);
+		gl_state->fog_of_war_object->vertices_size+= VERTEX_CHANNELS * 6;
+		sub_texture temp = loadSubtextureBounds(TEXTURE_FOG);
+		*iter_v = 
+			buildHexagonVertices(x, y, 0.0f,
+								 0.15f, 0.15f, 0.15f, 1.0,
+								 temp.start_x,
+								 temp.start_y,
+								 1.0,
+								 temp.width,
+								 temp.height,
+								 state->map_hex_size,
+								 0,
+								 *iter_v);
+	}		
+}
+
 void updateFogOfWar(game_state *state, gl_game_state *gl_state)
 {
-	int i, j, k;
-	gl_object *object;
+	int i, j;
 	int vertices_size = state->size_x * state->size_y * VERTEX_CHANNELS * 6;
-
-	if(gl_state->fog_of_war_object == NULL)
-	{
-		createGLObjectEmpty(&object); // DIFF
-		object->vertex_step = 6;
-		object->vertices = malloc(vertices_size * sizeof(GLfloat)); //DIFF
-	}
-	else
-	{
-		object = gl_state->fog_of_war_object; // DIFF
-		object->vertices_size = 0; //DIFF
-	}
-
+	updateObjectGL(vertices_size, 6, &gl_state->fog_of_war_object, gl_state);
+	gl_state->fog_of_war_object->vertices_size = 0; //DIFF
 	// NOTE(filip): We don't know the exact size of the fog object, so we alloc
 	// 				max size.
-	GLfloat *iter_v = object->vertices;
+	GLfloat *iter_v = gl_state->fog_of_war_object->vertices;
 	for(i = 0; i < state->size_y; i++)
 	{
 		for(j = 0; j < state->size_x; j++)
 		{
-			int is_fog = 1;
-			int tile = state->terrain_map[i][j]; 
-			float x, y;
-			for(k = 0; k < state->unit_count; k++)
-			{
-				unit *iter = &state->units[k];
-				if(hexDistance(iter->position_x, iter->position_y, j, i) <= iter->vision_range
-				   && state->turn == iter->team)
-					is_fog = 0;			
-			}
-			if(state->mode == MODE_TRANSITION) is_fog = 1;
-			if(is_fog && tile != TILE_DISABLED)
-			{
-				hexGridToViewport(j, i, 
-								  state->map_offset_x, state->map_offset_y, 
-								  state->map_hex_size, 
-								  &x, &y);
-				object->vertices_size+= VERTEX_CHANNELS * 6;
-				sub_texture temp = loadSubtextureBounds(TEXTURE_FOG);
-				iter_v = 
-					buildHexagonVertices(x, y, 0.0f,
-										 0.15f, 0.15f, 0.15f, 1.0,
-										 temp.start_x,
-										 temp.start_y,
-										 1.0,
-										 temp.width,
-										 temp.height,
-										 state->map_hex_size,
-										 0,
-										 iter_v);
-			}		
+			updateFogTileGL(i, j, &iter_v, state, gl_state);
 		}
-	}
-	if(gl_state->fog_of_war_object == NULL)
-	{	
-		addGLObject(object, &gl_state->gl_objects);
-		gl_state->fog_of_war_object = object;
 	}
 }
 
@@ -761,16 +757,8 @@ void updateForeground(game_state *state, gl_game_state *gl_state)
 	float color_g = 0.1;
 	float color_b = 0.1; 
 
-	if(gl_state->foreground_object == NULL)
-	{
-		int vertices_size = VERTEX_CHANNELS * 4; // Hexagon has 6 vertices, each with 10 float values
-
-		createGLObject(&gl_state->foreground_object, 
-					   vertices_size);
-		gl_state->foreground_object->vertex_step = 4;
-		addGLObject(gl_state->foreground_object, &gl_state->gl_objects);
-	}
-
+	int vertices_size = VERTEX_CHANNELS * 4; // Hexagon has 6 vertices, each with 10 float values
+	updateObjectGL(vertices_size, 4, &gl_state->foreground_object, gl_state);
 	buildRectVertices(position_x, position_y, -0.9f,
 					  size_x, size_y,
 					  color_r, color_g, color_b, 1.0,
@@ -813,16 +801,6 @@ void updateHelp(game_state *state, gl_game_state *gl_state)
 	}
 }
 
-// FIXME(filip): Highlight gets displayed over foreground
-void updateUIGL(game_state *state, gl_game_state *gl_state)	
-{
-	updateFogOfWar(state, gl_state);
-	updateCursor(state, gl_state);
-	updateHighlight(state, gl_state);
-	updateForeground(state, gl_state);
-	updateHelp(state, gl_state);
-}
-
 // NOTE(filip): This assumes the correct buffers are bound
 // NOTE(filip): This wipes the whole gl buffer and marks gl objects to
 // 				rewrite it
@@ -835,18 +813,24 @@ void updateStoreSizeGL(int vertices_size, gl_game_state *gl_state)
 	}
 }
 
+// FIXME(filip): Highlight gets displayed over foreground
+void updateGLVertices(game_state *state, gl_game_state *gl_state)
+{
+	updateMapGL(state, gl_state);		
+	updateUnitListGL(state, gl_state);
+	updateFogOfWar(state, gl_state);
+	updateCursor(state, gl_state);
+	updateHighlight(state, gl_state);
+	updateForeground(state, gl_state);
+	updateHelp(state, gl_state);
+}
+
 void updateGL(game_state *state, gl_game_state *gl_state) 
 {
+	updateGLVertices(state, gl_state);
+
 	glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-	// Update map gl
-	updateMapGL(state, gl_state);		
-	// Update units gl
-	updateUnitListGL(state, gl_state);
-	// Update UI gl
-	updateUIGL(state, gl_state);
-	// Specify the color of the background
-	// Clean the back buffer and assign the new color to it
+	glClear(GL_COLOR_BUFFER_BIT);	
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, gl_state->texture);	

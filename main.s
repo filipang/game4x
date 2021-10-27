@@ -1,5 +1,5 @@
 # 1 "main.S"
-# 1 "/home/dog/Documents/Bonus assignment #8: Assembly Game/game4x//"
+# 1 "/home/filipang/Work/Assembly/game4x//"
 # 1 "<built-in>"
 # 1 "<command-line>"
 # 31 "<command-line>"
@@ -5841,8 +5841,10 @@ cvtss2sd %xmm0, %xmm0
  ret
 # 3 "main.S" 2
 # 1 "unit.S" 1
- .global createUnit
+ .text
+ MESSAGE2: .asciz "unit count: %d; index: %d\n"
 
+.global createUnit
 # Create Unit
 # Params:
 # RDI: int position_x
@@ -5853,7 +5855,6 @@ createUnit:
 # prologue
  pushq %rbp
  movq %rsp, %rbp
-
 
 # parsing state->units[state->unit_count]
  pushq %rdx
@@ -5877,20 +5878,17 @@ createUnit:
  movq $0, %rax
  movl (%rdx), %eax
  incl (%rdx)
-
-
 # epilogue
  movq %rbp, %rsp
  popq %rbp
  ret
 
-
 # Remove Unit
 # Params:
 # RDI: int index
-# RSI: *game_state
+# RSI: game_state *state
 
-#.global removeUnit
+.global removeUnit
 removeUnit:
 # prologue
  pushq %rbp
@@ -5898,19 +5896,922 @@ removeUnit:
 
  pushq %rsi
  addq $11808, %rsi
- movq $0, %rax
- movl (%rsi), %eax
- decq %rax
- movq $12, %r10
- mulq %r10
- addq %rsi, %rax
+
+ movq $0, %r10
+ decl (%rsi)
+ movl (%rsi), %r10d
+
+ imul $12, %r10
+
+ movq -8(%rbp), %rsi
+ addq $10192, %rsi
+ addq %rsi, %r10
+
  popq %rsi
+ addq $10192, %rsi
+
+ imul $12, %rdi
+
+ addq %rdi, %rsi
+ movq $0, %rax
 RULOOP:
+ movb 12(%rsi), %al
+ movb %al, (%rsi)
 
-
-
+ incq %rsi
+ cmpq %r10, %rsi
+ jl RULOOP
 # epilogue
  movq %rbp, %rsp
  popq %rbp
  ret
+
+.global findUnit
+# Find Unit
+# Params:
+# RDI: int position x
+# RSI: int position y
+# RDX: game_state* state
+
+findUnit:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %r10
+ pushq %rdx
+ addq $11808, %rdx
+ movq $0, %r10
+ movl (%rdx), %r10d
+ movq $0, %rax
+ popq %rdx
+ addq $10194, %rdx
+FULOOP:
+ cmpb (%rdx), %dil
+ jne XNE
+ incq %rdx
+ cmpb (%rdx), %sil
+ jne YNE
+ jmp FUEND
+XNE:
+ incq %rax
+ addq $12, %rdx
+ cmpq %r10, %rax
+ jl FULOOP
+ movq $-1, %rax
+ jmp FUEND
+YNE:
+ incq %rax
+ addq $11, %rdx
+ cmpq %r10, %rax
+ jl FULOOP
+ movq $-1, %rax
+ jmp FUEND
+FUEND:
+ popq %r10
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+.global createWorkshop
+# Create Workshop
+# Params:
+# RDI: INT POS X
+# RSI: INT POS Y
+# RDX: INT TEAM
+# RCX: game_state *state
+createWorkshop:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rdi
+ pushq %rsi
+ pushq %rdx
+ pushq %rcx
+
+ movq %rcx, %rdx
+ call createUnit
+
+ popq %rcx
+ popq %rdx
+ popq %rsi
+ popq %rdi
+
+ imul $12, %rax
+ addq $10192, %rcx
+ addq %rax, %rcx
+ # hp
+ movb $80, (%rcx)
+ incq %rcx
+ # hp max
+ movb $80, (%rcx)
+ addq $3, %rcx
+ # type
+ movb $0, (%rcx)
+ incq %rcx
+ # team
+ movb %dl, (%rcx)
+ incq %rcx
+ # range
+ movb $0, (%rcx)
+ incq %rcx
+ # damage
+ movb $0, (%rcx)
+ incq %rcx
+ # mp
+ movb $0, (%rcx)
+ incq %rcx
+ # mp max
+ movb $0, (%rcx)
+ incq %rcx
+ # vision
+ movb $1, (%rcx)
+ incq %rcx
+ # rotation
+ movb $0, (%rcx)
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+.global createGolem
+# Create Golem
+# Params:
+# RDI: INT POS X
+# RSI: INT POS Y
+# RDX: INT TEAM
+# RCX: game_state *state
+createGolem:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rdi
+ pushq %rsi
+ pushq %rdx
+ pushq %rcx
+
+ movq %rcx, %rdx
+ call createUnit
+
+ popq %rcx
+ popq %rdx
+ popq %rsi
+ popq %rdi
+
+ imul $12, %rax
+ addq $10192, %rcx
+ addq %rax, %rcx
+ # hp
+ movb $30, (%rcx)
+ incq %rcx
+ # hp max
+ movb $30, (%rcx)
+ addq $3, %rcx
+ # type
+ movb $1, (%rcx)
+ incq %rcx
+ # team
+ movb %dl, (%rcx)
+ incq %rcx
+ # range
+ movb $2, (%rcx)
+ incq %rcx
+ # damage
+ movb $10, (%rcx)
+ incq %rcx
+ # mp
+ movb $0, (%rcx)
+ incq %rcx
+ # mp max
+ movb $4, (%rcx)
+ incq %rcx
+ # vision
+ movb $2, (%rcx)
+ incq %rcx
+ # rotation
+ movb $0, (%rcx)
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+.global createWisp
+# Create Wisp
+# Params:
+# RDI: INT POS X
+# RSI: INT POS Y
+# RDX: INT TEAM
+# RCX: game_state *state
+createWisp:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rdi
+ pushq %rsi
+ pushq %rdx
+ pushq %rcx
+
+ movq %rcx, %rdx
+ call createUnit
+
+ popq %rcx
+ popq %rdx
+ popq %rsi
+ popq %rdi
+
+ imul $12, %rax
+ addq $10192, %rcx
+ addq %rax, %rcx
+ # hp
+ movb $10, (%rcx)
+ incq %rcx
+ # hp max
+ movb $10, (%rcx)
+ addq $3, %rcx
+ # type
+ movb $2, (%rcx)
+ incq %rcx
+ # team
+ movb %dl, (%rcx)
+ incq %rcx
+ # range
+ movb $2, (%rcx)
+ incq %rcx
+ # damage
+ movb $5, (%rcx)
+ incq %rcx
+ # mp
+ movb $0, (%rcx)
+ incq %rcx
+ # mp max
+ movb $6, (%rcx)
+ incq %rcx
+ # vision
+ movb $3, (%rcx)
+ incq %rcx
+ # rotation
+ movb $0, (%rcx)
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+.global createUnboundElemental
+# Create Unbound Elemental
+# Params:
+# RDI: INT POS X
+# RSI: INT POS Y
+# RDX: INT TEAM
+# RCX: game_state *state
+createUnboundElemental:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rdi
+ pushq %rsi
+ pushq %rdx
+ pushq %rcx
+
+ movq %rcx, %rdx
+ call createUnit
+
+ popq %rcx
+ popq %rdx
+ popq %rsi
+ popq %rdi
+
+ imul $12, %rax
+ addq $10192, %rcx
+ addq %rax, %rcx
+ # hp
+ movb $20, (%rcx)
+ incq %rcx
+ # hp max
+ movb $20, (%rcx)
+ addq $3, %rcx
+ # type
+ movb $3, (%rcx)
+ incq %rcx
+ # team
+ movb %dl, (%rcx)
+ incq %rcx
+ # range
+ movb $2, (%rcx)
+ incq %rcx
+ # damage
+ movb $10, (%rcx)
+ incq %rcx
+ # mp
+ movb $0, (%rcx)
+ incq %rcx
+ # mp max
+ movb $4, (%rcx)
+ incq %rcx
+ # vision
+ movb $3, (%rcx)
+ incq %rcx
+ # rotation
+ movb $0, (%rcx)
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+.global createFireElemental
+# Create Fire Elemental
+# Params:
+# RDI: INT POS X
+# RSI: INT POS Y
+# RDX: INT TEAM
+# RCX: game_state *state
+createFireElemental:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rdi
+ pushq %rsi
+ pushq %rdx
+ pushq %rcx
+
+ movq %rcx, %rdx
+ call createUnit
+
+ popq %rcx
+ popq %rdx
+ popq %rsi
+ popq %rdi
+
+ imul $12, %rax
+ addq $10192, %rcx
+ addq %rax, %rcx
+ # hp
+ movb $60, (%rcx)
+ incq %rcx
+ # hp max
+ movb $60, (%rcx)
+ addq $3, %rcx
+ # type
+ movb $4, (%rcx)
+ incq %rcx
+ # team
+ movb %dl, (%rcx)
+ incq %rcx
+ # range
+ movb $2, (%rcx)
+ incq %rcx
+ # damage
+ movb $20, (%rcx)
+ incq %rcx
+ # mp
+ movb $0, (%rcx)
+ incq %rcx
+ # mp max
+ movb $3, (%rcx)
+ incq %rcx
+ # vision
+ movb $2, (%rcx)
+ incq %rcx
+ # rotation
+ movb $0, (%rcx)
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+.global createWaterElemental
+# Create Water Elemental
+# Params:
+# RDI: INT POS X
+# RSI: INT POS Y
+# RDX: INT TEAM
+# RCX: game_state *state
+createWaterElemental:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rdi
+ pushq %rsi
+ pushq %rdx
+ pushq %rcx
+
+ movq %rcx, %rdx
+ call createUnit
+
+ popq %rcx
+ popq %rdx
+ popq %rsi
+ popq %rdi
+
+ imul $12, %rax
+ addq $10192, %rcx
+ addq %rax, %rcx
+ # hp
+ movb $20, (%rcx)
+ incq %rcx
+ # hp max
+ movb $20, (%rcx)
+ addq $3, %rcx
+ # type
+ movb $5, (%rcx)
+ incq %rcx
+ # team
+ movb %dl, (%rcx)
+ incq %rcx
+ # range
+ movb $3, (%rcx)
+ incq %rcx
+ # damage
+ movb $30, (%rcx)
+ incq %rcx
+ # mp
+ movb $0, (%rcx)
+ incq %rcx
+ # mp max
+ movb $3, (%rcx)
+ incq %rcx
+ # vision
+ movb $3, (%rcx)
+ incq %rcx
+ # rotation
+ movb $0, (%rcx)
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+.global createIceElemental
+# Create Ice Elemental
+# Params:
+# RDI: INT POS X
+# RSI: INT POS Y
+# RDX: INT TEAM
+# RCX: game_state *state
+createIceElemental:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rdi
+ pushq %rsi
+ pushq %rdx
+ pushq %rcx
+
+ movq %rcx, %rdx
+ call createUnit
+
+ popq %rcx
+ popq %rdx
+ popq %rsi
+ popq %rdi
+
+ imul $12, %rax
+ addq $10192, %rcx
+ addq %rax, %rcx
+ # hp
+ movb $40, (%rcx)
+ incq %rcx
+ # hp max
+ movb $40, (%rcx)
+ addq $3, %rcx
+ # type
+ movb $6, (%rcx)
+ incq %rcx
+ # team
+ movb %dl, (%rcx)
+ incq %rcx
+ # range
+ movb $1, (%rcx)
+ incq %rcx
+ # damage
+ movb $20, (%rcx)
+ incq %rcx
+ # mp
+ movb $0, (%rcx)
+ incq %rcx
+ # mp max
+ movb $6, (%rcx)
+ incq %rcx
+ # vision
+ movb $3, (%rcx)
+ incq %rcx
+ # rotation
+ movb $0, (%rcx)
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+.global createArcaneElemental
+# Create Arcane Elemental
+# Params:
+# RDI: INT POS X
+# RSI: INT POS Y
+# RDX: INT TEAM
+# RCX: game_state *state
+createArcaneElemental:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rdi
+ pushq %rsi
+ pushq %rdx
+ pushq %rcx
+
+ movq %rcx, %rdx
+ call createUnit
+
+ popq %rcx
+ popq %rdx
+ popq %rsi
+ popq %rdi
+
+ imul $12, %rax
+ addq $10192, %rcx
+ addq %rax, %rcx
+ # hp
+ movb $150, (%rcx)
+ incq %rcx
+ # hp max
+ movb $150, (%rcx)
+ addq $3, %rcx
+ # type
+ movb $7, (%rcx)
+ incq %rcx
+ # team
+ movb %dl, (%rcx)
+ incq %rcx
+ # range
+ movb $3, (%rcx)
+ incq %rcx
+ # damage
+ movb $80, (%rcx)
+ incq %rcx
+ # mp
+ movb $0, (%rcx)
+ incq %rcx
+ # mp max
+ movb $4, (%rcx)
+ incq %rcx
+ # vision
+ movb $6, (%rcx)
+ incq %rcx
+ # rotation
+ movb $0, (%rcx)
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
 # 4 "main.S" 2
+# 1 "colors.S" 1
+# 15 "colors.S"
+.data
+F00: .float 0.0
+F10: .float 1.0
+F55: .float 0.55
+F15: .float 0.15
+F05: .float 0.5
+F08: .float 0.8
+F04: .float 0.4
+F02: .float 0.2
+F35: .float 0.35
+F01: .float 0.1
+F66: .float 0.66
+F09: .float 0.9
+F03: .float 0.3
+F07: .float 0.7
+F95: .float 0.95
+.text
+.global loadColors
+loadColors:
+ pushq %rbp
+ movq %rsp, %rbp
+ pushq %rdi
+ subq $8, %rsp
+ movq $216, %rdi
+ call malloc
+
+
+
+ movss F00, %xmm0; movss %xmm0, 0(%rax);
+ movss F00, %xmm0; movss %xmm0, 4(%rax);
+ movss F00, %xmm0; movss %xmm0, 8(%rax);
+
+ movss F10, %xmm0; movss %xmm0, 12(%rax);
+ movss F10, %xmm0; movss %xmm0, 16(%rax);
+ movss F10, %xmm0; movss %xmm0, 20(%rax);
+
+ movss F55, %xmm0; movss %xmm0, 24(%rax);
+ movss F15, %xmm0; movss %xmm0, 28(%rax);
+ movss F05, %xmm0; movss %xmm0, 32(%rax);
+
+ movss F08, %xmm0; movss %xmm0, 36(%rax);
+ movss F04, %xmm0; movss %xmm0, 40(%rax);
+ movss F02, %xmm0; movss %xmm0, 44(%rax);
+
+ movss F15, %xmm0; movss %xmm0, 48(%rax);
+ movss F15, %xmm0; movss %xmm0, 52(%rax);
+ movss F15, %xmm0; movss %xmm0, 56(%rax);
+
+ movss F35, %xmm0; movss %xmm0, 60(%rax);
+ movss F35, %xmm0; movss %xmm0, 64(%rax);
+ movss F35, %xmm0; movss %xmm0, 68(%rax);
+
+ movss F01, %xmm0; movss %xmm0, 72(%rax);
+ movss F66, %xmm0; movss %xmm0, 76(%rax);
+ movss F01, %xmm0; movss %xmm0, 80(%rax);
+
+ movss F09, %xmm0; movss %xmm0, 84(%rax);
+ movss F09, %xmm0; movss %xmm0, 88(%rax);
+ movss F03, %xmm0; movss %xmm0, 92(%rax);
+
+ movss F08, %xmm0; movss %xmm0, 96(%rax);
+ movss F02, %xmm0; movss %xmm0, 100(%rax);
+ movss F02, %xmm0; movss %xmm0, 104(%rax);
+
+ movss F10, %xmm0; movss %xmm0, 108(%rax);
+ movss F05, %xmm0; movss %xmm0, 112(%rax);
+ movss F08, %xmm0; movss %xmm0, 116(%rax);
+
+ movss F02, %xmm0; movss %xmm0, 120(%rax);
+ movss F07, %xmm0; movss %xmm0, 124(%rax);
+ movss F95, %xmm0; movss %xmm0, 128(%rax);
+
+ movss F01, %xmm0; movss %xmm0, 132(%rax);
+ movss F01, %xmm0; movss %xmm0, 136(%rax);
+ movss F95, %xmm0; movss %xmm0, 140(%rax);
+
+ addq $8, %rsp
+ popq %rdi
+ movq %rax, (%rdi)
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+.global getUnitTeamColor
+getUnitTeamColor:
+ pushq %rbp
+ movq %rsp, %rbp
+
+ cmpq $0, %rdi
+ je CASE0
+ cmpq $1, %rdi
+ je CASE1
+ jne CASE2
+CASE0:
+ movq $2, %rax
+ jmp ENDGTC
+CASE1:
+ movq $3, %rax
+ jmp ENDGTC
+CASE2:
+ movq $9, %rax
+ jmp ENDGTC
+
+ENDGTC:
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+# 5 "main.S" 2
+# 1 "gl_object.S" 1
+.global createGLObject
+createGLObject:
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rdi
+ pushq %rsi
+ subq $16, %rsp
+
+ movq $48, %rdi
+ call malloc
+ movq %rax, -24(%rbp)
+
+ movq -16(%rbp), %rcx
+ movq %rcx, 8(%rax)
+
+
+
+ movq $4, %rax
+ mulq -16(%rbp)
+ movq %rax, %rdi
+ call malloc
+ movq -24(%rbp), %rcx
+ movq %rax, (%rcx)
+
+
+ movq -24(%rbp), %rcx
+ movq $1 , 24(%rcx)
+
+
+ movq -24(%rbp), %rcx
+ movq $0x0006 , 44(%rcx)
+
+
+ movq -24(%rbp), %rcx
+ movq $0 , 32(%rcx)
+
+
+ movq -24(%rbp), %rcx
+ movq $0 , 16(%rcx)
+
+
+ movq -24(%rbp), %rcx
+ movq -8(%rbp), %rdi
+ movq %rcx, (%rdi)
+
+ addq $16, %rsp
+ popq %rsi
+ popq %rdi
+
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+.global createGLObjectEmpty
+createGLObjectEmpty:
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rdi
+ pushq %rsi
+ subq $16, %rsp
+
+ movq $48, %rdi
+ call malloc
+ movq %rax, -24(%rbp)
+
+ movq $0, 8(%rax)
+
+
+ movq -24(%rbp), %rcx
+ movq $1 , 24(%rcx)
+
+
+ movq -24(%rbp), %rcx
+ movq $0x0006 , 44(%rcx)
+
+
+ movq -24(%rbp), %rcx
+ movq $0 , 32(%rcx)
+
+
+ movq -24(%rbp), %rcx
+ movq $0 , 16(%rcx)
+
+
+ movq -24(%rbp), %rcx
+ movq -8(%rbp), %rdi
+ movq %rcx, (%rdi)
+
+ addq $16, %rsp
+ popq %rsi
+ popq %rdi
+
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+.global addGLObject
+addGLObject:
+ pushq %rbp
+ movq %rsp, %rbp
+
+ subq $16, %rsp
+
+ movq (%rsi), %rax
+ movq %rax, -8(%rbp)
+
+ cmpq $0, %rax
+ jne ELSEGO1
+IFGO1:
+ movq %rdi, (%rsi)
+ jmp ENDGO1
+
+ELSEGO1:
+ movq 16(%rax), %rcx
+
+ cmpq $0, %rcx
+
+ jne ELSEGO2
+ IFGO2:
+  movq %rdi, 16(%rax)
+  jmp ENDGO2
+ ELSEGO2:
+  leaq 16(%rax), %rsi
+  call addGLObject
+ ENDGO2:
+
+ENDGO1:
+
+ addq $16, %rsp
+
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+
+
+
+
+.global removeGLObject
+removeGLObject:
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rdi
+ pushq %rsi
+ subq $16, %rsp
+
+
+ cmpq $0, %rdi
+ je ENDRGO
+
+ cmpq $0, %rsi
+ je ENDRGO
+
+
+ movq -8(%rbp), %rax
+ movq (%rax), %rax
+ movq %rax, -24(%rbp)
+
+
+ movq -24(%rbp), %rax
+ movq -16(%rbp), %rdx
+ cmpq %rdx, %rax
+ jne ELSERGO1
+ IFRGO1:
+
+
+  movq -16(%rbp), %rdx
+  cmpq $0, 16(%rdx)
+  je AFTERIFRGO2
+  IFRGO2:
+
+   movq 32(%rdx), %rdi
+   call free
+  AFTERIFRGO2:
+
+  movq -16(%rbp), %rax
+  movq 16(%rax), %rax
+  movq -8(%rbp), %rdx
+  movq %rax, (%rdx)
+
+
+  movq -16(%rbp), %rdi
+  call free
+
+  jmp ENDRGO
+
+ ELSERGO1:
+ WHILERGO1:
+
+  movq -24(%rbp), %rax
+  cmpq $0, %rax
+  je ENDRGO
+
+
+  movq -16(%rbp), %rdx
+  movq -24(%rbp), %rax
+  cmpq 16(%rax), %rdx
+  jne AFTERIFRGO3
+
+  IFRGO3:
+
+   movq -24(%rbp), %rax
+   addq $16, %rax
+   movq -16(%rbp), %rdx
+   movq 16(%rdx), %rdx
+   movq %rdx, (%rax)
+
+
+   movq -16(%rbp), %rdx
+   cmpq $0, 32(%rdx)
+   je AFTERIFRGO4
+   IFRGO4:
+    movq 32(%rdx), %rdi
+    call free
+   AFTERIFRGO4:
+   movq -16(%rbp), %rdi
+   call free
+
+  AFTERIFRGO3:
+
+
+  movq -24(%rbp), %rax
+  movq 16(%rax), %rcx
+  movq %rcx, -24(%rbp)
+  jmp WHILERGO1
+
+ENDRGO:
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+# 6 "main.S" 2

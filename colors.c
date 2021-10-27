@@ -23,8 +23,7 @@
 #define PINK		9
 #define CYAN		10
 #define BLUE		11
-
-void loadColors(GLfloat **colors)
+/*void loadColors(GLfloat **colors)
 {
 	GLfloat temp_colors[]= {0.0,	0.0,	0.0,	//0.BLACK
 							1.0,	1.0,	1.0,	//1.WHITE
@@ -44,18 +43,8 @@ void loadColors(GLfloat **colors)
 	*colors = malloc(sizeof(temp_colors));
 	memcpy(*colors, temp_colors, sizeof(temp_colors));
 	
-}
-
-GLfloat* getColor(int color, GLfloat *colors)
-{
-	return colors + color * 3;
-}
-
-int getUnitTypeColor(int type, GLfloat* colors)
-{
-	return COLORLESS;
-}
-
+}*/
+/*
 int getUnitTeamColor(int team, GLfloat* colors)
 {
 	if(team == 0)
@@ -65,9 +54,5 @@ int getUnitTeamColor(int team, GLfloat* colors)
 	else 
 		return PINK;
 }
+*/
 
-int getUnitTexCoords(int type)
-{
-	 
-
-}

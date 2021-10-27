@@ -18,6 +18,11 @@ tabnew
 tabnew
 tabnew
 tabnew
+tabnew
+tabnew
+tabnew
+tabnew
+tabnew
 tabrewind
 edit main.c
 set splitbelow splitright
@@ -38,12 +43,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 44 - ((15 * winheight(0) + 26) / 53)
+let s:l = 26 - ((25 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 44
-normal! 017|
+keepjumps 26
+normal! 0
 tabnext
 edit input.c
 set splitbelow splitright
@@ -58,8 +63,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 73 + 74) / 148)
-exe 'vert 2resize ' . ((&columns * 74 + 74) / 148)
+exe 'vert 1resize ' . ((&columns * 73 + 63) / 126)
+exe 'vert 2resize ' . ((&columns * 52 + 63) / 126)
 argglobal
 balt input.S
 setlocal fdm=manual
@@ -71,11 +76,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 22 - ((14 * winheight(0) + 26) / 52)
+let s:l = 45 - ((15 * winheight(0) + 23) / 46)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 22
+keepjumps 45
 normal! 0
 wincmd w
 argglobal
@@ -90,15 +95,15 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 26) / 52)
+let s:l = 1 - ((0 * winheight(0) + 23) / 46)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 1
 normal! 0
 wincmd w
-exe 'vert 1resize ' . ((&columns * 73 + 74) / 148)
-exe 'vert 2resize ' . ((&columns * 74 + 74) / 148)
+exe 'vert 1resize ' . ((&columns * 73 + 63) / 126)
+exe 'vert 2resize ' . ((&columns * 52 + 63) / 126)
 tabnext
 edit build_asm.sh
 set splitbelow splitright
@@ -120,11 +125,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 9 - ((8 * winheight(0) + 26) / 53)
+let s:l = 2 - ((1 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 9
+keepjumps 2
 normal! 0
 tabnext
 edit gl_game.c
@@ -147,12 +152,149 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 813 - ((15 * winheight(0) + 26) / 53)
+let s:l = 436 - ((15 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 813
-normal! 05|
+keepjumps 436
+normal! 012|
+tabnext
+edit colors.c
+set splitbelow splitright
+wincmd _ | wincmd |
+vsplit
+1wincmd h
+wincmd w
+set nosplitbelow
+set nosplitright
+wincmd t
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+exe 'vert 1resize ' . ((&columns * 77 + 63) / 126)
+exe 'vert 2resize ' . ((&columns * 48 + 63) / 126)
+argglobal
+balt colors.S
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let s:l = 26 - ((25 * winheight(0) + 23) / 46)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 26
+normal! 0
+wincmd w
+argglobal
+if bufexists("colors.S") | buffer colors.S | else | edit colors.S | endif
+balt colors.c
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let s:l = 11 - ((9 * winheight(0) + 23) / 46)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 11
+normal! 0
+wincmd w
+exe 'vert 1resize ' . ((&columns * 77 + 63) / 126)
+exe 'vert 2resize ' . ((&columns * 48 + 63) / 126)
+tabnext
+edit text.c
+set splitbelow splitright
+set nosplitbelow
+set nosplitright
+wincmd t
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+argglobal
+balt colors.c
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let s:l = 171 - ((15 * winheight(0) + 23) / 47)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 171
+normal! 0
+tabnext
+edit gl_object.c
+set splitbelow splitright
+wincmd _ | wincmd |
+vsplit
+1wincmd h
+wincmd w
+set nosplitbelow
+set nosplitright
+wincmd t
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+exe 'vert 1resize ' . ((&columns * 64 + 63) / 126)
+exe 'vert 2resize ' . ((&columns * 61 + 63) / 126)
+argglobal
+balt gl_object.S
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let s:l = 2 - ((1 * winheight(0) + 23) / 46)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 2
+normal! 02|
+wincmd w
+argglobal
+if bufexists("gl_object.S") | buffer gl_object.S | else | edit gl_object.S | endif
+balt gl_object.c
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let s:l = 221 - ((32 * winheight(0) + 23) / 46)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 221
+normal! 08|
+wincmd w
+exe 'vert 1resize ' . ((&columns * 64 + 63) / 126)
+exe 'vert 2resize ' . ((&columns * 61 + 63) / 126)
 tabnext
 edit game.c
 set splitbelow splitright
@@ -167,8 +309,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 73 + 74) / 148)
-exe 'vert 2resize ' . ((&columns * 74 + 74) / 148)
+exe 'vert 1resize ' . ((&columns * 73 + 63) / 126)
+exe 'vert 2resize ' . ((&columns * 52 + 63) / 126)
 argglobal
 balt game.S
 setlocal fdm=manual
@@ -180,12 +322,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 134 - ((36 * winheight(0) + 26) / 52)
+let s:l = 60 - ((15 * winheight(0) + 23) / 46)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 134
-normal! 0
+keepjumps 60
+normal! 022|
 wincmd w
 argglobal
 if bufexists("game.S") | buffer game.S | else | edit game.S | endif
@@ -199,16 +341,69 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 26) / 52)
+let s:l = 2 - ((1 * winheight(0) + 23) / 46)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
-normal! 0
+keepjumps 2
+normal! 02|
 wincmd w
-2wincmd w
-exe 'vert 1resize ' . ((&columns * 73 + 74) / 148)
-exe 'vert 2resize ' . ((&columns * 74 + 74) / 148)
+exe 'vert 1resize ' . ((&columns * 73 + 63) / 126)
+exe 'vert 2resize ' . ((&columns * 52 + 63) / 126)
+tabnext
+edit unit.c
+set splitbelow splitright
+set nosplitbelow
+set nosplitright
+wincmd t
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+argglobal
+balt game.c
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let s:l = 133 - ((31 * winheight(0) + 23) / 47)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 133
+normal! 0
+tabnext
+edit unit.S
+set splitbelow splitright
+set nosplitbelow
+set nosplitright
+wincmd t
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+argglobal
+balt unit.c
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let s:l = 45 - ((31 * winheight(0) + 23) / 47)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 45
+normal! 013|
 tabnext
 edit main.S
 set splitbelow splitright
@@ -230,22 +425,29 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 26) / 53)
+let s:l = 1 - ((0 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 1
 normal! 0
-tabnext 5
+tabnext 4
 set stal=1
 badd +1 main.c
 badd +1 input.c
 badd +1 build_asm.sh
-badd +1 gl_game.c
+badd +0 gl_game.c
+badd +1 game.c
+badd +1 main.S
 badd +1 input.S
-badd +0 game.c
-badd +0 game.S
-badd +0 main.S
+badd +1 game.S
+badd +1 unit.S
+badd +0 gl_object.c
+badd +0 colors.c
+badd +0 text.c
+badd +0 colors.S
+badd +0 unit.c
+badd +0 gl_object.S
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0
   silent exe 'bwipe ' . s:wipebuf
 endif
@@ -257,7 +459,6 @@ if filereadable(s:sx)
   exe "source " . fnameescape(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
-nohlsearch
 let g:this_session = v:this_session
 let g:this_obsession = v:this_session
 doautoall SessionLoadPost

@@ -18,30 +18,32 @@
 
 typedef struct gl_object
 {
-	GLfloat* vertices;
-	int vertices_size;
-	struct gl_object *next;	
-	int enabled;
-	char *text; //
+	GLfloat* vertices; // 0
+	int vertices_size; // 8
+	struct gl_object *next; //16	
+	int enabled;	//24
+	char *text; //32
 
-	int vertex_step;
-	int drawing_mode;
+	int vertex_step; //40
+	int drawing_mode; //44
 } gl_object;
 
 // NOTE(filip): problem with holding address related information in ints and not
 // long long?
-void createGLObject(gl_object **o, 
+/*void createGLObject(gl_object **o, 
 					int vertices_size)
 {
-	*o = malloc(sizeof(gl_object));
-	(*o)->vertices_size = vertices_size;
-	(*o)->vertices = malloc(vertices_size*sizeof(GLfloat));
-	(*o)->enabled = 1;
-	(*o)->drawing_mode = GL_TRIANGLE_FAN;
-	(*o)->text = NULL;
-	(*o)->next = NULL;
+	gl_object *obj = malloc(sizeof(gl_object));
+	obj->vertices_size = vertices_size;
+	obj->vertices = malloc(vertices_size*sizeof(GLfloat));
+	obj->enabled = 1;
+	obj->drawing_mode = GL_TRIANGLE_FAN;
+	obj->text = NULL;
+	obj->next = NULL;
+	*o = obj;
 }
-
+*/
+/*
 void createGLObjectEmpty(gl_object **o)
 {
 	*o = malloc(sizeof(gl_object));
@@ -51,8 +53,8 @@ void createGLObjectEmpty(gl_object **o)
 	(*o)->text = NULL;
 	(*o)->next = NULL;
 }
-
-void addGLObject(gl_object *src, gl_object **dst)
+*/
+/*void addGLObject(gl_object *src, gl_object **dst)
 {
 	if((*dst) == NULL)
 	{
@@ -66,12 +68,12 @@ void addGLObject(gl_object *src, gl_object **dst)
 	{
 		addGLObject(src, &(*dst)->next);
 	}
-}
+}*/
 
 // TODO(filip): Free unit list function
 
-void printGLObject(gl_object *object);
-void removeGLObject(gl_object **base, gl_object *target)
+//void printGLObject(gl_object *object);
+/*void removeGLObject(gl_object **base, gl_object *target)
 {
 	if(base == NULL || target == NULL) return;
 	gl_object *iter = *base;
@@ -97,9 +99,8 @@ void removeGLObject(gl_object **base, gl_object *target)
 			iter = iter->next;
 		}
 	}
-}
-
-void printGLObject(gl_object *object)
+}*/
+/*void printGLObject(gl_object *object)
 {
 	if(object->text != NULL)
 		printf("gl_object: %x\nvertex_size: %d\n"
@@ -128,4 +129,4 @@ void printGLObjectList(gl_object *iter)
 		printf("\n");
 		iter = iter->next;
 	}
-}
+}*/
