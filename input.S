@@ -116,14 +116,6 @@ updateButton:
 		movb	$0, (%r12)
 	
 	END1UB:	
-	movq	$0, %rax
-	movq	$MESSAGE, %rdi
-	movq	$0, %rsi
-	movq	$0, %rdx
-	movb	(%r12), %sil
-	movb	(%r13), %dl
-	movq	-24(%rbp), %rcx
-	call	printf
 
 	popq	%r13
 	popq	%r12
