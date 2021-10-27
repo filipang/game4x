@@ -117,7 +117,16 @@ typedef struct game_state
 
 // UNIT HEADERS ----------------------------------------------------
 int createUnit(int position_x, int position_y, game_state *state);
-
+void removeUnit(int index, game_state *state);
+int findUnit(int position_x, int position_y, game_state *state);
+void createWorkshop(int position_x, int position_y, int team, game_state *state);
+void createGolem(int position_x, int position_y, int team, game_state *state);
+void createWisp(int position_x, int position_y, int team, game_state *state);
+void createUnboundElemental(int position_x, int position_y, int team, game_state *state);
+void createFireElemental(int position_x, int position_y, int team, game_state *state);
+void createWaterElemental(int position_x, int position_y, int team, game_state *state);
+void createIceElemental(int position_x, int position_y, int team, game_state *state);
+void createArcaneElemental(int position_x, int position_y, int team, game_state *state);
 // END UNIT HEADERS ------------------------------------------------
 #include "unit.c"
 

@@ -21,8 +21,9 @@
 #define UNIT_ICE_ELEMENTAL		6
 #define	UNIT_ARCANE_ELEMENTAL	7
 #define UNIT_ARCANE_PULSE		8
-/*
+
 // NOTE(filip): Everything has to be simplified to be re-written in ASM
+/*
 int createUnit(int position_x, int position_y, game_state *state)
 {	
 	state->units[state->unit_count].position_x = position_x;
@@ -30,15 +31,17 @@ int createUnit(int position_x, int position_y, game_state *state)
 	state->unit_count++;
 	return state->unit_count-1;
 }
-*/
+
+
 void removeUnit(int index, game_state *state){
 	int i;
-	for(i = index + 1; i < state->unit_count; i++)
+	for(i = index ; i < state->unit_count-1; i++)
 	{
-		state->units[i-1] = state->units[i];
+		state->units[i] = state->units[i+1];
 	}
 	state->unit_count--;
 }
+
 
 int findUnit(int position_x, int position_y, game_state *state){
 	int i;
@@ -71,11 +74,11 @@ unit* createGolem(int pos_x, int pos_y, int team, struct game_state *state)
 		int u = createUnit(pos_x, pos_y, state);
 		state->units[u].type = UNIT_GOLEM;
 		state->units[u].team = team;
-		state->units[u].health = 30;
+		state->units[u].health = 10;
 		state->units[u].health_stat = 30;
 		state->units[u].attack_range = 2;
 		state->units[u].attack_damage = 10;
-		state->units[u].mp_stat = 1;
+		state->units[u].mp_stat = 10;
 		state->units[u].mp_current = 0;
 		state->units[u].vision_range = 2;
 		if(team == 0)
@@ -173,3 +176,4 @@ unit* createArcaneElemental(int pos_x, int pos_y, int team, struct game_state *s
 		state->units[u].vision_range = 6;
 		state->units[u].rotation = 0;
 }
+*/
