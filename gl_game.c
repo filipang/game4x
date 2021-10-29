@@ -453,17 +453,18 @@ void updateMapTileGL(int i, int j, GLfloat **iter_v, game_state *state, gl_game_
 		float tex_weight = 1;
 		if(tile != TILE_NORMAL && tile != TILE_ESSENCE)
 			tex_weight = 0;
-		sub_texture temp = 
+		sub_texture *temp = 
 			loadSubtextureBounds(getTileTexture(tile));
 		*iter_v = buildHexagonVertices(x, y, 0,
 									  color_r, color_g, color_b, 
 									  1.0, 
-									  temp.start_x,
-									  temp.start_y,
+									  temp->start_x,
+									  temp->start_y,
 									  tex_weight,
-									  temp.width,
-									  temp.height,
+									  temp->width,
+									  temp->height,
 								  	  state->map_hex_size * 0.9, 0, *iter_v);
+		free(temp);
 	
 	}
 }
@@ -536,7 +537,7 @@ void updateUnitGL(int i, GLfloat **iter_v1, GLfloat **iter_v2, game_state *state
 	float color_g = gl_state->colors[color * 3 + 1];
 	float color_b = gl_state->colors[color * 3 + 2];
 	float color_a = 1;
-	sub_texture temp = 
+	sub_texture *temp = 
 		loadSubtextureBounds(getUnitTexture(iter->type));
 
 	*iter_v2 = buildHexagonVertices(position_x, position_y, 0.2f,
@@ -548,14 +549,15 @@ void updateUnitGL(int i, GLfloat **iter_v1, GLfloat **iter_v2, game_state *state
 	color_a = 1;
 	*iter_v1 = buildHexagonVertices(position_x, position_y, 0.2f,
 								 color_r, color_g, color_b, color_a,
-								 temp.start_x,
-								 temp.start_y,
+								 temp->start_x,
+								 temp->start_y,
 								 1.0,
-								 temp.width,
-								 temp.height,
+								 temp->width,
+								 temp->height,
 								 0.80 * state->map_hex_size,
 								 iter->rotation,
 								 *iter_v1);
+	free(temp);
 
 }
 
@@ -715,18 +717,19 @@ void updateFogTileGL(int i, int j, GLfloat **iter_v, game_state *state, gl_game_
 						  state->map_hex_size, 
 						  &x, &y);
 		gl_state->fog_of_war_object->vertices_size+= VERTEX_CHANNELS * 6;
-		sub_texture temp = loadSubtextureBounds(TEXTURE_FOG);
+		sub_texture *temp = loadSubtextureBounds(TEXTURE_FOG);
 		*iter_v = 
 			buildHexagonVertices(x, y, 0.0f,
 								 0.15f, 0.15f, 0.15f, 1.0,
-								 temp.start_x,
-								 temp.start_y,
+								 temp->start_x,
+								 temp->start_y,
 								 1.0,
-								 temp.width,
-								 temp.height,
+								 temp->width,
+								 temp->height,
 								 state->map_hex_size,
 								 0,
 								 *iter_v);
+		free(temp);
 	}		
 }
 

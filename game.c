@@ -130,19 +130,22 @@ void createArcaneElemental(int position_x, int position_y, int team, game_state 
 // END UNIT HEADERS ------------------------------------------------
 #include "unit.c"
 
-void saveState(game_state* state)
+void saveState(game_state* state);
+/*
 {
 	writeFile("data.save", (char *)state, sizeof(game_state) + 1);
 }
-
-void loadState(game_state* state)
+*/
+void loadState(game_state* state);
+/*
 {
 	char* data = loadFile("data.save");
 	memcpy(state, data, sizeof(game_state));
 }
-
+*/
 // NOTE(filip): This could be optimized with a memset
-void initializeGameState(game_state* state)
+void initializeGameState(game_state* state);
+/*
 {
 	state->player_number = 2;
 	state->turn = 0;
@@ -184,11 +187,11 @@ void initializeGameState(game_state* state)
 	#undef BIND_UNIT_NAME
 	
 }
-
+*/
 // TODO(filip): implement this!
-void finalizeGameState(game_state state);
 
-void updateEssenceGeneration(int team, game_state *state)
+void updateEssenceGeneration(int team, game_state *state);
+/*
 {
 	state->players[team].essence_generation = 0;
 	int i;
@@ -204,21 +207,24 @@ void updateEssenceGeneration(int team, game_state *state)
 		}
 	}
 }
-
-void updateEssenceTotal(int team, game_state *state)
+*/
+void updateEssenceTotal(int team, game_state *state);
+/*
 {
 	state->players[team].essence_total += 
 		state->players[team].essence_generation;  
 }
-
-void alertMessage(char* message, float time, game_state *state)
+*/
+void alertMessage(char* message, float time, game_state *state);
+/*
 {
 	snprintf(state->alert_message, 100, "%s", message);
 	state->alert_countdown = time;
 	state->alert_countdown_max = time;
 }
-
-void updateAltars(int team, game_state *state)
+*/
+void updateAltars(int team, game_state *state);
+/*
 {
 	int i;
 	for(i = 0; i < state->unit_count; i++)
@@ -251,8 +257,9 @@ void updateAltars(int team, game_state *state)
 		}
 	}
 }
-
-void startArcanePulse(game_state *state)
+*/
+void startArcanePulse(game_state *state);
+/*
 {
 	if(state->players[state->turn].essence_total >= 600)
 	{
@@ -263,8 +270,9 @@ void startArcanePulse(game_state *state)
 	else
 		alertMessage("NOT ENOUGH ESSENCE!", 2, state);
 }
-
-void killAllEnemies(int team, game_state *state)
+*/
+void killAllEnemies(int team, game_state *state);
+/*
 {
 	int i;
 	for(i = 0; i < state->unit_count; i++)
@@ -276,8 +284,9 @@ void killAllEnemies(int team, game_state *state)
 		}
 	}
 }
-
-void updateArcanePulse(game_state *state)
+*/
+void updateArcanePulse(game_state *state);
+/*
 {
 	if(state->players[state->turn].turns_to_pulse != -1)
 	{
@@ -290,14 +299,16 @@ void updateArcanePulse(game_state *state)
 		}
 	}
 }
-
-int unitDistance(int u1, int u2, game_state *state)
+*/
+int unitDistance(int u1, int u2, game_state *state);
+/*
 {
 	return hexDistance(state->units[u1].position_x, state->units[u1].position_y,
 					   state->units[u2].position_x, state->units[u2].position_y);
 }
-
-void updateArcaneElemental(game_state *state)
+*/
+void updateArcaneElemental(game_state *state);
+/*
 {
 	int i, j, k;
 	for(i = 0; i < state->unit_count; i++)
@@ -333,8 +344,9 @@ void updateArcaneElemental(game_state *state)
 		}
 	}
 }
-
-int isUnitInVisionRange(int target, game_state *state)
+*/
+int isUnitInVisionRange(int target, game_state *state);
+/*
 {
 	int in_range = 0;
 	int i;
@@ -352,9 +364,10 @@ int isUnitInVisionRange(int target, game_state *state)
 	}
 	return in_range;	
 }
-
+*/
 // End curent player turn and start next player turn
-void turn(game_state* state)
+void turn(game_state* state);
+/*
 {
 	//state-> turn is -1 when the game starts
 	if(state->turn != -1)
@@ -383,8 +396,9 @@ void turn(game_state* state)
 	state->cursor_active = 0;
 
 }
-
-int isInMapBounds(int x, int y, game_state *state)
+*/
+int isInMapBounds(int x, int y, game_state *state);
+/*
 {
 	if(x >= state->size_x || x < 0)
 		return 0;
@@ -397,9 +411,10 @@ int isInMapBounds(int x, int y, game_state *state)
 
 	return 1;
 }
-
+*/
 // NOTE(filip): Function header
-void setMoveCursor(int new_move_x, int new_move_y, struct game_state *state)
+void setMoveCursor(int new_move_x, int new_move_y, struct game_state *state);
+/*
 {
 	if(isInMapBounds(new_move_x, new_move_y, state) == 0)
 		return;
@@ -413,7 +428,7 @@ void setMoveCursor(int new_move_x, int new_move_y, struct game_state *state)
 						  new_move_x, new_move_y);
 	state->cursor_active = 1;
 
-	// NOTE(filip): Clarify this
+	e/ NOTE(filip): Clarify this
 	if(state->selected_unit != -1)
 		state->cursor_distance = hexDistance(state->units[state->selected_unit].position_x,
 											 state->units[state->selected_unit].position_y,
@@ -435,11 +450,12 @@ void setMoveCursor(int new_move_x, int new_move_y, struct game_state *state)
 	state->target_unit = target;
 	
 }
-
+*/
 // Jump to the next unit (or first if state->started == 0)
 // FIXME(filip): Step selects unit with 0 mp if it can't select any other unit
 
-void selectUnit(int u, game_state *state)
+void selectUnit(int u, game_state *state);
+/*
 {
 	if(u == -1)
 	{
@@ -458,8 +474,9 @@ void selectUnit(int u, game_state *state)
 	}
 
 }
-
-void step (struct game_state* state)
+*/
+void step (struct game_state* state);
+/*
 {
 	int i = state->selected_unit;
 	if(state->selected_unit == -1)
@@ -478,9 +495,10 @@ void step (struct game_state* state)
 	assert(0);
 	return;
 }
-
+*/
 // Confirms move, moving unit from cursor to cursor
-void moveSelectedUnit(struct game_state *state)
+void moveSelectedUnit(struct game_state *state);
+/*
 {
 	if(findUnit(state->cursor_x, state->cursor_y, state) == -1)
 	{
@@ -501,8 +519,9 @@ void moveSelectedUnit(struct game_state *state)
 		alertMessage("Can't move there!", 2, state);
 	}
 }
-
-void attackSelectedUnit(struct game_state *state)
+*/
+void attackSelectedUnit(struct game_state *state);
+/*
 {
 	int target = findUnit(state->cursor_x, state->cursor_y, state);
 	unit* selected_unit = &state->units[state->selected_unit];
@@ -538,8 +557,9 @@ void attackSelectedUnit(struct game_state *state)
 		}
 	}
 }
-
-void clampMapOffset(game_state *state)
+*/
+void clampMapOffset(game_state *state);
+/*
 {
 	if(state->map_offset_x > state->max_offset_x) 
 		state->map_offset_x = state->max_offset_x;
@@ -550,16 +570,18 @@ void clampMapOffset(game_state *state)
 	if(state->map_offset_y < state->min_offset_y) 
 		state->map_offset_y = state->min_offset_y;
 }
-
-void clampHexSize(game_state *state)
+*/
+void clampHexSize(game_state *state);
+/*
 {
 	if(state->map_hex_size > state->max_hex_size) 
 		state->map_hex_size = state->max_hex_size;
 	if(state->map_hex_size < state->min_hex_size) 
 		state->map_hex_size = state->min_hex_size;
 }
-
-void processInput(struct input_pressed *input, struct game_state *state)
+*/
+void processInput(struct input_pressed *input, struct game_state *state);
+/*
 {
 	if(input->key_pressed_ESCAPE >= 30)
 	{
@@ -799,11 +821,12 @@ void processInput(struct input_pressed *input, struct game_state *state)
 	clampHexSize(state);
 	clampMapOffset(state);
 }
-
+*/
 // Generates a hard coded hexagonal test map
 // TODO(filip): Free memory allocated by initializeMap() and initializeUIState()
 // 				Create freeMap and freeUIState functions
-void generateTestMap(struct game_state *state)
+void generateTestMap(struct game_state *state);
+/*
 {
 	int i, j;
 	state->size_x = 20;
@@ -843,3 +866,4 @@ void generateTestMap(struct game_state *state)
 	createGolem(state->size_x - 1, state->size_y - 3, 1, state);
 
 }
+*/
