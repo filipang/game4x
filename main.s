@@ -5081,6 +5081,2567 @@
 # 5697 "/usr/include/GLFW/glfw3.h"
 
 # 32 "<command-line>" 2
+# 1 "/usr/include/freetype2/freetype/freetype.h" 1
+# 23 "/usr/include/freetype2/freetype/freetype.h"
+# 1 "/usr/include/freetype2/ft2build.h" 1
+# 37 "/usr/include/freetype2/ft2build.h"
+# 1 "/usr/include/freetype2/freetype/config/ftheader.h" 1
+# 38 "/usr/include/freetype2/ft2build.h" 2
+# 24 "/usr/include/freetype2/freetype/freetype.h" 2
+# 1 "/usr/include/freetype2/freetype/config/ftconfig.h" 1
+# 40 "/usr/include/freetype2/freetype/config/ftconfig.h"
+# 1 "/usr/include/freetype2/freetype/config/ftoption.h" 1
+# 26 "/usr/include/freetype2/freetype/config/ftoption.h"
+
+# 992 "/usr/include/freetype2/freetype/config/ftoption.h"
+
+# 41 "/usr/include/freetype2/freetype/config/ftconfig.h" 2
+# 1 "/usr/include/freetype2/freetype/config/ftstdlib.h" 1
+# 35 "/usr/include/freetype2/freetype/config/ftstdlib.h"
+# 1 "/usr/lib/gcc/x86_64-linux-gnu/10/include/stddef.h" 1 3 4
+# 36 "/usr/include/freetype2/freetype/config/ftstdlib.h" 2
+# 59 "/usr/include/freetype2/freetype/config/ftstdlib.h"
+# 1 "/usr/lib/gcc/x86_64-linux-gnu/10/include/limits.h" 1 3 4
+# 34 "/usr/lib/gcc/x86_64-linux-gnu/10/include/limits.h" 3 4
+# 1 "/usr/lib/gcc/x86_64-linux-gnu/10/include/syslimits.h" 1 3 4
+
+
+
+
+
+
+# 1 "/usr/lib/gcc/x86_64-linux-gnu/10/include/limits.h" 1 3 4
+# 195 "/usr/lib/gcc/x86_64-linux-gnu/10/include/limits.h" 3 4
+# 1 "/usr/include/limits.h" 1 3 4
+# 26 "/usr/include/limits.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/libc-header-start.h" 1 3 4
+# 27 "/usr/include/limits.h" 2 3 4
+# 183 "/usr/include/limits.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/posix1_lim.h" 1 3 4
+# 27 "/usr/include/x86_64-linux-gnu/bits/posix1_lim.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/wordsize.h" 1 3 4
+# 28 "/usr/include/x86_64-linux-gnu/bits/posix1_lim.h" 2 3 4
+# 161 "/usr/include/x86_64-linux-gnu/bits/posix1_lim.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/local_lim.h" 1 3 4
+# 38 "/usr/include/x86_64-linux-gnu/bits/local_lim.h" 3 4
+# 1 "/usr/include/linux/limits.h" 1 3 4
+# 39 "/usr/include/x86_64-linux-gnu/bits/local_lim.h" 2 3 4
+# 162 "/usr/include/x86_64-linux-gnu/bits/posix1_lim.h" 2 3 4
+# 184 "/usr/include/limits.h" 2 3 4
+
+
+
+# 1 "/usr/include/x86_64-linux-gnu/bits/posix2_lim.h" 1 3 4
+# 188 "/usr/include/limits.h" 2 3 4
+# 196 "/usr/lib/gcc/x86_64-linux-gnu/10/include/limits.h" 2 3 4
+# 8 "/usr/lib/gcc/x86_64-linux-gnu/10/include/syslimits.h" 2 3 4
+# 35 "/usr/lib/gcc/x86_64-linux-gnu/10/include/limits.h" 2 3 4
+# 60 "/usr/include/freetype2/freetype/config/ftstdlib.h" 2
+# 78 "/usr/include/freetype2/freetype/config/ftstdlib.h"
+# 1 "/usr/include/string.h" 1 3 4
+# 26 "/usr/include/string.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/libc-header-start.h" 1 3 4
+# 27 "/usr/include/string.h" 2 3 4
+
+
+
+
+
+
+# 1 "/usr/lib/gcc/x86_64-linux-gnu/10/include/stddef.h" 1 3 4
+# 34 "/usr/include/string.h" 2 3 4
+# 43 "/usr/include/string.h" 3 4
+
+      
+
+
+
+    
+
+
+
+
+
+
+       
+    
+
+
+
+
+
+
+
+
+    
+# 91 "/usr/include/string.h" 3 4
+
+     
+# 122 "/usr/include/string.h" 3 4
+
+    
+
+
+       
+    
+
+
+
+    
+
+
+       
+
+
+
+    
+
+
+    
+
+
+
+    
+
+
+        
+    
+
+
+
+# 1 "/usr/include/x86_64-linux-gnu/bits/types/locale_t.h" 1 3 4
+# 22 "/usr/include/x86_64-linux-gnu/bits/types/locale_t.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/types/__locale_t.h" 1 3 4
+# 28 "/usr/include/x86_64-linux-gnu/bits/types/__locale_t.h" 3 4
+
+
+
+ 
+
+
+ 
+ 
+ 
+
+
+ 
+
+
+
+# 23 "/usr/include/x86_64-linux-gnu/bits/types/locale_t.h" 2 3 4
+
+
+# 154 "/usr/include/string.h" 2 3 4
+
+
+
+    
+
+
+
+   
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+    
+# 226 "/usr/include/string.h" 3 4
+
+    
+# 253 "/usr/include/string.h" 3 4
+
+    
+# 273 "/usr/include/string.h" 3 4
+
+    
+
+
+
+    
+# 303 "/usr/include/string.h" 3 4
+
+    
+# 330 "/usr/include/string.h" 3 4
+
+    
+
+
+
+
+
+    
+
+
+
+
+   
+   
+    
+
+
+        
+    
+# 385 "/usr/include/string.h" 3 4
+
+    
+
+
+
+
+
+    
+
+
+
+
+
+# 414 "/usr/include/string.h" 3 4
+
+    
+# 428 "/usr/include/string.h" 3 4
+
+
+
+
+# 1 "/usr/include/strings.h" 1 3 4
+# 23 "/usr/include/strings.h" 3 4
+# 1 "/usr/lib/gcc/x86_64-linux-gnu/10/include/stddef.h" 1 3 4
+# 24 "/usr/include/strings.h" 2 3 4
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+ 
+
+
+
+# 68 "/usr/include/strings.h" 3 4
+
+    
+# 96 "/usr/include/strings.h" 3 4
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    
+
+
+
+    
+
+
+
+
+
+
+
+    
+
+
+
+
+    
+    
+
+
+
+# 433 "/usr/include/string.h" 2 3 4
+
+
+
+
+
+
+
+
+      
+    
+
+
+
+
+
+
+
+
+    
+
+    
+
+
+
+
+  
+    
+
+       
+    
+# 499 "/usr/include/string.h" 3 4
+
+# 79 "/usr/include/freetype2/freetype/config/ftstdlib.h" 2
+# 102 "/usr/include/freetype2/freetype/config/ftstdlib.h"
+# 1 "/usr/include/stdio.h" 1 3 4
+# 103 "/usr/include/freetype2/freetype/config/ftstdlib.h" 2
+# 120 "/usr/include/freetype2/freetype/config/ftstdlib.h"
+# 1 "/usr/include/stdlib.h" 1 3 4
+# 25 "/usr/include/stdlib.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/libc-header-start.h" 1 3 4
+# 26 "/usr/include/stdlib.h" 2 3 4
+
+
+
+
+
+# 1 "/usr/lib/gcc/x86_64-linux-gnu/10/include/stddef.h" 1 3 4
+# 32 "/usr/include/stdlib.h" 2 3 4
+
+
+
+
+
+
+
+# 1 "/usr/include/x86_64-linux-gnu/bits/waitflags.h" 1 3 4
+# 52 "/usr/include/x86_64-linux-gnu/bits/waitflags.h" 3 4
+
+
+ 
+ 
+ 
+
+# 40 "/usr/include/stdlib.h" 2 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/waitstatus.h" 1 3 4
+# 41 "/usr/include/stdlib.h" 2 3 4
+# 55 "/usr/include/stdlib.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/floatn.h" 1 3 4
+# 120 "/usr/include/x86_64-linux-gnu/bits/floatn.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/floatn-common.h" 1 3 4
+# 24 "/usr/include/x86_64-linux-gnu/bits/floatn-common.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/long-double.h" 1 3 4
+# 25 "/usr/include/x86_64-linux-gnu/bits/floatn-common.h" 2 3 4
+# 121 "/usr/include/x86_64-linux-gnu/bits/floatn.h" 2 3 4
+# 56 "/usr/include/stdlib.h" 2 3 4
+
+
+
+ 
+   
+   
+ 
+
+
+
+
+ 
+   
+   
+ 
+
+
+
+
+
+
+ 
+   
+   
+ 
+# 97 "/usr/include/stdlib.h" 3 4
+
+
+
+
+
+    
+
+
+    
+
+
+    
+
+
+
+
+    
+
+
+
+
+       
+    
+
+
+
+
+      
+
+
+      
+    
+# 176 "/usr/include/stdlib.h" 3 4
+
+  
+    
+
+
+     
+    
+
+
+
+
+
+       
+    
+
+
+
+          
+    
+
+
+
+
+
+
+        
+    
+
+
+
+    
+    
+# 385 "/usr/include/stdlib.h" 3 4
+
+
+
+
+    
+
+
+
+
+# 1 "/usr/include/x86_64-linux-gnu/sys/types.h" 1 3 4
+# 27 "/usr/include/x86_64-linux-gnu/sys/types.h" 3 4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 59 "/usr/include/x86_64-linux-gnu/sys/types.h" 3 4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 97 "/usr/include/x86_64-linux-gnu/sys/types.h" 3 4
+
+
+
+
+
+
+
+# 114 "/usr/include/x86_64-linux-gnu/sys/types.h" 3 4
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/x86_64-linux-gnu/bits/types/clock_t.h" 1 3 4
+
+
+
+
+
+
+
+# 127 "/usr/include/x86_64-linux-gnu/sys/types.h" 2 3 4
+
+# 1 "/usr/include/x86_64-linux-gnu/bits/types/clockid_t.h" 1 3 4
+
+
+
+
+
+
+
+# 129 "/usr/include/x86_64-linux-gnu/sys/types.h" 2 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/types/time_t.h" 1 3 4
+
+
+
+
+
+
+
+# 130 "/usr/include/x86_64-linux-gnu/sys/types.h" 2 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/types/timer_t.h" 1 3 4
+
+
+
+
+
+
+
+# 131 "/usr/include/x86_64-linux-gnu/sys/types.h" 2 3 4
+# 144 "/usr/include/x86_64-linux-gnu/sys/types.h" 3 4
+# 1 "/usr/lib/gcc/x86_64-linux-gnu/10/include/stddef.h" 1 3 4
+# 145 "/usr/include/x86_64-linux-gnu/sys/types.h" 2 3 4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 176 "/usr/include/x86_64-linux-gnu/sys/types.h" 3 4
+# 1 "/usr/include/endian.h" 1 3 4
+# 24 "/usr/include/endian.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/endian.h" 1 3 4
+# 35 "/usr/include/x86_64-linux-gnu/bits/endian.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/endianness.h" 1 3 4
+# 36 "/usr/include/x86_64-linux-gnu/bits/endian.h" 2 3 4
+# 25 "/usr/include/endian.h" 2 3 4
+# 177 "/usr/include/x86_64-linux-gnu/sys/types.h" 2 3 4
+
+
+# 1 "/usr/include/x86_64-linux-gnu/sys/select.h" 1 3 4
+# 30 "/usr/include/x86_64-linux-gnu/sys/select.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/select.h" 1 3 4
+# 22 "/usr/include/x86_64-linux-gnu/bits/select.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/wordsize.h" 1 3 4
+# 23 "/usr/include/x86_64-linux-gnu/bits/select.h" 2 3 4
+# 31 "/usr/include/x86_64-linux-gnu/sys/select.h" 2 3 4
+
+
+# 1 "/usr/include/x86_64-linux-gnu/bits/types/sigset_t.h" 1 3 4
+
+
+
+# 1 "/usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h" 1 3 4
+
+
+
+
+
+
+ 
+
+# 5 "/usr/include/x86_64-linux-gnu/bits/types/sigset_t.h" 2 3 4
+
+
+
+# 34 "/usr/include/x86_64-linux-gnu/sys/select.h" 2 3 4
+
+
+
+# 1 "/usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h" 1 3 4
+
+
+
+
+
+
+
+
+
+ 
+ 
+
+# 38 "/usr/include/x86_64-linux-gnu/sys/select.h" 2 3 4
+
+# 1 "/usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h" 1 3 4
+# 10 "/usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h" 3 4
+
+
+ 
+
+
+
+ 
+# 26 "/usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h" 3 4
+
+# 40 "/usr/include/x86_64-linux-gnu/sys/select.h" 2 3 4
+
+
+
+
+
+
+
+
+
+
+# 59 "/usr/include/x86_64-linux-gnu/sys/select.h" 3 4
+
+ 
+
+
+
+
+
+
+   
+
+
+ 
+
+
+
+
+
+
+
+# 91 "/usr/include/x86_64-linux-gnu/sys/select.h" 3 4
+
+# 101 "/usr/include/x86_64-linux-gnu/sys/select.h" 3 4
+
+    
+    
+    
+# 113 "/usr/include/x86_64-linux-gnu/sys/select.h" 3 4
+
+     
+     
+     
+     
+# 126 "/usr/include/x86_64-linux-gnu/sys/select.h" 3 4
+
+# 180 "/usr/include/x86_64-linux-gnu/sys/types.h" 2 3 4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 227 "/usr/include/x86_64-linux-gnu/sys/types.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 1 3 4
+# 23 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/thread-shared-types.h" 1 3 4
+# 44 "/usr/include/x86_64-linux-gnu/bits/thread-shared-types.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h" 1 3 4
+# 21 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/wordsize.h" 1 3 4
+# 22 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h" 2 3 4
+# 45 "/usr/include/x86_64-linux-gnu/bits/thread-shared-types.h" 2 3 4
+
+
+
+
+
+
+ 
+ 
+
+
+
+
+ 
+
+# 74 "/usr/include/x86_64-linux-gnu/bits/thread-shared-types.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/struct_mutex.h" 1 3 4
+# 22 "/usr/include/x86_64-linux-gnu/bits/struct_mutex.h" 3 4
+
+
+ 
+ 
+ 
+
+ 
+
+
+
+ 
+
+ 
+ 
+ 
+# 53 "/usr/include/x86_64-linux-gnu/bits/struct_mutex.h" 3 4
+
+# 75 "/usr/include/x86_64-linux-gnu/bits/thread-shared-types.h" 2 3 4
+# 87 "/usr/include/x86_64-linux-gnu/bits/thread-shared-types.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/struct_rwlock.h" 1 3 4
+# 23 "/usr/include/x86_64-linux-gnu/bits/struct_rwlock.h" 3 4
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+
+
+
+
+ 
+
+
+ 
+
+
+ 
+# 55 "/usr/include/x86_64-linux-gnu/bits/struct_rwlock.h" 3 4
+
+# 88 "/usr/include/x86_64-linux-gnu/bits/thread-shared-types.h" 2 3 4
+
+
+
+
+
+
+ 
+ 
+   
+   
+   
+     
+     
+   
+ 
+ 
+ 
+   
+   
+   
+     
+     
+   
+ 
+ 
+ 
+ 
+ 
+ 
+
+# 24 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 2 3 4
+
+
+
+
+
+
+
+
+
+
+ 
+ 
+
+
+
+
+
+
+
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+ 
+
+
+
+
+
+
+
+
+
+ 
+ 
+ 
+
+
+
+
+
+ 
+ 
+ 
+
+
+
+
+
+
+
+
+ 
+ 
+ 
+
+
+
+
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+ 
+
+
+
+
+ 
+ 
+
+# 228 "/usr/include/x86_64-linux-gnu/sys/types.h" 2 3 4
+
+
+
+# 395 "/usr/include/stdlib.h" 2 3 4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+   
+   
+   
+   
+   
+   
+   
+ 
+
+
+      
+
+
+    
+
+
+  
+  
+    
+
+
+        
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    
+
+
+
+
+    
+
+
+
+
+
+
+
+ 
+   
+   
+   
+   
+   
+
+ 
+
+
+
+       
+
+       
+       
+
+
+
+       
+    
+
+       
+       
+    
+
+
+
+       
+    
+
+       
+       
+    
+
+
+
+    
+
+
+      
+
+
+       
+    
+
+
+
+
+
+    
+
+
+    
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+    
+    
+
+
+
+
+
+
+# 1 "/usr/include/alloca.h" 1 3 4
+# 24 "/usr/include/alloca.h" 3 4
+# 1 "/usr/lib/gcc/x86_64-linux-gnu/10/include/stddef.h" 1 3 4
+# 25 "/usr/include/alloca.h" 2 3 4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 569 "/usr/include/stdlib.h" 2 3 4
+
+
+
+
+
+
+    
+
+
+
+
+
+    
+# 591 "/usr/include/stdlib.h" 3 4
+
+
+
+
+
+# 610 "/usr/include/stdlib.h" 3 4
+
+    
+
+
+
+
+
+
+# 629 "/usr/include/stdlib.h" 3 4
+
+
+
+
+
+
+# 647 "/usr/include/stdlib.h" 3 4
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+# 675 "/usr/include/stdlib.h" 3 4
+
+# 688 "/usr/include/stdlib.h" 3 4
+
+# 710 "/usr/include/stdlib.h" 3 4
+
+# 731 "/usr/include/stdlib.h" 3 4
+
+# 784 "/usr/include/stdlib.h" 3 4
+
+# 800 "/usr/include/stdlib.h" 3 4
+
+        
+
+
+
+
+
+
+
+# 820 "/usr/include/stdlib.h" 3 4
+
+       
+    
+
+
+
+
+
+
+
+
+    
+# 840 "/usr/include/stdlib.h" 3 4
+
+
+
+
+
+    
+
+
+
+
+
+
+
+    
+
+    
+
+
+
+       
+    
+# 872 "/usr/include/stdlib.h" 3 4
+
+    
+
+
+
+
+
+    
+
+
+
+
+
+    
+
+
+
+
+
+     
+    
+
+     
+    
+
+    
+
+
+
+
+
+    
+    
+
+    
+    
+
+
+     
+     
+    
+
+     
+     
+    
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+  
+
+
+  
+    
+
+
+
+
+
+
+
+
+# 957 "/usr/include/stdlib.h" 3 4
+
+       
+       
+    
+# 1003 "/usr/include/stdlib.h" 3 4
+
+    
+# 1013 "/usr/include/stdlib.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/stdlib-float.h" 1 3 4
+# 1014 "/usr/include/stdlib.h" 2 3 4
+# 1023 "/usr/include/stdlib.h" 3 4
+
+# 121 "/usr/include/freetype2/freetype/config/ftstdlib.h" 2
+# 156 "/usr/include/freetype2/freetype/config/ftstdlib.h"
+# 1 "/usr/include/setjmp.h" 1 3 4
+# 27 "/usr/include/setjmp.h" 3 4
+
+
+# 1 "/usr/include/x86_64-linux-gnu/bits/setjmp.h" 1 3 4
+# 26 "/usr/include/x86_64-linux-gnu/bits/setjmp.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/wordsize.h" 1 3 4
+# 27 "/usr/include/x86_64-linux-gnu/bits/setjmp.h" 2 3 4
+
+
+
+
+
+# 30 "/usr/include/setjmp.h" 2 3 4
+
+
+
+
+ 
+
+
+
+
+   
+   
+   
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 67 "/usr/include/setjmp.h" 3 4
+
+    
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+# 93 "/usr/include/setjmp.h" 3 4
+
+    
+# 103 "/usr/include/setjmp.h" 3 4
+
+# 157 "/usr/include/freetype2/freetype/config/ftstdlib.h" 2
+# 169 "/usr/include/freetype2/freetype/config/ftstdlib.h"
+# 1 "/usr/lib/gcc/x86_64-linux-gnu/10/include/stdarg.h" 1 3 4
+# 170 "/usr/include/freetype2/freetype/config/ftstdlib.h" 2
+# 42 "/usr/include/freetype2/freetype/config/ftconfig.h" 2
+# 56 "/usr/include/freetype2/freetype/config/ftconfig.h"
+# 1 "/usr/include/freetype2/freetype/config/integer-types.h" 1
+# 79 "/usr/include/freetype2/freetype/config/integer-types.h"
+ 
+# 90 "/usr/include/freetype2/freetype/config/integer-types.h"
+ 
+# 150 "/usr/include/freetype2/freetype/config/integer-types.h"
+ 
+ 
+# 166 "/usr/include/freetype2/freetype/config/integer-types.h"
+ 
+ 
+# 240 "/usr/include/freetype2/freetype/config/integer-types.h"
+ 
+ 
+# 57 "/usr/include/freetype2/freetype/config/ftconfig.h" 2
+# 1 "/usr/include/freetype2/freetype/config/public-macros.h" 1
+# 53 "/usr/include/freetype2/freetype/config/public-macros.h"
+
+# 118 "/usr/include/freetype2/freetype/config/public-macros.h"
+
+# 58 "/usr/include/freetype2/freetype/config/ftconfig.h" 2
+# 1 "/usr/include/freetype2/freetype/config/mac-support.h" 1
+# 59 "/usr/include/freetype2/freetype/config/ftconfig.h" 2
+# 25 "/usr/include/freetype2/freetype/freetype.h" 2
+# 1 "/usr/include/freetype2/freetype/fttypes.h" 1
+# 25 "/usr/include/freetype2/freetype/fttypes.h"
+# 1 "/usr/include/freetype2/freetype/ftsystem.h" 1
+# 25 "/usr/include/freetype2/freetype/ftsystem.h"
+
+# 64 "/usr/include/freetype2/freetype/ftsystem.h"
+ 
+# 86 "/usr/include/freetype2/freetype/ftsystem.h"
+ 
+ 
+                   
+# 107 "/usr/include/freetype2/freetype/ftsystem.h"
+ 
+ 
+                  
+# 140 "/usr/include/freetype2/freetype/ftsystem.h"
+ 
+ 
+                     
+                     
+                     
+# 169 "/usr/include/freetype2/freetype/ftsystem.h"
+ 
+ 
+   
+   
+   
+   
+ 
+# 198 "/usr/include/freetype2/freetype/ftsystem.h"
+ 
+# 211 "/usr/include/freetype2/freetype/ftsystem.h"
+ 
+ 
+   
+   
+
+ 
+# 248 "/usr/include/freetype2/freetype/ftsystem.h"
+ 
+ 
+                      
+                      
+                      
+# 268 "/usr/include/freetype2/freetype/ftsystem.h"
+ 
+ 
+# 327 "/usr/include/freetype2/freetype/ftsystem.h"
+ 
+ 
+   
+   
+   
+
+   
+   
+   
+   
+
+   
+   
+   
+
+ 
+
+
+
+
+
+# 26 "/usr/include/freetype2/freetype/fttypes.h" 2
+# 1 "/usr/include/freetype2/freetype/ftimage.h" 1
+# 36 "/usr/include/freetype2/freetype/ftimage.h"
+
+# 57 "/usr/include/freetype2/freetype/ftimage.h"
+ 
+# 75 "/usr/include/freetype2/freetype/ftimage.h"
+ 
+ 
+   
+   
+
+ 
+# 118 "/usr/include/freetype2/freetype/ftimage.h"
+ 
+ 
+   
+   
+
+ 
+# 180 "/usr/include/freetype2/freetype/ftimage.h"
+ 
+ 
+   
+   
+   
+   
+   
+   
+   
+   
+
+   
+
+ 
+# 260 "/usr/include/freetype2/freetype/ftimage.h"
+ 
+ 
+   
+   
+   
+   
+   
+   
+   
+   
+
+ 
+# 336 "/usr/include/freetype2/freetype/ftimage.h"
+ 
+ 
+   
+   
+
+   
+   
+   
+
+   
+
+ 
+# 507 "/usr/include/freetype2/freetype/ftimage.h"
+ 
+ 
+                           
+# 536 "/usr/include/freetype2/freetype/ftimage.h"
+ 
+ 
+                           
+# 570 "/usr/include/freetype2/freetype/ftimage.h"
+ 
+ 
+                            
+                            
+# 606 "/usr/include/freetype2/freetype/ftimage.h"
+ 
+ 
+                            
+                            
+                            
+# 658 "/usr/include/freetype2/freetype/ftimage.h"
+ 
+ 
+   
+   
+   
+   
+
+   
+   
+
+ 
+# 743 "/usr/include/freetype2/freetype/ftimage.h"
+ 
+ 
+   
+
+   
+   
+   
+   
+
+ 
+# 828 "/usr/include/freetype2/freetype/ftimage.h"
+ 
+# 858 "/usr/include/freetype2/freetype/ftimage.h"
+ 
+ 
+   
+   
+   
+
+ 
+# 897 "/usr/include/freetype2/freetype/ftimage.h"
+ 
+ 
+                 
+                 
+                 
+# 914 "/usr/include/freetype2/freetype/ftimage.h"
+ 
+ 
+                            
+                            
+# 928 "/usr/include/freetype2/freetype/ftimage.h"
+ 
+ 
+                           
+                           
+# 1035 "/usr/include/freetype2/freetype/ftimage.h"
+ 
+ 
+   
+   
+   
+   
+   
+   
+   
+   
+   
+
+ 
+# 1076 "/usr/include/freetype2/freetype/ftimage.h"
+ 
+ 
+                       
+# 1095 "/usr/include/freetype2/freetype/ftimage.h"
+ 
+ 
+# 1129 "/usr/include/freetype2/freetype/ftimage.h"
+ 
+ 
+                         
+                         
+# 1157 "/usr/include/freetype2/freetype/ftimage.h"
+ 
+ 
+                           
+                           
+# 1195 "/usr/include/freetype2/freetype/ftimage.h"
+ 
+ 
+                          
+# 1226 "/usr/include/freetype2/freetype/ftimage.h"
+ 
+ 
+   
+
+   
+   
+   
+   
+   
+
+ 
+
+
+
+
+
+# 27 "/usr/include/freetype2/freetype/fttypes.h" 2
+
+# 1 "/usr/lib/gcc/x86_64-linux-gnu/10/include/stddef.h" 1 3 4
+# 29 "/usr/include/freetype2/freetype/fttypes.h" 2
+
+
+
+# 108 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+# 120 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+# 132 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+# 143 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+# 154 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+# 165 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+# 176 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+# 187 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+# 198 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+# 209 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+# 220 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+# 231 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+# 242 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+# 253 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+# 264 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+# 275 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+# 287 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+# 299 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+# 310 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+# 323 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+# 336 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+# 355 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+ 
+   
+   
+
+ 
+# 390 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+ 
+   
+   
+
+ 
+# 413 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+ 
+   
+   
+
+ 
+# 435 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+# 467 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+ 
+   
+   
+
+ 
+# 523 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+# 534 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+# 555 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+ 
+   
+   
+   
+
+ 
+# 580 "/usr/include/freetype2/freetype/fttypes.h"
+ 
+ 
+   
+   
+
+ 
+# 610 "/usr/include/freetype2/freetype/fttypes.h"
+
+# 26 "/usr/include/freetype2/freetype/freetype.h" 2
+# 1 "/usr/include/freetype2/freetype/fterrors.h" 1
+# 127 "/usr/include/freetype2/freetype/fterrors.h"
+# 1 "/usr/include/freetype2/freetype/ftmoderr.h" 1
+# 147 "/usr/include/freetype2/freetype/ftmoderr.h"
+ 
+
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+ 
+# 128 "/usr/include/freetype2/freetype/fterrors.h" 2
+# 195 "/usr/include/freetype2/freetype/fterrors.h"
+ 
+
+
+
+
+# 1 "/usr/include/freetype2/freetype/fterrdef.h" 1
+# 58 "/usr/include/freetype2/freetype/fterrdef.h"
+ 
+                 
+
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+
+
+
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+
+
+
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+
+
+
+ 
+               
+ 
+               
+
+
+
+ 
+               
+ 
+               
+
+
+
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+
+
+
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+
+
+
+ 
+               
+
+
+
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+
+
+
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+
+
+
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+ 
+               
+# 201 "/usr/include/freetype2/freetype/fterrors.h" 2
+
+
+
+ 
+# 252 "/usr/include/freetype2/freetype/fterrors.h"
+
+# 281 "/usr/include/freetype2/freetype/fterrors.h"
+ 
+ 
+
+
+# 27 "/usr/include/freetype2/freetype/freetype.h" 2
+
+
+
+# 300 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+ 
+# 355 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+   
+   
+
+   
+
+   
+   
+
+ 
+# 399 "/usr/include/freetype2/freetype/freetype.h"
+ 
+# 419 "/usr/include/freetype2/freetype/freetype.h"
+ 
+# 431 "/usr/include/freetype2/freetype/freetype.h"
+ 
+# 444 "/usr/include/freetype2/freetype/freetype.h"
+ 
+# 483 "/usr/include/freetype2/freetype/freetype.h"
+ 
+# 513 "/usr/include/freetype2/freetype/freetype.h"
+ 
+# 532 "/usr/include/freetype2/freetype/freetype.h"
+ 
+# 566 "/usr/include/freetype2/freetype/freetype.h"
+ 
+# 740 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+   
+
+   
+   
+
+   
+   
+   
+   
+   
+
+
+   
+   
+   
+   
+   
+   
+
+   
+   
+   
+   
+
+   
+
+   
+
+ 
+# 817 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+   
+   
+   
+   
+
+ 
+# 848 "/usr/include/freetype2/freetype/freetype.h"
+ 
+# 1028 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+   
+   
+
+   
+   
+
+   
+
+   
+   
+
+   
+   
+
+   
+   
+
+   
+
+
+
+
+   
+
+   
+   
+   
+   
+
+   
+   
+
+   
+   
+
+   
+   
+   
+
+
+
+   
+   
+   
+
+   
+
+   
+   
+
+   
+
+
+
+ 
+# 1488 "/usr/include/freetype2/freetype/freetype.h"
+ 
+# 1595 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+   
+   
+
+   
+   
+
+   
+   
+   
+   
+
+ 
+# 1632 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+   
+   
+   
+   
+
+ 
+# 1658 "/usr/include/freetype2/freetype/freetype.h"
+ 
+# 1670 "/usr/include/freetype2/freetype/freetype.h"
+ 
+# 1871 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+   
+   
+   
+   
+   
+
+   
+   
+   
+   
+
+   
+
+   
+   
+   
+
+   
+
+   
+   
+
+   
+   
+
+   
+   
+
+   
+
+   
+
+ 
+# 1950 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+# 1970 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+# 2039 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+   
+   
+
+ 
+# 2111 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+   
+   
+   
+   
+   
+   
+   
+   
+
+ 
+# 2156 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+              
+              
+              
+# 2196 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                     
+                     
+                     
+                     
+# 2341 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+               
+               
+               
+# 2367 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                 
+# 2403 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                   
+# 2432 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+# 2456 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+# 2496 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                 
+# 2550 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+   
+   
+   
+   
+   
+
+   
+
+ 
+# 2602 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+   
+   
+   
+   
+   
+
+ 
+# 2621 "/usr/include/freetype2/freetype/freetype.h"
+ 
+# 2660 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                  
+# 2709 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                   
+                   
+                   
+                   
+# 2746 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                     
+                     
+# 2792 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                
+                
+# 2835 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+               
+               
+# 3192 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                   
+                   
+# 3247 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+   
+   
+   
+   
+   
+
+   
+
+ 
+# 3371 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                  
+# 3404 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+   
+   
+   
+
+ 
+# 3461 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                 
+                 
+                 
+                 
+# 3505 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                       
+                       
+                       
+# 3552 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                    
+                    
+                    
+# 3591 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+# 3625 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                    
+# 3656 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                 
+# 3678 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+# 3713 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                    
+# 3768 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                    
+# 3805 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                   
+                   
+# 3903 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                     
+                     
+# 3927 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                    
+# 4008 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                       
+                       
+                       
+                       
+                       
+                       
+# 4055 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+   
+   
+   
+
+ 
+# 4172 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                           
+                           
+                           
+                           
+# 4271 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+# 4364 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                              
+                              
+# 4400 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                                  
+                                  
+# 4431 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+# 4464 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                            
+# 4498 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                            
+# 4564 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+            
+            
+# 4600 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+            
+# 4624 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+            
+# 4648 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+# 4670 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+# 4689 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+# 4712 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                      
+# 4805 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                     
+                     
+                     
+# 4833 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+# 4861 "/usr/include/freetype2/freetype/freetype.h"
+ 
+ 
+                               
+
+
+
+
+
+# 32 "<command-line>" 2
 # 1 "main.S"
 # 1 "utils.S" 1
 # 10 "utils.S"
@@ -5741,14 +8302,6 @@ updateButton:
   movb $0, (%r12)
 
  END1UB:
- movq $0, %rax
- movq $MESSAGE, %rdi
- movq $0, %rsi
- movq $0, %rdx
- movb (%r12), %sil
- movb (%r13), %dl
- movq -24(%rbp), %rcx
- call printf
 
  popq %r13
  popq %r12
@@ -5770,7 +8323,7 @@ updateInput:
  pushq %rsi
  subq $16, %rsp
  movq %rsi, -24(%rbp);
-# 184 "input.S"
+# 176 "input.S"
  movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $87, %rdx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);
  movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $65, %rdx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);
  movq -8(%rbp), %rdi; movq -16(%rbp), %rsi; movq $83, %rdx; movq -24(%rbp), %rcx; call updateButton; incq -24(%rbp);
@@ -6815,3 +9368,4011 @@ ENDRGO:
  popq %rbp
  ret
 # 6 "main.S" 2
+# 1 "text.S" 1
+.global updateText
+updateText:
+ pushq %rbp
+ movq %rsp, %rbp
+
+ subq $48, %rsp
+ movq %rdi, -8(%rbp)
+ movss %xmm0, -16(%rbp)
+ movss %xmm1, -24(%rbp)
+ movq %rsi, -32(%rbp)
+
+
+ movq -8(%rbp), %rdi
+ call strlen
+ movq $0, -48(%rbp)
+ movl %eax, -48(%rbp)
+
+
+ leaq -40(%rbp), %rdi
+ movq $40, %rax
+ mulq -48(%rbp)
+ movq %rax, %rsi
+ call createGLObject
+
+
+ movq -40(%rbp), %rax
+ movq $4, 40(%rax)
+
+
+ movq -48(%rbp), %rax
+ incq %rax
+ movq %rax, %rdi
+ call malloc
+
+ movq -40(%rbp), %rdx
+ leaq 32(%rdx), %rdx
+ movq %rax, (%rdx)
+
+
+ movq -40(%rbp), %rax
+ movq 32(%rax), %rdi
+ movq -8(%rbp), %rsi
+ call strcpy
+
+
+ movq -40(%rbp), %rdi
+ movq -32(%rbp), %rax
+ leaq 16(%rax), %rsi
+ call addGLObject
+
+
+ movq -40(%rbp), %rax
+ movss -16(%rbp), %xmm0
+ movq (%rax), %rax
+ movss %xmm0, (%rax)
+
+
+ movq -40(%rbp), %rax
+ movq (%rax), %rax
+ movss -24(%rbp), %xmm0
+ movss %xmm0, 4(%rax)
+
+
+ movq -40(%rbp), %rax
+ movq (%rax), %rax
+ movss F10, %xmm0
+ movss %xmm0, 8(%rax)
+
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+.global updateTextAlpha
+updateTextAlpha:
+ pushq %rbp
+ movq %rsp, %rbp
+
+ subq $48, %rsp
+ movq %rdi, -8(%rbp)
+ movss %xmm0, -16(%rbp)
+ movss %xmm2, -20(%rbp)
+ movss %xmm1, -24(%rbp)
+ movq %rsi, -32(%rbp)
+
+
+ movq -8(%rbp), %rdi
+ call strlen
+ movq $0, -48(%rbp)
+ movl %eax, -48(%rbp)
+
+
+ leaq -40(%rbp), %rdi
+ movq $40, %rax
+ mulq -48(%rbp)
+ movq %rax, %rsi
+ call createGLObject
+
+
+ movq -40(%rbp), %rax
+ movq $4, 40(%rax)
+
+
+ movq -48(%rbp), %rax
+ incq %rax
+ movq %rax, %rdi
+ call malloc
+
+ movq -40(%rbp), %rdx
+ leaq 32(%rdx), %rdx
+ movq %rax, (%rdx)
+
+
+ movq -40(%rbp), %rax
+ movq 32(%rax), %rdi
+ movq -8(%rbp), %rsi
+ call strcpy
+
+
+ movq -40(%rbp), %rdi
+ movq -32(%rbp), %rax
+ leaq 16(%rax), %rsi
+ call addGLObject
+
+
+ movq -40(%rbp), %rax
+ movss -16(%rbp), %xmm0
+ movq (%rax), %rax
+ movss %xmm0, (%rax)
+
+
+ movq -40(%rbp), %rax
+ movq (%rax), %rax
+ movss -24(%rbp), %xmm0
+ movss %xmm0, 4(%rax)
+
+
+ movq -40(%rbp), %rax
+ movq (%rax), %rax
+ movss -20(%rbp), %xmm0
+ movss %xmm0, 8(%rax)
+
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+.data
+MSG_UTYPE: .asciz "Unit type: %s"
+MSG_HPLEFT: .asciz "HP: %d/%d"
+MSG_MOVE: .asciz "Move Points: %d/%d"
+MSG_DMG: .asciz "Damage: %d"
+MSG_UINFO: .asciz "Options: TAB-CycleUnits, V-Move, T-Attack"
+MSG_BINFO: .asciz "Options: TAB-CycleUnits, B-Build, ESC-ExitBuild"
+MSG_BOPT: .asciz "1-Wisp(50 E), 2-Golem(100 E), 3-Unbound Elemental(100 E), 4-Arcane Pulse(600 E)"
+FN96: .float -0.96
+FN75: .float -0.75
+FN80: .float -0.80
+FN85: .float -0.85
+FN90: .float -0.90
+FN95: .float -0.95
+.text
+.global renderUnitText
+renderUnitText:
+ pushq %rbp
+ movq %rsp, %rbp
+
+ subq $272, %rsp
+ movq %rdi, -8(%rbp)
+ movq %rsi, -16(%rbp)
+ movq %rdx, -24(%rbp)
+ movq -16(%rbp), %rax
+ leaq 10192(%rax), %rdx
+ movq %rdx, -32(%rbp)
+
+
+ leaq -256(%rbp), %rdi
+ movq $100, %rsi
+ movq -32(%rbp), %rax
+ movq -8(%rbp), %rdx
+ imul $12, %rdx
+ addq %rdx, %rax
+ movq $0, %rdx
+ movb 8(%rax), %dl
+ movq $0, -40(%rbp)
+ movb %dl, -40(%rbp)
+ movb 4(%rax), %dl
+ movq -16(%rbp), %rax
+ leaq 11592(%rax), %rax
+
+ imul $20, %rdx
+ addq %rdx, %rax
+ leaq (%rax), %rcx
+ movq $0, %rax
+ movq $MSG_UTYPE, %rdx
+ call snprintf
+
+ leaq -256(%rbp), %rdi
+ movss FN96, %xmm0
+ movss FN75, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+
+
+ leaq -256(%rbp), %rdi
+ movq $100, %rsi
+ movq -32(%rbp), %rax
+ movq -8(%rbp), %rdx
+ imul $12, %rdx
+ addq %rdx, %rax
+ movq $0, %rdx
+ movb 0(%rax), %dl
+ movq %rdx, %rcx
+
+ movq $0, %rdx
+ movb 1(%rax), %dl
+ movq %rdx, %r8
+
+ imul $20, %rdx
+ addq %rdx, %rax
+ movq $0, %rax
+ movq $MSG_HPLEFT, %rdx
+ call snprintf
+
+ leaq -256(%rbp), %rdi
+ movss FN96, %xmm0
+ movss FN80, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+
+ cmpb $0, -40(%rbp)
+ je IFW
+
+IFNOTW:
+ leaq -256(%rbp), %rdi
+ movq $100, %rsi
+ movq -32(%rbp), %rax
+ movq -8(%rbp), %rdx
+ imul $12, %rdx
+ addq %rdx, %rax
+ movq $0, %rdx
+ movb 8(%rax), %dl
+ movq %rdx, %rcx
+
+ movq $0, %rdx
+ movb 9(%rax), %dl
+ movq %rdx, %r8
+
+ imul $20, %rdx
+ addq %rdx, %rax
+ movq $0, %rax
+ movq $MSG_MOVE, %rdx
+ call snprintf
+
+ leaq -256(%rbp), %rdi
+ movss FN96, %xmm0
+ movss FN85, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+
+
+ leaq -256(%rbp), %rdi
+ movq $100, %rsi
+ movq -32(%rbp), %rax
+ movq -8(%rbp), %rdx
+ imul $12, %rdx
+ addq %rdx, %rax
+
+ movq $0, %rdx
+ movb 7(%rax), %dl
+ movq %rdx, %rcx
+
+ imul $20, %rdx
+ addq %rdx, %rax
+ movq $0, %rax
+ movq $MSG_DMG, %rdx
+ call snprintf
+
+ leaq -256(%rbp), %rdi
+ movss FN96, %xmm0
+ movss FN90, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+
+
+ leaq -256(%rbp), %rdi
+ movq $100, %rsi
+ movq -32(%rbp), %rax
+ movq -8(%rbp), %rdx
+ imul $12, %rdx
+ addq %rdx, %rax
+
+ imul $20, %rdx
+ addq %rdx, %rax
+ movq $0, %rax
+ movq $MSG_UINFO, %rdx
+ call snprintf
+
+ leaq -256(%rbp), %rdi
+ movss FN96, %xmm0
+ movss FN95, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+ jmp ENDWW
+IFW:
+
+ leaq -256(%rbp), %rdi
+ movq $100, %rsi
+ movq -32(%rbp), %rax
+ movq -8(%rbp), %rdx
+ imul $12, %rdx
+ addq %rdx, %rax
+
+ imul $20, %rdx
+ addq %rdx, %rax
+ movq $0, %rax
+ movq $MSG_BINFO, %rdx
+ call snprintf
+
+ leaq -256(%rbp), %rdi
+ movss FN96, %xmm0
+ movss FN85, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+
+ leaq -256(%rbp), %rdi
+ movq $100, %rsi
+ movq -32(%rbp), %rax
+ movq -8(%rbp), %rdx
+ imul $12, %rdx
+ addq %rdx, %rax
+
+ imul $20, %rdx
+ addq %rdx, %rax
+ movq $0, %rax
+ movq $MSG_BOPT, %rdx
+ call snprintf
+
+ leaq -256(%rbp), %rdi
+ movss FN96, %xmm0
+ movss FN90, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+
+ENDWW:
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+.data
+MSG_H1: .asciz "Help menu"
+MSG_H2: .asciz "General:"
+MSG_H3: .asciz "H - Help menu, ESC(hold) - Exit game, CTRL+S - Save, CTRL+L - Load"
+MSG_H4: .asciz "Normal mode (no unit selected):"
+MSG_H5: .asciz "WASD/LeftClick - Move camera, TAB - Select next unit, ENTER - End your turn"
+MSG_H6: .asciz "Normal mode (unit selected):"
+MSG_H7: .asciz "T - Attack mode, V - Move mode"
+MSG_H8: .asciz "Move mode:"
+MSG_H9: .asciz "WASD/Mouse - move cursor, Click/Space - confirm movement"
+MSG_H10: .asciz "Attack mode:"
+MSG_H11: .asciz "WASD/Mouse - move attack cursor, Click/Space - confirm attack"
+MSG_H12: .asciz "Build mode (workshop selected):"
+MSG_H13: .asciz "1 - Wisp, 2 - Golem, 3 - Unbound Elemental, 4 - Arcane Pulse"
+FN07: .float -0.7
+FF1: .float 0.7
+FF2: .float 0.5
+FF3: .float 0.45
+FF4: .float 0.35
+FF5: .float 0.30
+FF6: .float 0.20
+FF7: .float 0.15
+FF8: .float 0.05
+FF9: .float 0.00
+FF10: .float -0.1
+FF11: .float -0.15
+FF12: .float -0.25
+FF13: .float -0.30
+
+.text
+.global renderHelpText
+renderHelpText:
+ pushq %rbp
+ movq %rsp, %rbp
+
+ subq $272, %rsp
+ movq $0, -8(%rbp)
+ movq %rdi, -16(%rbp)
+ movq %rsi, -24(%rbp)
+ movq -16(%rbp), %rax
+ leaq 10192(%rax), %rdx
+ movq %rdx, -32(%rbp)
+
+
+
+ leaq -256(%rbp), %rdi
+ movq $100, %rsi
+ movq -32(%rbp), %rax
+ movq -8(%rbp), %rdx
+ imul $12, %rdx
+ addq %rdx, %rax
+
+ imul $20, %rdx
+ addq %rdx, %rax
+ movq $0, %rax
+ movq $MSG_H1, %rdx
+ call snprintf
+
+ leaq -256(%rbp), %rdi
+ movss FN07, %xmm0
+ movss FF1, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+
+
+ leaq -256(%rbp), %rdi
+ movq $100, %rsi
+ movq -32(%rbp), %rax
+ movq -8(%rbp), %rdx
+ imul $12, %rdx
+ addq %rdx, %rax
+
+ imul $20, %rdx
+ addq %rdx, %rax
+ movq $0, %rax
+ movq $MSG_H2, %rdx
+ call snprintf
+
+ leaq -256(%rbp), %rdi
+ movss FN07, %xmm0
+ movss FF2, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+
+
+ leaq -256(%rbp), %rdi
+ movq $100, %rsi
+ movq -32(%rbp), %rax
+ movq -8(%rbp), %rdx
+ imul $12, %rdx
+ addq %rdx, %rax
+
+ imul $20, %rdx
+ addq %rdx, %rax
+ movq $0, %rax
+ movq $MSG_H3, %rdx
+ call snprintf
+
+ leaq -256(%rbp), %rdi
+ movss FN07, %xmm0
+ movss FF3, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+
+
+ leaq -256(%rbp), %rdi
+ movq $100, %rsi
+ movq -32(%rbp), %rax
+ movq -8(%rbp), %rdx
+ imul $12, %rdx
+ addq %rdx, %rax
+
+ imul $20, %rdx
+ addq %rdx, %rax
+ movq $0, %rax
+ movq $MSG_H4, %rdx
+ call snprintf
+
+ leaq -256(%rbp), %rdi
+ movss FN07, %xmm0
+ movss FF4, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+
+
+ leaq -256(%rbp), %rdi
+ movq $100, %rsi
+ movq -32(%rbp), %rax
+ movq -8(%rbp), %rdx
+ imul $12, %rdx
+ addq %rdx, %rax
+
+ imul $20, %rdx
+ addq %rdx, %rax
+ movq $0, %rax
+ movq $MSG_H5, %rdx
+ call snprintf
+
+ leaq -256(%rbp), %rdi
+ movss FN07, %xmm0
+ movss FF5, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+
+
+ leaq -256(%rbp), %rdi
+ movq $100, %rsi
+ movq -32(%rbp), %rax
+ movq -8(%rbp), %rdx
+ imul $12, %rdx
+ addq %rdx, %rax
+
+ imul $20, %rdx
+ addq %rdx, %rax
+ movq $0, %rax
+ movq $MSG_H6, %rdx
+ call snprintf
+
+ leaq -256(%rbp), %rdi
+ movss FN07, %xmm0
+ movss FF6, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+
+
+ leaq -256(%rbp), %rdi
+ movq $100, %rsi
+ movq -32(%rbp), %rax
+ movq -8(%rbp), %rdx
+ imul $12, %rdx
+ addq %rdx, %rax
+
+ imul $20, %rdx
+ addq %rdx, %rax
+ movq $0, %rax
+ movq $MSG_H7, %rdx
+ call snprintf
+
+ leaq -256(%rbp), %rdi
+ movss FN07, %xmm0
+ movss FF7, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+
+
+ leaq -256(%rbp), %rdi
+ movq $100, %rsi
+ movq -32(%rbp), %rax
+ movq -8(%rbp), %rdx
+ imul $12, %rdx
+ addq %rdx, %rax
+
+ imul $20, %rdx
+ addq %rdx, %rax
+ movq $0, %rax
+ movq $MSG_H8, %rdx
+ call snprintf
+
+ leaq -256(%rbp), %rdi
+ movss FN07, %xmm0
+ movss FF8, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+
+
+ leaq -256(%rbp), %rdi
+ movq $100, %rsi
+ movq -32(%rbp), %rax
+ movq -8(%rbp), %rdx
+ imul $12, %rdx
+ addq %rdx, %rax
+
+ imul $20, %rdx
+ addq %rdx, %rax
+ movq $0, %rax
+ movq $MSG_H9, %rdx
+ call snprintf
+
+ leaq -256(%rbp), %rdi
+ movss FN07, %xmm0
+ movss FF9, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+
+
+ leaq -256(%rbp), %rdi
+ movq $100, %rsi
+ movq -32(%rbp), %rax
+ movq -8(%rbp), %rdx
+ imul $12, %rdx
+ addq %rdx, %rax
+
+ imul $20, %rdx
+ addq %rdx, %rax
+ movq $0, %rax
+ movq $MSG_H10, %rdx
+ call snprintf
+
+ leaq -256(%rbp), %rdi
+ movss FN07, %xmm0
+ movss FF10, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+
+
+ leaq -256(%rbp), %rdi
+ movq $100, %rsi
+ movq -32(%rbp), %rax
+ movq -8(%rbp), %rdx
+ imul $12, %rdx
+ addq %rdx, %rax
+
+ imul $20, %rdx
+ addq %rdx, %rax
+ movq $0, %rax
+ movq $MSG_H11, %rdx
+ call snprintf
+
+ leaq -256(%rbp), %rdi
+ movss FN07, %xmm0
+ movss FF11, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+
+
+ leaq -256(%rbp), %rdi
+ movq $100, %rsi
+ movq -32(%rbp), %rax
+ movq -8(%rbp), %rdx
+ imul $12, %rdx
+ addq %rdx, %rax
+
+ imul $20, %rdx
+ addq %rdx, %rax
+ movq $0, %rax
+ movq $MSG_H12, %rdx
+ call snprintf
+
+ leaq -256(%rbp), %rdi
+ movss FN07, %xmm0
+ movss FF12, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+
+
+ leaq -256(%rbp), %rdi
+ movq $100, %rsi
+ movq -32(%rbp), %rax
+ movq -8(%rbp), %rdx
+ imul $12, %rdx
+ addq %rdx, %rax
+
+ imul $20, %rdx
+ addq %rdx, %rax
+ movq $0, %rax
+ movq $MSG_H13, %rdx
+ call snprintf
+
+ leaq -256(%rbp), %rdi
+ movss FN07, %xmm0
+ movss FF13, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+.data
+MSG_FPS: .asciz "%d FPS"
+MSG_PLAYER: .asciz "Player: %d"
+MSG_TURN: .asciz "Turn: %d"
+MSG_ESSENCE: .asciz "Essence: %d (+%d)"
+MSG_HELP: .asciz "Press H to see controls"
+FN79: .float -0.79
+FN83: .float -0.83
+FN87: .float -0.87
+FN65: .float -0.65
+FONE: .float 1.0
+.text
+.global renderPersistentTexts
+renderPersistentTexts:
+
+ pushq %rbp
+ movq %rsp, %rbp
+
+ subq $272, %rsp
+ movq %rdi, -16(%rbp)
+ movq %rsi, -24(%rbp)
+ movq -16(%rbp), %rax
+
+ movq $100, %rsi
+
+ movsd 11856(%rax), %xmm0
+cvtsd2ss %xmm0, %xmm0
+ movss FONE, %xmm1
+ divss %xmm0, %xmm1
+ movss %xmm1, %xmm0
+cvtss2siq %xmm0, %rcx
+ leaq -256(%rbp), %rdi
+ movq $0, %rax
+ movq $MSG_FPS, %rdx
+ call snprintf
+
+ leaq -256(%rbp), %rdi
+ movss F55, %xmm0
+ movss FN75, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+
+
+ movq $100, %rsi
+
+ movq -16(%rbp), %rax
+ movq $0, %rcx
+ movl 11800(%rax), %ecx
+ movq %rcx, -32(%rbp)
+ leaq -256(%rbp), %rdi
+ movq $0, %rax
+ movq $MSG_PLAYER, %rdx
+ call snprintf
+
+ leaq -256(%rbp), %rdi
+ movss F55, %xmm0
+ movss FN79, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+
+
+ movq $100, %rsi
+
+ movq -16(%rbp), %rax
+ movq $0, %rcx
+ movl 11804(%rax), %ecx
+ shrq $1, %rcx
+ leaq -256(%rbp), %rdi
+ movq $0, %rax
+ movq $MSG_TURN, %rdx
+ call snprintf
+
+ leaq -256(%rbp), %rdi
+ movss F55, %xmm0
+ movss FN83, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+
+ movq -16(%rbp), %rax
+ cmpl $4, 11836(%rax)
+ je SKIPP
+
+ movq $100, %rsi
+
+ movq -16(%rbp), %rax
+ movq -32(%rbp), %rdx
+ imul $24, %rdx
+ addq %rdx, %rax
+ addq $10000, %rax
+ movq (%rax), %rcx
+ movq 4(%rax), %r8
+ leaq -256(%rbp), %rdi
+ movq $0, %rax
+ movq $MSG_ESSENCE, %rdx
+ call snprintf
+
+ leaq -256(%rbp), %rdi
+ movss F55, %xmm0
+ movss FN87, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+
+SKIPP:
+
+ movq $100, %rsi
+
+ leaq -256(%rbp), %rdi
+ movq $0, %rax
+ movq $MSG_HELP, %rdx
+ call snprintf
+
+ leaq -256(%rbp), %rdi
+ movss FN96, %xmm0
+ movss FN65, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+
+.text
+MSG_EPND: .asciz "Enemy Pulse: inactive"
+MSG_EP: .asciz "Enemy Pulse: %d turns"
+MSG_YPND: .asciz "Your Pulse: inactive"
+MSG_YP: .asciz "Your Pulse: %d turns"
+MSG_PENTER: .asciz "Press ENTER to start your turn"
+TESTPRINT: .asciz "%d. x: %d\n"
+PS: .asciz "%s"
+FN91: .float -0.91
+F06: .float 0.6
+FN03: .float -0.3
+FN02: .float -0.2
+TESTMSG: .asciz "DEBUG: %f %f %f\n"
+PRINTFLOATS: .asciz "%d. ax:%.2f, ay:%.2f, bw:%.2f, bh:%.2f, bl:%.2f, bt:%.2f tx:%.2f\n"
+.global updateTexts
+updateTexts:
+
+ pushq %rbp
+ movq %rsp, %rbp
+
+ subq $272, %rsp
+
+ movq %rdi, -16(%rbp)
+ movq %rsi, -24(%rbp)
+ movq -16(%rbp), %rax
+
+
+WHILEWWW:
+ movq -24(%rbp), %rdx
+ cmpq $0, 16(%rdx)
+ je ENDWWW
+
+ leaq 16(%rdx), %rdi
+ movq 16(%rdx), %rsi
+ call removeGLObject
+
+ jmp WHILEWWW
+ENDWWW:
+ movq -16(%rbp), %rdi
+ movq -24(%rbp), %rsi
+ call renderPersistentTexts
+
+
+ movq -16(%rbp), %rdx
+ movq $0, %rax
+ movl 11800(%rdx), %eax
+ xorq $1, %rax
+ imul $24, %rax
+ movq -16(%rbp), %rdx
+ addq $10000, %rdx
+ addq %rdx, %rax
+ cmpl $-1, 8(%rax)
+ jne ELSETT
+IFTT:
+ movq $100, %rsi
+
+ leaq -256(%rbp), %rdi
+ movq $0, %rax
+ movq $MSG_EPND, %rdx
+ call snprintf
+
+
+ jmp ENDTT
+ELSETT:
+ movq $100, %rsi
+
+ leaq -256(%rbp), %rdi
+ movq $0, %rcx
+ movl 8(%rax), %ecx
+ movq $0, %rax
+ movq $MSG_EP, %rdx
+ call snprintf
+ENDTT:
+
+ leaq -256(%rbp), %rdi
+ movss F55, %xmm0
+ movss FN91, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+
+
+ movq -16(%rbp), %rdx
+ movq $0, %rax
+ movl 11800(%rdx), %eax
+ imul $24, %rax
+ movq -16(%rbp), %rdx
+ addq $10000, %rdx
+ addq %rdx, %rax
+ cmpl $-1, 8(%rax)
+ jne ELSETT2
+IFTT2:
+ movq $100, %rsi
+
+ leaq -256(%rbp), %rdi
+ movq $0, %rax
+ movq $MSG_YPND, %rdx
+ call snprintf
+
+
+ jmp ENDTT2
+ELSETT2:
+ movq $100, %rsi
+
+ leaq -256(%rbp), %rdi
+ movq $0, %rcx
+ movl 8(%rax), %ecx
+ movq $0, %rax
+ movq $MSG_YP, %rdx
+ call snprintf
+ENDTT2:
+
+ leaq -256(%rbp), %rdi
+ movss F55, %xmm0
+ movss FN95, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+
+ movq $-1, -32(%rbp)
+ movq -16(%rbp), %rax
+ cmpl $-1, 11812(%rax)
+ je ELSESU
+ movq $0, %rdx
+ movl 11812(%rax), %edx
+ movq %rdx, -32(%rbp)
+
+ELSESU:
+ cmpl $-1, 11816(%rax)
+ je ELSETU
+ movq $0, %rdx
+ movl 11816(%rax), %edx
+ movq %rdx, -32(%rbp)
+
+ELSETU:
+
+ cmpl $-1, -32(%rbp)
+ je ELSEDU
+ movq -32(%rbp), %rdi
+ movq -16(%rbp), %rsi
+ movq -24(%rbp), %rdx
+ call renderUnitText
+ELSEDU:
+ movq -16(%rbp), %rax
+ movss 11844(%rax), %xmm0
+ movss F00, %xmm1
+ ucomiss %xmm1, %xmm0
+ jb ELSEAE
+ movq -16(%rbp), %rdx
+ movsd 11856(%rdx), %xmm1
+ movss 11844(%rax), %xmm2
+cvtsd2ss %xmm1, %xmm1
+ subss %xmm1, %xmm2
+ movss %xmm2, 11844(%rax)
+
+ leaq -256(%rbp), %rdi
+ movq $100, %rsi
+ movq $PS, %rdx
+ leaq 11392(%rax), %rcx
+ call snprintf
+
+ movq -16(%rbp), %rax
+ leaq -256(%rbp), %rdi
+ movss FN03, %xmm0
+ movss F06, %xmm1
+ movss 11844(%rax), %xmm2
+ movss 11848(%rax), %xmm3
+ divss %xmm3, %xmm2
+ movq -24(%rbp), %rsi
+
+ movq -16(%rbp), %rax
+ leaq -256(%rbp), %rdi
+ movss FN03, %xmm0
+ movss F06, %xmm1
+ movss 11844(%rax), %xmm2
+ movss 11848(%rax), %xmm3
+ divss %xmm3, %xmm2
+ movq -24(%rbp), %rsi
+ call updateTextAlpha
+
+ELSEAE:
+
+
+ movq -16(%rbp), %rax
+ cmpl $4, 11836(%rax)
+ jne SKIPPP
+
+ leaq -256(%rbp), %rdi
+ movq $100, %rsi
+ movq -32(%rbp), %rax
+ movq -8(%rbp), %rdx
+ imul $12, %rdx
+ addq %rdx, %rax
+
+ imul $20, %rdx
+ addq %rdx, %rax
+ movq $0, %rax
+ movq $MSG_PENTER, %rdx
+ call snprintf
+
+ leaq -256(%rbp), %rdi
+ movss FN02, %xmm0
+ movss F00, %xmm1
+ movq -24(%rbp), %rsi
+ call updateText
+
+SKIPPP:
+
+ movq -16(%rbp), %rax
+ cmpl $1, 11840(%rax)
+ jne ELSEHELP
+ movq -16(%rbp), %rdi
+ movq -24(%rbp), %rsi
+ call renderHelpText
+ELSEHELP:
+
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+
+
+
+.global initializeFontGL
+
+initializeFontGL:
+ pushq %rbp
+ movq %rsp, %rbp
+
+ subq $128, %rsp
+ movq %rdi, -8(%rbp)
+ movq %rsi, -16(%rbp)
+ leaq 120(%rsi), %rax
+ movq %rax, -24(%rbp)
+ movq (%rax), %rax
+ movq 152(%rax), %rax
+ movq %rax, -32(%rbp)
+ movq $0, -40(%rbp)
+ movq $0, -48(%rbp)
+ movq $32, -56(%rbp)
+FORFGL:
+ cmpq $128, -56(%rbp)
+ jge ENDFORFGL
+
+ movq -24(%rbp), %rax
+ movq (%rax), %rdi
+ movq -56(%rbp), %rsi
+ movq $( 1L << 2 ), %rdx
+ call FT_Load_Char
+
+ movq -32(%rbp), %rax
+ movq 156(%rax), %rax
+ addq %rax, -40(%rbp)
+
+ movq -32(%rbp), %rax
+ movl 152(%rax), %eax
+
+ cmpl %eax, -48(%rbp)
+ jge ELSEBR
+ movl %eax, -48(%rbp)
+
+ELSEBR:
+
+ incq -56(%rbp)
+ jmp FORFGL
+ENDFORFGL:
+
+
+ movq -16(%rbp), %rax
+ leaq 104(%rax), %rax
+ movq -40(%rbp), %rdx
+ movq %rdx, (%rax)
+
+
+ movq -16(%rbp), %rax
+ leaq 108(%rax), %rax
+ movq -48(%rbp), %rdx
+ movq %rdx, (%rax)
+
+
+ subq $8, %rsp
+ pushq $0
+ pushq $5121
+ pushq $6403
+ movl $0, %r9d
+ movl -48(%rbp), %r8d
+ movl -40(%rbp), %ecx
+ movl $1, %edx
+ movl $0, %esi
+ movl $3553, %edi
+ call glTexImage2D
+ addq $32, %rsp
+
+ movl $9729, %edx
+ movl $10241, %esi
+ movl $3553, %edi
+ call glTexParameteri
+
+ movl $9729, %edx
+ movl $10240, %esi
+ movl $3553, %edi
+ call glTexParameteri
+
+ movl $1, %esi
+ movl $3317, %edi
+ call glPixelStorei
+
+ movq $0, -64(%rbp)
+ movq $32, -56(%rbp)
+FORFGL2:
+ cmpq $128, -56(%rbp)
+ jge ENDFORFGL2
+
+ movq $( 1L << 2 ), %rdx
+ movq -56(%rbp), %rsi
+ movq -24(%rbp), %rax
+ movq (%rax), %rdi
+ call FT_Load_Char
+
+ cmpq $0, %rax
+ jne CONTIN
+
+ subq $8, %rsp
+ movq -32(%rbp), %rax
+ pushq 168(%rax)
+ pushq $5121
+ pushq $6403
+ movl 152(%rax), %r9d
+
+ movl 156(%rax), %r8d
+ movl $0, %ecx
+ movl -64(%rbp), %edx
+ movl $0, %esi
+ movl $3553, %edi
+ call glTexSubImage2D
+ addq $32, %rsp
+
+
+ movq -32(%rbp), %rax
+ movq 128(%rax), %rax
+ shrq $6, %rax
+
+
+ cvtsi2ssq %rax, %xmm0
+ movq -16(%rbp), %rcx
+ movq -56(%rbp), %rax
+ movq %rax, %rdx
+
+ shlq $3, %rax
+ subq %rdx, %rax
+ salq $2, %rax
+ addq %rcx, %rax
+ addq $152, %rax
+ movss %xmm0, (%rax)
+ movss %xmm0, %xmm2
+
+
+ movq -32(%rbp), %rax
+ movq 136(%rax), %rax
+ shrq $6, %rax
+
+ cvtsi2ssq %rax, %xmm0
+ movq -16(%rbp), %rcx
+ movq -56(%rbp), %rax
+
+ shlq $3, %rax
+ subq %rdx, %rax
+ salq $2, %rax
+ addq %rcx, %rax
+ addq $156, %rax
+ movss %xmm0, (%rax)
+ movss %xmm0, %xmm3
+
+
+ movq -32(%rbp), %rax
+ movl 156(%rax), %eax
+
+ cvtsi2ssl %eax, %xmm0
+
+ movq -16(%rbp), %rcx
+ movq -56(%rbp), %rax
+
+ shlq $3, %rax
+ subq %rdx, %rax
+ salq $2, %rax
+ addq %rcx, %rax
+ addq $160, %rax
+ movss %xmm0, (%rax)
+ movss %xmm0, %xmm4
+
+
+ movq -32(%rbp), %rax
+ movl 152(%rax), %eax
+
+ cvtsi2ssl %eax, %xmm0
+
+ movq -16(%rbp), %rcx
+ movq -56(%rbp), %rax
+
+ shlq $3, %rax
+ subq %rdx, %rax
+ salq $2, %rax
+ addq %rcx, %rax
+ addq $164, %rax
+ movss %xmm0, (%rax)
+ movss %xmm0, %xmm5
+
+
+ movq -32(%rbp), %rax
+ movl 192(%rax), %eax
+
+ cvtsi2ssl %eax, %xmm0
+ movq -16(%rbp), %rcx
+ movq -56(%rbp), %rax
+
+ shlq $3, %rax
+ subq %rdx, %rax
+ salq $2, %rax
+ addq %rcx, %rax
+ addq $168, %rax
+ movss %xmm0, (%rax)
+ movss %xmm0, %xmm6
+
+
+ movq -32(%rbp), %rax
+ movl 196(%rax), %eax
+
+ cvtsi2ssl %eax, %xmm0
+ movq -16(%rbp), %rcx
+ movq -56(%rbp), %rax
+
+ shlq $3, %rax
+ subq %rdx, %rax
+ salq $2, %rax
+ addq %rcx, %rax
+ addq $172, %rax
+ movss %xmm0, (%rax)
+ movss %xmm0, %xmm7
+
+ cvtsi2ssl -64(%rbp), %xmm0
+ cvtsi2ssl -40(%rbp), %xmm1
+ divss %xmm1, %xmm0
+
+ movq -16(%rbp), %rcx
+ movq -56(%rbp), %rax
+
+ shlq $3, %rax
+ subq %rdx, %rax
+ salq $2, %rax
+ addq %rcx, %rax
+ addq $176, %rax
+ movss %xmm0, (%rax)
+ movss %xmm0, %xmm8
+
+ movq -32(%rbp), %rax
+ movl 156(%rax), %edx
+ movl -64(%rbp), %eax
+ addl %edx, %eax
+ movl %eax, -64(%rbp)
+
+ movq $7, %rax
+ movq $PRINTFLOATS, %rdi
+ movl -56(%rbp), %esi
+ movss %xmm2, %xmm0
+ movss %xmm3, %xmm1
+ movss %xmm4, %xmm2
+ movss %xmm5, %xmm3
+ movss %xmm6, %xmm4
+ movss %xmm7, %xmm5
+ movss %xmm8, %xmm6
+
+ cvtss2sd %xmm0, %xmm0
+ cvtss2sd %xmm1, %xmm1
+ cvtss2sd %xmm2, %xmm2
+ cvtss2sd %xmm3, %xmm3
+ cvtss2sd %xmm4, %xmm4
+ cvtss2sd %xmm5, %xmm5
+ cvtss2sd %xmm6, %xmm6
+ call printf
+CONTIN:
+ incq -56(%rbp)
+ jmp FORFGL2
+ENDFORFGL2:
+
+ movq $TESTMSG, %rdi
+ call _glCheckErrors
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+.data
+SXY: .float 0.00085
+FN1: .float -1.0
+F1: .float 1.0
+PRF: .asciz "%f\n"
+.text
+.global drawCharacter
+drawCharacter:
+ pushq %rbp
+ movq %rsp, %rbp
+# 1284 "text.S"
+ subq $256, %rsp
+ movq %rdi, -8(%rbp)
+ movq %rsi, -16(%rbp)
+ movq %rdx, -24(%rbp)
+ movq %rcx, -32(%rbp)
+ movq %r8, -40(%rbp)
+ movq %r9, -48(%rbp)
+ movss %xmm0, -56(%rbp)
+
+ movq 16(%rbp), %rax
+ addq $152, %rax
+
+ movq %rdi, %rdx
+ imulq $28, %rdx
+
+ addq %rdx, %rax
+ movq %rax, -64(%rbp)
+
+ movl (%r8), %eax
+ movq $0, %rdx
+ movl %eax, %edx
+
+ imul $40, %rdx
+ addl %edx, -32(%rbp)
+ addl $6, %eax
+ movl %eax, (%r8)
+
+
+ movq -64(%rbp), %rax
+ movss 16(%rax), %xmm0
+ mulss SXY, %xmm0
+ movq -16(%rbp), %rax
+ movss (%rax), %xmm1
+ addss %xmm1, %xmm0
+ movss %xmm0, -68(%rbp)
+
+
+ movq -64(%rbp), %rax
+ movss 20(%rax), %xmm0
+ mulss SXY, %xmm0
+ movq -24(%rbp), %rax
+ movss (%rax), %xmm1
+ addss %xmm1, %xmm0
+ mulss FN1, %xmm0
+ movss %xmm0, -72(%rbp)
+
+
+ movq -64(%rbp), %rax
+ movss 8(%rax), %xmm0
+ mulss SXY, %xmm0
+ movss %xmm0, -76(%rbp)
+
+
+ movq -64(%rbp), %rax
+ movss 12(%rax), %xmm0
+ mulss SXY, %xmm0
+ movss %xmm0, -80(%rbp)
+# 1349 "text.S"
+ movss -68(%rbp), %xmm0
+ movq -32(%rbp), %rax
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movss -72(%rbp), %xmm0
+ mulss FN1, %xmm0
+ movq -32(%rbp), %rax
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F00, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F1, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F1, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F1, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movss -56(%rbp), %xmm0
+ movq -32(%rbp), %rax
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rdx
+ movq -64(%rbp), %rax
+ movss 24(%rax), %xmm0
+ movss %xmm0, (%rdx)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F00, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F1, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+
+
+ movss -68(%rbp), %xmm0
+ movss -76(%rbp), %xmm1
+ addss %xmm1, %xmm0
+ movq -32(%rbp), %rax
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movss -72(%rbp), %xmm0
+ mulss FN1, %xmm0
+ movq -32(%rbp), %rax
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F00, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F1, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F1, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F1, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movss -56(%rbp), %xmm0
+ movq -32(%rbp), %rax
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rdx
+ movq -64(%rbp), %rax
+ movq 24(%rax), %xmm0
+
+ movq -64(%rbp), %rax
+ movss 8(%rax), %xmm2
+
+ movq 16(%rbp), %rax
+ movl 104(%rax), %eax
+cvtsi2ssl %eax, %xmm3
+
+ divss %xmm3, %xmm2
+ addss %xmm2, %xmm0
+
+ movss %xmm0, (%rdx)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F00, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F1, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+
+ movss -68(%rbp), %xmm0
+ movq -32(%rbp), %rax
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movss -72(%rbp), %xmm0
+ movss -80(%rbp), %xmm1
+ addss %xmm1, %xmm0
+ mulss FN1, %xmm0
+ movq -32(%rbp), %rax
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F00, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F1, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F1, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F1, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movss -56(%rbp), %xmm0
+ movq -32(%rbp), %rax
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rdx
+ movq -64(%rbp), %rax
+ movq 24(%rax), %xmm0
+ movss %xmm0, (%rdx)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movq 16(%rbp), %rdx
+ movq 108(%rdx), %rcx
+cvtsi2ssl %ecx, %xmm1
+ movq -64(%rbp), %rdx
+ movss 12(%rdx), %xmm2
+ divss %xmm1, %xmm2
+
+ movss %xmm2, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F1, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movss -68(%rbp), %xmm0
+ movss -76(%rbp), %xmm1
+ addss %xmm1, %xmm0
+ movq -32(%rbp), %rax
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movss -72(%rbp), %xmm0
+ mulss FN1, %xmm0
+ movq -32(%rbp), %rax
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F00, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F1, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F1, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F1, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movss -56(%rbp), %xmm0
+ movq -32(%rbp), %rax
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rdx
+ movq -64(%rbp), %rax
+ movq 24(%rax), %xmm0
+
+ movq -64(%rbp), %rax
+ movss 8(%rax), %xmm2
+
+ movq 16(%rbp), %rax
+ movl 104(%rax), %eax
+cvtsi2ssl %eax, %xmm3
+
+ divss %xmm3, %xmm2
+ addss %xmm2, %xmm0
+
+ movss %xmm0, (%rdx)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F00, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F1, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+
+ movss -68(%rbp), %xmm0
+ movq -32(%rbp), %rax
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movss -72(%rbp), %xmm0
+ movss -80(%rbp), %xmm1
+ addss %xmm1, %xmm0
+ mulss FN1, %xmm0
+ movq -32(%rbp), %rax
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F00, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F1, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F1, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F1, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movss -56(%rbp), %xmm0
+ movq -32(%rbp), %rax
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rdx
+ movq -64(%rbp), %rax
+ movq 24(%rax), %xmm0
+ movss %xmm0, (%rdx)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movq 16(%rbp), %rdx
+ movq 108(%rdx), %rcx
+cvtsi2ssl %ecx, %xmm1
+ movq -64(%rbp), %rdx
+ movss 12(%rdx), %xmm2
+ divss %xmm1, %xmm2
+
+ movss %xmm2, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F1, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movss -68(%rbp), %xmm0
+ movss -76(%rbp), %xmm1
+ addss %xmm1, %xmm0
+ movq -32(%rbp), %rax
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movss -72(%rbp), %xmm0
+ movss -80(%rbp), %xmm1
+ addss %xmm1, %xmm0
+ mulss FN1, %xmm0
+ movq -32(%rbp), %rax
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F00, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F1, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F1, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F1, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movss -56(%rbp), %xmm0
+ movq -32(%rbp), %rax
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rdx
+ movq -64(%rbp), %rax
+ movq 24(%rax), %xmm0
+
+ movq -64(%rbp), %rax
+ movss 8(%rax), %xmm2
+
+ movq 16(%rbp), %rax
+ movl 104(%rax), %eax
+cvtsi2ssl %eax, %xmm3
+
+ divss %xmm3, %xmm2
+ addss %xmm2, %xmm0
+
+ movss %xmm0, (%rdx)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movq 16(%rbp), %rdx
+ movq 108(%rdx), %rcx
+cvtsi2ssl %ecx, %xmm1
+ movq -64(%rbp), %rdx
+ movss 12(%rdx), %xmm2
+ divss %xmm1, %xmm2
+
+ movss %xmm2, (%rax)
+ addq $4, -32(%rbp)
+
+
+ movq -32(%rbp), %rax
+ movss F1, %xmm0
+ movss %xmm0, (%rax)
+ addq $4, -32(%rbp)
+
+
+
+
+
+ movq -64(%rbp), %rax
+ movss (%rax), %xmm0
+ mulss SXY, %xmm0
+ movq -16(%rbp), %rax
+ movss (%rax), %xmm1
+ addss %xmm0, %xmm1
+ movss %xmm1, (%rax)
+
+ movq -64(%rbp), %rax
+ movss 4(%rax), %xmm0
+ mulss SXY, %xmm0
+ movq -24(%rbp), %rax
+ movss (%rax), %xmm1
+ addss %xmm0, %xmm1
+ movss %xmm1, (%rax)
+
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+.global drawText
+drawText:
+
+ pushq %rbp
+ movq %rsp, %rbp
+
+ subq $32000, %rsp
+ movq %rdi, -8(%rbp)
+ movq %rsi, -16(%rbp)
+ movq %rdx, -24(%rbp)
+
+ movq (%rdi), %rdi
+ movss (%rdi), %xmm0
+ movss %xmm0, -28(%rbp)
+ movss 4(%rdi), %xmm0
+ movss %xmm0, -32(%rbp)
+ movss 8(%rdi), %xmm0
+ movss %xmm0, -36(%rbp)
+
+
+ movq -8(%rbp), %rax
+ movq 32(%rax), %rdi
+ call strlen
+ movq %rax, -48(%rbp)
+
+
+ movq -8(%rbp), %rax
+ movq 32(%rax), %rax
+ movq %rax, -64(%rbp)
+
+ movq $0, -56(%rbp)
+FORDT1:
+ movq -64(%rbp), %rax
+ cmpb $0, (%rax)
+ je ENDFORDT1
+ movq $0, %rdi
+ movb (%rax), %dil
+ leaq -28(%rbp), %rsi
+ leaq -32(%rbp), %rdx
+ movss -36(%rbp), %xmm0
+ leaq -32000(%rbp), %rcx
+ leaq -56(%rbp), %r8
+ movq -16(%rbp), %r9
+ subq $8, %rsp
+ pushq -24(%rbp)
+ call drawCharacter
+ addq $16, %rsp
+
+ incq -64(%rbp)
+ jmp FORDT1
+ENDFORDT1:
+
+ movq -48(%rbp), %rax
+ imul $240, %rax
+ movq %rax, -48(%rbp)
+ movq -48(%rbp), %rdi
+ movq -24(%rbp), %rsi
+ call updateStoreSizeGL
+
+ movq $0x8892, %rdi
+ movq $0, %rsi
+ movq $0, %rdx
+ movl -56(%rbp), %edx
+ imul $40, %rdx
+ leaq -32000(%rbp), %rcx
+ call glBufferSubData
+
+ movq $0x0004, %rdi
+ movq $0, %rsi
+ movq -56(%rbp), %rdx
+ call glDrawArrays
+
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+.data
+ISTEXT: .asciz "isText"
+.text
+.global drawTexts
+drawTexts:
+
+ pushq %rbp
+ movq %rsp, %rbp
+
+ subq $64, %rsp
+ movq %rdi, -8(%rbp)
+ movq %rsi, -16(%rbp)
+
+ movq -16(%rbp), %rax
+ leaq 120(%rax), %rax
+ movq %rax, -24(%rbp)
+
+ movq -16(%rbp), %rax
+ movq $0, %rdi
+ movl 128(%rax), %edi
+ call glBindVertexArray
+
+ movq $0x8892, %rdi
+ movq -16(%rbp), %rax
+ movq $0, %rsi
+ movl 132(%rax), %esi
+ call glBindBuffer
+
+ movq -16(%rbp), %rax
+ movq $0, %rdi
+ movl 136(%rax), %edi
+ movq $ISTEXT, %rsi
+ call glGetUniformLocation
+
+ movq %rax, %rdi
+ movq $1, %rsi
+ call glUniform1i
+
+ movq -16(%rbp), %rax
+ movq 16(%rax), %rax
+ movq %rax, -32(%rbp)
+
+FORDT:
+ cmpq $0, -32(%rbp)
+ je ENDFORDT
+
+ movq -32(%rbp), %rdi
+ movq -8(%rbp), %rsi
+ movq -16(%rbp), %rdx
+ call drawText
+
+ movq -32(%rbp), %rax
+ movq 16(%rax), %rax
+ movq %rax, -32(%rbp)
+ jmp FORDT
+ENDFORDT:
+
+
+
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+.data
+FONTPATH: .asciz "/usr/share/fonts/truetype/freefont/FreeSans.ttf"
+.text
+.global initFreetype
+initFreetype:
+ pushq %rbp
+ movq %rsp, %rbp
+
+ subq $32, %rsp
+ movq %rdi, -8(%rbp)
+ movq %rsi, -16(%rbp)
+
+
+ call FT_Init_FreeType
+
+ movq -8(%rbp), %rdi
+ movq (%rdi), %rdi
+ movq $FONTPATH, %rsi
+ movq $0, %rdx
+ movq -16(%rbp), %rcx
+ call FT_New_Face
+
+ movq -16(%rbp), %rdi
+ movq (%rdi), %rdi
+ movq $0, %rsi
+ movq $256, %rdx
+ movq $800, %rcx
+ movq $800, %r8
+ call FT_Set_Char_Size
+
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+# 7 "main.S" 2
+# 1 "game.S" 1
+.text
+PITEST: .asciz "%d\n"
+DATASAVE: .asciz "data.save"
+WORKSHOP: .asciz "Workshop"
+GOLEM: .asciz "Golem"
+WISP: .asciz "Wisp"
+UELEMENTAL: .asciz "Unbound Elemental"
+FELEMENTAL: .asciz "Fire Elemental"
+WELEMENTAL: .asciz "Water Elemental"
+IELEMENTAL: .asciz "Ice Elemental"
+AELEMENTAL: .asciz "Arcane Elemental"
+FTWO: .float 2.0
+FTHREE: .float 3.0
+NZERO: .float -0.0
+NFIVE: .float -5.0
+POF: .float 0.05
+FIFTH: .float 0.2
+TENTH: .float 0.1
+FFOUR: .float 4.0
+PERC_S: .asciz "%s"
+FBOUND: .asciz "Your Elemental has been bound to fire!"
+WBOUND: .asciz "Your Elemental has been bound to water!"
+IBOUND: .asciz "Your Elemental has been bound to ice!"
+NEESSENCE: .asciz "NOT ENOUGH ESSENCE!"
+AYUDESTROY: .asciz "ALL YOUR UNITS WERE DESTROYED!"
+EWAP: .asciz "ENEMY IS WINDING UP AN ARCANE PULSE!"
+CMT: .asciz "Can't move there!"
+NEMP: .asciz "Not enough MP!"
+GAMEOVER: .asciz "Game Over! Hold ESCAPE to close the game."
+F100000: .float 100000.0
+SAVE: .asciz "Saving game..."
+LOAD: .asciz "Loaded game!"
+FP0022: .double 0.0022
+DZERO: .double 0.0
+STO: .asciz "Your spawn tile is occupied!!!"
+FPOONE: .float 0.01
+# Save State
+# Params:
+# RDI: game_state *state
+.global saveState
+saveState:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ movq %rdi, %rsi
+ movq $11873, %rdx
+ movq $DATASAVE, %rdi
+ call writeFile
+
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+# Load State
+# Params:
+# RDI: game_state *state
+.global loadState
+loadState:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rdi
+ movq $DATASAVE, %rdi
+ call loadFile
+ movq %rax, %rsi
+ popq %rdi
+ movq $11872, %rdx
+ call memcpy
+
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+# Initialize Game State
+# Params:
+# RDI: game_state *state
+.global initializeGameState
+initializeGameState:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ movl $2, 11796(%rdi)
+ movl $-1, 11800(%rdi)
+ movl $0, 11828(%rdi)
+ movl $1, 11804(%rdi)
+ movl $0, 11836(%rdi)
+ movl $0, 11808(%rdi)
+ movl $-1, 11844(%rdi)
+ movl $-1, 11812(%rdi)
+ movl $-1, 11816(%rdi)
+ movl NZERO, %eax
+ movl %eax, 11760(%rdi)
+ movl NZERO, %eax
+ movl %eax, 11764(%rdi)
+ movl NFIVE, %eax
+ movl %eax, 11768(%rdi)
+ movl NTWO, %eax
+ movl %eax, 11772(%rdi)
+ movl ZERO, %eax
+ movl %eax, 11776(%rdi)
+ movl NZERO, %eax
+ movl %eax, 11780(%rdi)
+ movl POF, %eax
+ movl %eax, 11788(%rdi)
+ movl FIFTH, %eax
+ movl %eax, 11792(%rdi)
+ movl TENTH, %eax
+ movl %eax, 11784(%rdi)
+ movl $-1, 10008(%rdi)
+ movl $-1, 10032(%rdi)
+ addq $11592, %rdi
+ pushq %rdi
+ movq $WORKSHOP, %rsi
+ call strcpy
+ movq -8(%rbp), %rdi
+ addq $20, %rdi
+ movq $GOLEM, %rsi
+ call strcpy
+ movq -8(%rbp), %rdi
+ addq $40, %rdi
+ movq $WISP, %rsi
+ call strcpy
+ movq -8(%rbp), %rdi
+ addq $60, %rdi
+ movq $UELEMENTAL, %rsi
+ call strcpy
+ movq -8(%rbp), %rdi
+ addq $80, %rdi
+ movq $FELEMENTAL, %rsi
+ call strcpy
+ movq -8(%rbp), %rdi
+ addq $100, %rdi
+ movq $WELEMENTAL, %rsi
+ call strcpy
+ movq -8(%rbp), %rdi
+ addq $120, %rdi
+ movq $IELEMENTAL, %rsi
+ call strcpy
+ movq -8(%rbp), %rdi
+ addq $140, %rdi
+ movq $AELEMENTAL, %rsi
+ call strcpy
+
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+# Update Essence Generation
+# Params:
+# RDI: int team
+# RSI: game_state *state
+.global updateEssenceGeneration
+updateEssenceGeneration:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rsi
+ imul $24, %rdi
+ addq %rdi, %rsi
+ addq $10004, %rsi
+ movl $0, (%rsi)
+ shrq $4, %rdi
+ movq -8(%rbp), %rsi
+ addq $11808, %rsi
+ movq $0, %r10
+ movl (%rsi), %r10d
+ imul $12, %r10
+ popq %rsi
+ addq $10192, %rsi
+ addq %rsi, %r10
+ subq $12, %rsi
+ addq $5, %rsi
+UEGLOOP:
+ addq $12, %rsi
+ cmpq %r10, %rsi
+ jg UEGEND
+ cmpb (%rsi), %dil
+ jne UEGLOOP
+ movq $0, %r11
+ movb -3(%rsi), %r11b
+ imul $100, %r11
+ movq $0, %r12
+ movb -2(%rsi), %r12b
+ addq %r12, %r11
+ movq -8(%rbp), %r12
+ addq %r11, %r12
+ cmpb $1, -1(%rsi)
+ jne UEGLOOP
+ cmpb $2, (%r12)
+ jne UEGLOOP
+ movq -8(%rbp), %r11
+ addq $10004, %r11
+ imul $24, %rdi
+ addq %rdi, %r11
+ shrq $4, %rdi
+ addl $20, (%r11)
+ jmp UEGLOOP
+
+UEGEND:
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+# Update Essence Total
+# Params:
+# RDI: int team
+# RSI: game_state *state
+.global updateEssenceTotal
+updateEssenceTotal:
+
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ addq $10000, %rsi
+ imul $24, %rdi
+ addq %rdi, %rsi
+ movl 4(%rsi), %edi
+ addl %edi, (%rsi)
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+# Alert Message
+# Params:
+# RDI: char *message
+# XMM0: float time
+# RSI: game_state *state
+.global alertMessage
+alertMessage:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ movss %xmm0, 11844(%rsi)
+ movss %xmm0, 11848(%rsi)
+
+ movq %rdi, %rcx
+ leaq 11392(%rsi), %rdi
+ movq $0, %rax
+ movq $100, %rsi
+ movq $PERC_S, %rdx
+ call snprintf
+
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+# Update Altars
+# Params:
+# RDI: int team
+# RSI: game_state *state
+.global updateAltars
+updateAltars:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rdi
+ pushq %rsi
+ subq $16, %rsp
+# you can copy paste this to extract units[unit_count] into r10
+ movq $0, -32(%rbp)
+ movl 11808(%rsi), %eax
+ movl %eax, -32(%rbp)
+ movq -32(%rbp), %rax
+ imulq $12, %rax
+ movq %rax, -32(%rbp)
+ addq %rsi, -32(%rbp)
+ addq $10192, -32(%rbp)
+ movq %rsi, %r11
+ addq $10192, %r11
+ subq $12, %r11
+ movq $-1, -24(%rbp)
+UALOOP:
+ incq -24(%rbp)
+ addq $12, %r11
+ movq -32(%rbp), %rax
+ cmpq %rax, %r11
+ jge UAEND
+ cmpb $3, 4(%r11)
+ jne UALOOP
+ movq $0, %rax
+ movb 2(%r11), %al
+ movq $0, %r8
+ movb 3(%r11), %r8b
+ imul $100, %r8
+ addq %r8, %rax
+ addq %rsi, %rax
+ cmpb $4, (%rax)
+ je UAFT
+ cmpb $5, (%rax)
+ je UAWT
+ cmpb $6, (%rax)
+ je UAIT
+ jmp UALOOP
+UAFT:
+ pushq %rdi
+ pushq %rsi
+ movq $0, %rdi
+ movq $9, %rsi
+ movb 2(%r11), %dil
+ movb 3(%r11), %sil
+ pushq %rdi
+ pushq %rsi
+ movq -24(%rbp), %rdi
+ movq -16(%rbp), %rsi
+ pushq %r11
+ call removeUnit
+ popq %r11
+ popq %rsi
+ popq %rdi
+ movq -8(%rbp), %rdx
+ movq -16(%rbp), %rcx
+ pushq %r11
+ call createFireElemental
+ popq %r11
+ movq $FBOUND, %rdi
+ movss FTWO, %xmm0
+ movq -16(%rbp), %rsi
+ pushq %r11
+ call alertMessage
+ popq %r11
+ subq $12, %r11
+ decq -24(%rbp)
+ popq %rsi
+ popq %rdi
+ jmp UALOOP
+UAWT:
+ pushq %rdi
+ pushq %rsi
+ movq $0, %rdi
+ movq $9, %rsi
+ movb 2(%r11), %dil
+ movb 3(%r11), %sil
+ pushq %rdi
+ pushq %rsi
+ movq -24(%rbp), %rdi
+ movq -16(%rbp), %rsi
+ pushq %r11
+ call removeUnit
+ popq %r11
+ popq %rsi
+ popq %rdi
+ movq -8(%rbp), %rdx
+ movq -16(%rbp), %rcx
+ pushq %r11
+ call createWaterElemental
+ popq %r11
+ movq $WBOUND, %rdi
+ movss FTWO, %xmm0
+ movq -16(%rbp), %rsi
+ pushq %r11
+ call alertMessage
+ popq %r11
+ subq $12, %r11
+ decq -24(%rbp)
+ popq %rsi
+ popq %rdi
+ jmp UALOOP
+UAIT:
+ pushq %rdi
+ pushq %rsi
+ movq $0, %rdi
+ movq $9, %rsi
+ movb 2(%r11), %dil
+ movb 3(%r11), %sil
+ pushq %rdi
+ pushq %rsi
+ movq -24(%rbp), %rdi
+ movq -16(%rbp), %rsi
+ pushq %r11
+ call removeUnit
+ popq %r11
+ popq %rsi
+ popq %rdi
+ movq -8(%rbp), %rdx
+ movq -16(%rbp), %rcx
+ pushq %r11
+ call createIceElemental
+ popq %r11
+ movq $IBOUND, %rdi
+ movss FTWO, %xmm0
+ movq -16(%rbp), %rsi
+ pushq %r11
+ call alertMessage
+ popq %r11
+ subq $12, %r11
+ decq -24(%rbp)
+ popq %rsi
+ popq %rdi
+ jmp UALOOP
+UAEND:
+# Epilogue
+ movq $0, %rax
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+# Start Arcane Pulse
+# Params:
+# RDI: game_state *state
+.global startArcanePulse
+startArcanePulse:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rdi
+ movq $0, %r10
+ movl 11800(%rdi), %r10d
+ imul $24, %r10
+ addq $10000, %rdi
+ addq %r10, %rdi
+ cmpl $600, (%rdi)
+ jl APNEE
+ subl $600, (%rdi)
+ movl $6, 8(%rdi)
+ jmp APEND
+APNEE:
+ popq %rdi
+ movq %rdi, %rsi
+ movq $NEESSENCE, %rdi
+ movss FTWO, %xmm0
+ call alertMessage
+APEND:
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+# Kill All Enemies
+# Params:
+# RDI: int team
+# RSI: game_state *state
+.global killAllEnemies
+killAllEnemies:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+ pushq %rbx
+
+ # you can copy paste this to extract units[unit_count] into r10
+ movq $0, %r10
+ movl 11808(%rsi), %r10d
+ imul $12, %r10
+ addq %rsi, %r10
+ addq $10192, %r10
+ movq $-1, %rcx
+ movq %rsi, %rbx
+ addq $10180, %rbx
+KAELOOP:
+ addq $12, %rbx
+ incq %rcx
+ cmpq %r10, %rbx
+ jge KAEEND
+ cmpb %dil, 5(%rbx)
+ je KAELOOP
+ cmpb $0, 4(%rbx)
+ je KAELOOP
+ pushq %rdi
+ pushq %rsi
+ pushq %rcx
+ pushq %rbx
+ pushq %r10
+ movq %rcx, %rdi
+ call removeUnit
+ popq %r10
+ popq %rbx
+ popq %rcx
+ popq %rsi
+ popq %rdi
+ subq $12, %r10
+ subq $12, %rbx
+ decq %rcx
+ jmp KAELOOP
+KAEEND:
+ popq %rbx
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+
+# Update Arcane Pulse
+# Params:
+# RDI: game_state *state
+.global updateArcanePulse
+updateArcanePulse:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rdi
+ movq $0, %r9
+ movl 11800(%rdi), %r9d
+ imul $24, %r9
+ addq $10008, %rdi
+ addq %r9, %rdi
+ cmpl $-1, (%rdi)
+ je UAPEND
+ decl (%rdi)
+ cmpl $0, (%rdi)
+ jne UAPEND
+ shrq $4, %r9
+ movq -8(%rbp), %rsi
+ pushq %rdi
+ movq %r9, %rdi
+ call killAllEnemies
+ popq %rdi
+ movl $-1, (%rdi)
+ popq %rsi
+ movq $AYUDESTROY, %rdi
+ movss FFOUR, %xmm0
+ call alertMessage
+UAPEND:
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+# Unit Distance
+# Params:
+# RDI: int u1
+# RSI: int u2
+# RDX: game_state *state
+#.global unitDistance
+unitDistance:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+ pushq %rdi
+ pushq %rsi
+ pushq %rdx
+ movq %rdi, %rax
+ imul $12, %rax
+ addq %rdx, %rax
+ addq $10192, %rax
+ movq $0, %rdi
+ movq $0, %rsi
+ movb 2(%rax), %dil
+ movb 3(%rax), %sil
+ movq -16(%rbp), %rax
+ imul $12, %rax
+ addq -24(%rbp), %rax
+ addq $10192, %rax
+ movq $0, %rdx
+ movq $0, %rcx
+ movb 2(%rax), %dl
+ movb 3(%rax), %cl
+ call hexDistance
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+# Update Arcane Elemental
+# Params:
+# RDI: game_state *state
+.global updateArcaneElemental
+updateArcaneElemental:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+ pushq %rdi
+ #You can copy paste this to extract units[unit_count] into r10
+ movq $0, %rax
+ movl 11808(%rdi), %eax
+ imul $12, %rax
+ addq %rdi, %rax
+ addq $10192, %rax
+ pushq %rax
+ movq -8(%rbp), %rdx
+ addq $10180, %rdx
+ pushq $-1
+UAEFLOOP:
+ incq -24(%rbp)
+ addq $12, %rdx
+ cmpq %rax, %rdx
+ jge UAEFLEND
+ cmpb $4, 4(%rdx)
+ jne UAEFLOOP
+ pushq %rdx
+ movq -8(%rbp), %rdx
+ addq $10180, %rdx
+ pushq $-1
+UAEWLOOP:
+ incq -40(%rbp)
+ addq $12, %rdx
+ cmpq %rax, %rdx
+ JGE UAEWLEND
+ cmpb $5, 4(%rdx)
+ jne UAEWLOOP
+ pushq %rdx
+ movq -24(%rbp), %rdi
+ movq -40(%rbp), %rsi
+ movq -8(%rbp), %rdx
+ call unitDistance
+ popq %rdx
+ cmpq $1, %rax
+ movq -16(%rbp), %rax
+ jne UAEWLOOP
+ pushq %rdx
+ movq -8(%rbp), %rdx
+ addq $10180, %rdx
+ pushq $-1
+UAEILOOP:
+ incq -56(%rbp)
+ addq $12, %rdx
+ cmpq %rax, %rdx
+ jge UAEILEND
+ cmpb $6, 4(%rdx)
+ jne UAEILOOP
+ movq -24(%rbp), %rdi
+ movq -56(%rbp), %rsi
+ pushq %rdx
+ movq -8(%rbp), %rdx
+ call unitDistance
+ popq %rdx
+ cmpq $1, %rax
+ movq -16(%rbp), %rax
+ jne UAEILOOP
+ movq -40(%rbp), %rdi
+ movq -56(%rbp), %rsi
+ pushq %rdx
+ movq -8(%rbp), %rdx
+ call unitDistance
+ popq %rdx
+ cmpq $1, %rax
+ movq -16(%rbp), %rax
+ jne UAEILOOP
+ movq $0, %rdi
+ movb 2(%rdx), %dil
+ movq $0, %rsi
+ movb 3(%rdx), %sil
+ pushq %rdx
+ pushq %rsi
+ pushq %rdi
+ movq -24(%rbp), %rdi
+ movq -8(%rbp), %rsi
+ call removeUnit
+ movq -40(%rbp), %rdi
+ movq -8(%rbp), %rsi
+ call removeUnit
+ movq -56(%rbp), %rdi
+ movq -8(%rbp), %rsi
+ call removeUnit
+ popq %rdi
+ popq %rsi
+ popq %rdx
+ decq -24(%rbp)
+ decq -40(%rbp)
+ decq -56(%rbp)
+ subq $12, %rdx
+ subq $12, -32(%rbp)
+ subq $12, -48(%rbp)
+ pushq %rdx
+ movq -8(%rbp), %r11
+ movq 11800(%r11), %rdx
+ movq %r11, %rcx
+ call createArcaneElemental
+ popq %rdx
+ jmp UAEILOOP
+
+UAEILEND:
+ popq %rdx
+ popq %rdx
+ jmp UAEWLOOP
+UAEWLEND:
+ popq %rdx
+ popq %rdx
+ jmp UAEFLOOP
+UAEFLEND:
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+# is Unit in Vision Range
+# Params:
+# RDI: int target
+# RSI: game_state *state
+.global isUnitInVisionRange
+isUnitInVisionRange:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+ pushq %rsi
+ movq %rdi, %rdx
+ imul $12, %rdx
+ addq %rsi, %rdx
+ addq $10192, %rdx
+ pushq %rdx
+# You can copy paste this to extract units[unit_count] into rax
+ movq $0, %rax
+ movl 11808(%rsi), %eax
+ imulq $12, %rax
+ addq %rsi, %rax
+ addq $10192, %rax
+ pushq %rax
+ pushq $-1
+ movq -8(%rbp), %rax
+ addq $10180, %rax
+IUIVRLOOP:
+ addq $12, %rax
+ incq -32(%rbp)
+ cmpq -24(%rbp), %rax
+ jge UINIR
+ movq $0, %rsi
+ movq $0, %rdi
+ movq -16(%rbp), %rdx
+ movq 2(%rdx), %rdi
+ movq 3(%rdx), %rsi
+ movq 2(%rax), %rdx
+ movq 3(%rax), %rcx
+ pushq %rax
+ call hexDistance
+ movq %rax, %rdx
+ popq %rax
+ movq $0, %rsi
+ movb 10(%rax), %sil
+ cmpq %rsi, %rdx
+ jg IUIVRLOOP
+ movq -8(%rbp), %rcx
+ movq $0, %rsi
+ movl 11800(%rcx), %esi
+ cmpb 5(%rax), %sil
+ jne IUIVRLOOP
+ jmp UIIR
+
+UIIR:
+ movq $1, %rax
+ jmp IUIVREND
+
+UINIR:
+ movq $0, %rax
+ jmp IUIVREND
+
+IUIVREND:
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+# Turn
+# Params:
+# RDI: game_state *state
+.global turn
+turn:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rdi
+ cmpl $-1, 11800(%rdi)
+ je TURNN1
+ movq -8(%rbp), %rsi
+ movq $0, %rdi
+ movl 11800(%rsi), %edi
+ call updateEssenceTotal
+ movq -8(%rbp), %rsi
+ movq $0, %rdi
+ movl 11800(%rsi), %edi
+ call updateAltars
+ movq -8(%rbp), %rdi
+ call updateArcanePulse
+ movq -8(%rbp), %rdi
+ call updateArcaneElemental
+ movq -8(%rbp), %rdi
+ movq $0, %rsi
+ movl 11800(%rdi), %esi
+ imul $24, %rsi
+ addq %rdi, %rsi
+ addq $10008, %rsi
+ cmpl $-1, (%rsi)
+ je TTPN1
+ movq $EWAP, %rdi
+ movss FTHREE, %xmm0
+ movq -8(%rbp), %rsi
+ call alertMessage
+TTPN1:
+ movq -8(%rbp), %rdi
+ movl $4, 11836(%rdi)
+ jmp TURNCONT
+TURNN1:
+ movq -8(%rbp), %rdi
+ movl $1, 11800(%rdi)
+TURNCONT:
+ movq -8(%rbp), %rdi
+ xorl $1, 11800(%rdi)
+ incl 11804(%rdi)
+
+# You can copy paste this to extract units[unit_count] into rax
+ movq -8(%rbp), %rdi
+ movq $0, %rax
+ movl 11808(%rdi), %eax
+ imulq $12, %rax
+ addq %rdi, %rax
+ addq $10192, %rax
+ pushq %rax
+ movq %rax, %rsi
+ addq $10192, %rdi
+TURNLOOP:
+ movb 9(%rdi), %al
+ movb %al, 8(%rdi)
+ addq $12, %rdi
+ cmpq %rsi, %rdi
+ jl TURNLOOP
+ movq -8(%rbp), %rdi
+ movl $-1, 11812(%rdi)
+ movl $0, 11828(%rdi)
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+# Is in Map Bounds
+# Params:
+# RDI: int x
+# RSI: int y
+# RDX: game_state *state
+.global isInMapBounds
+isInMapBounds:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ cmpl 11752(%rdx), %edi
+ jge IIMBFALSE
+ cmpl $0, %edi
+ jl IIMBFALSE
+ cmpl 11756(%rdx), %esi
+ jge IIMBFALSE
+ cmpl $0, %esi
+ jl IIMBFALSE
+ imul $100, %rsi
+ addq %rdi, %rdx
+ addq %rsi, %rdx
+ cmpb $0, (%rdx)
+ je IIMBFALSE
+ jmp IIMBTRUE
+IIMBFALSE:
+ movq $0, %rax
+ jmp IIMBEND
+IIMBTRUE:
+ movq $1, %rax
+ jmp IIMBEND
+IIMBEND:
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+# Set Move Cursor
+# Params:
+# RDI: int new_move_x
+# RSI: int new_move_y
+# RDX: game_state *state
+.global setMoveCursor
+setMoveCursor:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rdi
+ pushq %rsi
+ pushq %rdx
+ call isInMapBounds
+ cmpl $0, %eax
+ je SMCEND
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+ movq -24(%rbp), %rdx
+ movl %edi, 11820(%rdx)
+ movl %esi, 11824(%rdx)
+
+ movq $0, %rcx
+ movl 11812(%rdx), %ecx
+ imul $12, %rcx
+ addq $10192, %rcx
+ addq %rdx, %rcx
+ pushq %rcx
+ cmpb %dil, 2(%rcx)
+ jne SMCIF
+ cmpb %sil, 3(%rcx)
+ jne SMCIF
+ jmp SMCELSE
+SMCIF:
+ movq $0, %rdi
+ movq $0, %rsi
+ movb 2(%rcx), %dil
+ movb 3(%rcx), %sil
+ movq -8(%rbp), %rdx
+ movq -16(%rbp), %rcx
+ call calculateRotation
+ movq -32(%rbp), %rdi
+ movb %al, 11(%rdi)
+SMCELSE:
+ movq -24(%rbp), %rdi
+ movl $1, 11828(%rdi)
+ cmpl $-1, 11812(%rdi)
+ je SMCELSE2
+SMCIF2:
+ movq -32(%rbp), %rdx
+ movq $0, %rsi
+ movq $0, %rdi
+ movb 2(%rdx), %dil
+ movb 3(%rdx), %sil
+ movq -24(%rbp), %rax
+ movq $0, %rdx
+ movq $0, %rcx
+ movl 11820(%rax), %edx
+ movl 11824(%rax), %ecx
+ call hexDistance
+ movq -24(%rbp), %rdi
+ movl %eax, 11832(%rdi)
+ jmp SMCI2END
+SMCELSE2:
+ movq -24(%rbp), %rdi
+ movl $0, 11832(%rdi)
+SMCI2END:
+ cmpl $0, 11832(%rdi)
+ jne SMCSKIP
+ movl $0, 11828(%rdi)
+SMCSKIP:
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+ movq -24(%rbp), %rdx
+ call findUnit
+ pushq %rax
+ cmpq $-1, %rax
+ je SMCSKIP2
+ imul $12, %rax
+ addq -24(%rbp), %rax
+ addq $10192, %rax
+ movq -24(%rbp), %rdi
+ movq $0, %rsi
+ movl 11800(%rdi), %esi
+ cmpb %sil, 5(%rax)
+ jne SMCTIF2
+ movq $-1, -40(%rbp)
+ jmp SMCSKIP2
+SMCTIF2:
+ movq -40(%rbp), %rdi
+ movq -24(%rbp), %rsi
+ call isUnitInVisionRange
+ cmpl $1, %eax
+ je SMCSKIP2
+ movq $-1, -40(%rbp)
+SMCSKIP2:
+ movq -40(%rbp), %rax
+ movq -24(%rbp), %rdi
+ movl %eax, 11816(%rdi)
+SMCEND:
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+# Select Unit
+# Params:
+# RDI: int u
+# RSI: game_state *state
+.global selectUnit
+selectUnit:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rdi
+ pushq %rsi
+
+ cmpl $-1, %edi
+ jne SUELSE
+ movl $0, 11836(%rsi)
+ movl $-1, 11812(%rsi)
+ jmp SUEND
+SUELSE:
+ movl %edi, 11812(%rsi)
+ movl $0, 11836(%rsi)
+ imul $12, %rdi
+ movq %rdi, %rax
+ addq $10192, %rax
+ addq %rsi, %rax
+ movq %rsi, %rdx
+ movq $0, %rdi
+ movq $0, %rsi
+ movb 2(%rax), %dil
+ movb 3(%rax), %sil
+ call setMoveCursor
+ movq -8(%rbp), %rdi
+ imul $12, %rdi
+ addq -16(%rbp), %rdi
+ addq $10192, %rdi
+ cmpb $0, 4(%rdi)
+ jne SUEND
+ movq -16(%rbp), %rdi
+ movl $3, 11836(%rdi)
+
+SUEND:
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+# Step
+# Params:
+# RDI:game_state *state
+.global step
+step:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rdi
+
+ movq $0, %rax
+ movl 11812(%rdi), %eax
+ pushq %rax
+
+ cmpl $-1, 11812(%rdi)
+ jne STEPLOOP
+ movq $0, %rax
+ movq %rax, -16(%rbp)
+
+STEPLOOP:
+ movq -16(%rbp), %rax
+ movq -8(%rbp), %rdi
+ movq $0, %rsi
+ movl 11808(%rdi), %esi
+ shlq %rsi
+ cmpq %rsi, %rax
+ jg STEPEND
+ incq %rax
+ movq %rax, -16(%rbp)
+
+ movq %rax, %rdi
+ movq -8(%rbp), %rsi
+ movq $0, %rax
+ movl 11808(%rsi), %eax
+ movq %rax, %rsi
+ addq %rsi, %rdi
+STEPMODLOOP:
+ subq %rsi, %rdi
+ cmpq %rsi, %rdi
+ jge STEPMODLOOP
+ movq %rdi, %rax
+
+ movq -8(%rbp), %rdi
+ pushq %rax
+ imul $12, %rax
+ addq %rdi, %rax
+ addq $10192, %rax
+ movq $0, %rsi
+ movl 11800(%rdi), %esi
+ cmpb %sil, 5(%rax)
+ jne STEPLOOP
+ popq %rdi
+ movq -8(%rbp), %rsi
+ call selectUnit
+ jmp STEPEND
+
+STEPEND:
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+
+# Move Selected Unit
+# Params:
+# RDI: game_state *state
+.global moveSelectedUnit
+moveSelectedUnit:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rdi
+ movq %rdi, %rdx
+ movq $0, %rdi
+ movq $0, %rsi
+ movl 11820(%rdx), %edi
+ movl 11824(%rdx), %esi
+ call findUnit
+ cmpq $-1, %rax
+ jne MSUSKIP
+
+ movq -8(%rbp), %rax
+ movq $0, %rdi
+ movl 11812(%rax), %edi
+ imul $12, %rdi
+ addq %rax, %rdi
+ addq $10192, %rdi
+ movq $0, %rsi
+ movl 11832(%rax), %esi
+ cmpb 8(%rdi), %sil
+ jg MSUELSE
+ subb %sil, 8(%rdi)
+ movb 11820(%rax), %sil
+ movb %sil, 2(%rdi)
+ movb 11824(%rax), %sil
+ movb %sil, 3(%rdi)
+ movq $0, %rsi
+ movq $0, %rdi
+ movq %rax, %rdx
+ movl 11820(%rdx), %edi
+ movl 11824(%rdx), %esi
+ call setMoveCursor
+ movq -8(%rbp), %rsi
+ movq $0, %rdi
+ movl 11800(%rsi), %edi
+ call updateEssenceGeneration
+ jmp MSUEND
+MSUELSE:
+ movq $NEMP, %rdi
+ movq -8(%rbp), %rsi
+ movss FTHREE, %xmm0
+ call alertMessage
+ jmp MSUEND
+
+MSUSKIP:
+ movq $CMT, %rdi
+ movq -8(%rbp), %rsi
+ movss FTWO, %xmm0
+ call alertMessage
+
+MSUEND:
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+# Attack Selected Unit
+# Params:
+# RDI: game_state *state
+.global attackSelectedUnit
+attackSelectedUnit:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rdi
+ movq %rdi, %rdx
+ movq $0, %rdi
+ movq $0, %rsi
+ movl 11820(%rdx), %edi
+ movl 11824(%rdx), %esi
+ call findUnit
+ pushq %rax
+ movq -8(%rbp), %rdi
+ movq $0, %rsi
+ movl 11812(%rdi), %esi
+ imul $12, %rsi
+ addq %rdi, %rsi
+ addq $10192, %rsi
+ pushq %rsi
+ cmpl $-1, -16(%rbp)
+ je ASUEND
+ movq -16(%rbp), %rdi
+ imul $12, %rdi
+ addq -8(%rbp), %rdi
+ addq $10192, %rdi
+ pushq %rdi
+ movq -24(%rbp), %rsi
+ movb 5(%rdi), %al
+ cmpb %al, 5(%rsi)
+ je ASUEND
+ cmpb $0, 8(%rsi)
+ jle ASUEND
+ movb 6(%rsi), %al
+ movq -8(%rbp), %rdx
+ cmpb %al, 11832(%rdx)
+ jg ASUEND
+ movq $1, %rax
+ASUDMOD1:
+ movq -24(%rbp), %rdi
+ cmpb $3, 4(%rdi)
+ jne ASUDMOD2
+ movq -32(%rbp), %rdi
+ cmpb $5, 4(%rdi)
+ jne ASUDMODEND
+ movq $2, %rax
+ jmp ASUDMODEND
+ASUDMOD2:
+ movq -24(%rbp), %rdi
+ cmpb $4, 4(%rdi)
+ jne ASUDMOD3
+ movq -32(%rbp), %rdi
+ cmpb $3, 4(%rdi)
+ jne ASUDMODEND
+ movq $2, %rax
+ jmp ASUDMODEND
+ASUDMOD3:
+ movq -24(%rbp), %rdi
+ cmpb $5, 4(%rdi)
+ jne ASUDMODEND
+ movq -32(%rbp), %rdi
+ cmpb $4, 4(%rdi)
+ jne ASUDMODEND
+ movq $2, %rax
+ jmp ASUDMODEND
+
+ASUDMODEND:
+ movq -32(%rbp), %rdi
+ movq -24(%rbp), %rsi
+ movq $0, %rdx
+ movb 7(%rsi), %dl
+ imul %rax, %rdx
+ subb %dl, (%rdi)
+ cmpb $0, (%rdi)
+ jg ASUPREEND
+ cmpb $0, 4(%rdi)
+ jne ASUFIF
+ movq -8(%rbp), %rdi
+ movl $1, 11864(%rdi)
+ movq $GAMEOVER, %rdi
+ movq -8(%rbp), %rsi
+ movss F100000, %xmm0
+ call alertMessage
+ movq -8(%rbp), %rdi
+ movl $0, 11836(%rdi)
+ movq $-1, %rdi
+ movq -8(%rbp), %rsi
+ call selectUnit
+ movq -8(%rbp), %rdi
+ movq $0, 11828(%rdi)
+
+ASUFIF:
+ movq -16(%rbp), %rdi
+ movq -8(%rbp), %rsi
+ call removeUnit
+
+ASUPREEND:
+ movq -24(%rbp), %rdi
+ movb $0, 8(%rdi)
+ movq -8(%rbp), %rdi
+ call step
+
+ASUEND:
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+# Clamp Map Offset
+# Params:
+# RDI: game_state *state
+.global clampMapOffset
+clampMapOffset:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ movss 11760(%rdi), %xmm0
+ movss 11776(%rdi), %xmm1
+ ucomiss %xmm1, %xmm0
+ jbe CMO1
+ movss %xmm1, 11760(%rdi)
+CMO1:
+ movss 11768(%rdi), %xmm1
+ ucomiss %xmm1, %xmm0
+ jae CMO2
+ movss %xmm1, 11760(%rdi)
+CMO2:
+ movss 11764(%rdi), %xmm0
+ movss 11780(%rdi), %xmm1
+ ucomiss %xmm1, %xmm0
+ jbe CMO3
+ movss %xmm1, 11764(%rdi)
+CMO3:
+ movss 11772(%rdi), %xmm1
+ ucomiss %xmm1, %xmm0
+ jae CMO4
+ movss %xmm1, 11764(%rdi)
+CMO4:
+
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+# Clamp Hex Size
+# Params:
+# RDI: game_state *state
+.global clampHexSize
+clampHexSize:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ movss 11784(%rdi), %xmm0
+ movss 11792(%rdi), %xmm1
+ ucomiss %xmm1, %xmm0
+ jbe CHS1
+ movss %xmm1, 11784(%rdi)
+CHS1:
+ movss 11788(%rdi), %xmm1
+ ucomiss %xmm1, %xmm0
+ jae CHS2
+ movss %xmm1, 11784(%rdi)
+CHS2:
+
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+# Process Input
+# Params:
+# RDI: input_pressed *input
+# RSI: game_state *state
+.global processInput
+processInput:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rdi
+ pushq %rsi
+
+ movq $0, %rax
+ movl 11836(%rsi), %eax
+ movq %rax, %rsi
+ movq $0, %rax
+ movq $PITEST, %rdi
+ call printf
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+
+ cmpb $30, 7(%rdi)
+ jl PIESC
+ movl $1, 11868(%rsi)
+PIESC:
+
+ cmpl $1, 11864(%rsi)
+ je PIEND
+
+ cmpb $0, 18(%rdi)
+ je PIHELSE
+ movl $1, 11840(%rsi)
+ jmp PIH
+PIHELSE:
+ movl $0, 11840(%rsi)
+PIH:
+ cmpb $0, 2(%rdi)
+ je PISCTRL
+ cmpb $0, 17(%rdi)
+ je PISCTRL
+ movb $0, 2(%rdi)
+PISCTRL:
+
+ cmpb $0, 23(%rdi)
+ je PISAVE
+ cmpb $0, 17(%rdi)
+ je PISAVE
+ movq %rsi, %rdi
+ call saveState
+ movq $SAVE, %rdi
+ movq -16(%rbp), %rsi
+ movss FTWO, %xmm0
+ call alertMessage
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+PISAVE:
+
+ cmpb $0, 16(%rdi)
+ je PILOAD
+ cmpb $0, 17(%rdi)
+ je PILOAD
+ movq %rsi, %rdi
+ call loadState
+ movq $LOAD, %rdi
+ movq -16(%rbp), %rsi
+ movss FTWO, %xmm0
+ call alertMessage
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+PILOAD:
+
+ cmpl $4, 11836(%rsi)
+ jne PIMODETRANS
+ cmpb $0, 26(%rdi)
+ je PIMODEEND
+ movl $0, 11836(%rsi)
+ jmp PIMODEEND
+PIMODETRANS:
+ cmpl $0, 11836(%rsi)
+ jne PIMODENORM
+ cmpb $0, 19(%rdi)
+ je PINLMB
+ movss NFIVE, %xmm2
+ movsd FP0022, %xmm0
+ movsd 64(%rdi), %xmm1
+ mulsd %xmm0, %xmm1
+cvtsd2ss %xmm1, %xmm1
+ movss 11760(%rsi), %xmm2
+ addss %xmm1, %xmm2
+ movss %xmm2, 11760(%rsi)
+ movsd 72(%rdi), %xmm1
+ mulsd %xmm0, %xmm1
+cvtsd2ss %xmm1, %xmm1
+ movss 11764(%rsi), %xmm2
+ subss %xmm1, %xmm2
+ movss %xmm2, 11764(%rsi)
+PINLMB:
+
+ cmpb $0, (%rdi)
+ je PINW
+ movss 11764(%rsi), %xmm0
+ movsd 11856(%rsi), %xmm1
+cvtsd2ss %xmm1, %xmm1
+ subss %xmm1, %xmm0
+ movss %xmm0, 11764(%rsi)
+PINW:
+
+ cmpb $0, 1(%rdi)
+ je PINA
+ movss 11760(%rsi), %xmm0
+ movsd 11856(%rsi), %xmm1
+cvtsd2ss %xmm1, %xmm1
+ addss %xmm1, %xmm0
+ movss %xmm0, 11760(%rsi)
+PINA:
+
+ cmpb $0, 2(%rdi)
+ je PINS
+ movss 11764(%rsi), %xmm0
+ movsd 11856(%rsi), %xmm1
+cvtsd2ss %xmm1, %xmm1
+ addss %xmm1, %xmm0
+ movss %xmm0, 11764(%rsi)
+PINS:
+
+ cmpb $0, 3(%rdi)
+ je PIND
+ movss 11760(%rsi), %xmm0
+ movsd 11856(%rsi), %xmm1
+cvtsd2ss %xmm1, %xmm1
+ subss %xmm1, %xmm0
+ movss %xmm0, 11760(%rsi)
+PIND:
+
+ cmpb $0, 26(%rdi)
+ je PINRET
+ movq -16(%rbp), %rdi
+ call turn
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+PINRET:
+ jmp PIMODEEND
+PIMODENORM:
+
+ cmpl $1, 11836(%rsi)
+ jne PIMODEMOVE
+ cmpb $0, 27(%rdi)
+ jne PIMSE
+ cmpb $0, 40(%rdi)
+ jne PIMSE
+ jmp PIMODEEND
+PIMSE:
+
+ movq -16(%rbp), %rdi
+ call moveSelectedUnit
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+ movq $0, %rax
+ movl 11812(%rsi), %eax
+ imul $12, %rax
+ addq %rsi, %rax
+ addq $10192, %rax
+ cmpb $0, 8(%rax)
+ jne PIMODEEND
+ movq -16(%rbp), %rdi
+ call step
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+ jmp PIMODEEND
+PIMODEMOVE:
+
+ cmpl $2, 11836(%rsi)
+ jne PIMODEATK
+ cmpb $0, 27(%rdi)
+ jne PIASU
+ cmpb $0, 40(%rdi)
+ jne PIASU
+ jmp PIMODEEND
+PIASU:
+ movq -16(%rbp), %rdi
+ call attackSelectedUnit
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+ movq $0, %rax
+ movl 11812(%rsi), %eax
+ imul $12, %rax
+ addq %rsi, %rax
+ addq $10192, %rax
+ cmpb $0, 8(%rax)
+ jne PIMODEEND
+ movq -16(%rbp), %rdi
+ call step
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+ jmp PIMODEEND
+PIMODEATK:
+
+ cmpl $3, 11836(%rsi)
+ jne PIMODEBUILD
+ movq $0, %rax
+ movl 11800(%rsi), %eax
+ imul $24, %rax
+ addq $10000, %rax
+ addq %rsi, %rax
+ movq $0, %rdi
+ movq $0, %rsi
+ movl 12(%rax), %edi
+ movl 16(%rax), %esi
+ movq -16(%rbp), %rdx
+ call findUnit
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+
+ cmpq $-1, %rax
+ jne PIBSTO
+
+ cmpb $0, 33(%rdi)
+ jne PIB1
+ cmpb $0, 34(%rdi)
+ jne PIB2
+ cmpb $0, 35(%rdi)
+ jne PIB3
+ jmp PIBAP
+
+PIB1:
+ movq $0, %rax
+ movl 11800(%rsi), %eax
+ imul $24, %rax
+ addq $10000, %rax
+ addq %rsi, %rax
+ cmpl $50, (%rax)
+ jl PIB1NEE
+ movq $0, %rsi
+ movq $0, %rdi
+ movl 12(%rax), %edi
+ movl 16(%rax), %esi
+ movq -16(%rbp), %rax
+ movq $0, %rdx
+ movl 11800(%rax), %edx
+ movq -16(%rbp), %rcx
+ call createWisp
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+ movq $0, %rax
+ movl 11800(%rsi), %eax
+ imul $24, %rax
+ addq $10000, %rax
+ addq -16(%rbp), %rax
+ subl $50, (%rax)
+ jmp PIMODEEND
+
+PIB1NEE:
+ movq $NEESSENCE, %rdi
+ movq -16(%rbp), %rsi
+ movss FTWO, %xmm0
+ call alertMessage
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+ jmp PIMODEEND
+
+PIB2:
+ movq $0, %rax
+ movl 11800(%rsi), %eax
+ imul $24, %rax
+ addq $10000, %rax
+ addq %rsi, %rax
+ cmpl $100, (%rax)
+ jl PIB2NEE
+ movq $0, %rsi
+ movq $0, %rdi
+ movl 12(%rax), %edi
+ movl 16(%rax), %esi
+ movq -16(%rbp), %rax
+ movq $0, %rdx
+ movl 11800(%rax), %edx
+ movq -16(%rbp), %rcx
+ call createGolem
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+ movq $0, %rax
+ movl 11800(%rsi), %eax
+ imul $24, %rax
+ addq $10000, %rax
+ addq -16(%rbp), %rax
+ subl $100, (%rax)
+ jmp PIMODEEND
+
+PIB2NEE:
+ movq $NEESSENCE, %rdi
+ movq -16(%rbp), %rsi
+ movss FTWO, %xmm0
+ call alertMessage
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+ jmp PIMODEEND
+
+PIB3:
+ movq $0, %rax
+ movl 11800(%rsi), %eax
+ imul $24, %rax
+ addq $10000, %rax
+ addq %rsi, %rax
+ cmpl $100, (%rax)
+ jl PIB3NEE
+ movq $0, %rsi
+ movq $0, %rdi
+ movl 12(%rax), %edi
+ movl 16(%rax), %esi
+ movq -16(%rbp), %rax
+ movq $0, %rdx
+ movl 11800(%rax), %edx
+ movq -16(%rbp), %rcx
+ call createUnboundElemental
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+ movq $0, %rax
+ movl 11800(%rsi), %eax
+ imul $24, %rax
+ addq $10000, %rax
+ addq -16(%rbp), %rax
+ subl $100, (%rax)
+ jmp PIMODEEND
+
+PIB3NEE:
+ movq $NEESSENCE, %rdi
+ movq -16(%rbp), %rsi
+ movss FTWO, %xmm0
+ call alertMessage
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+ jmp PIMODEEND
+
+PIBSTO:
+ cmpb $0, 33(%rsi)
+ jne PIBSTOM
+ cmpb $0, 34(%rsi)
+ jne PIBSTOM
+ cmpb $0, 35(%rsi)
+ jne PIBSTOM
+ jmp PIBAP
+PIBSTOM:
+ movq $STO, %rdi
+ movq -16(%rbp), %rsi
+ movss FTWO, %xmm0
+ call alertMessage
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+PIBAP:
+
+ cmpb $0, 36(%rdi)
+ je PIMODEBUILD
+ movq -16(%rbp), %rdi
+ call startArcanePulse
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+
+PIMODEBUILD:
+PIMODEEND:
+
+ cmpl $2, 11836(%rsi)
+ jg PIMODESWITCH
+ cmpl $-1, 11812(%rsi)
+ je PIMODESWITCH
+ cmpb $0, 31(%rdi)
+ je PIV
+ movl $1, 11836(%rsi)
+PIV:
+ cmpb $0, 29(%rdi)
+ je PIMODESWITCH
+ movl $2, 11836(%rsi)
+
+PIMODESWITCH:
+ cmpl $4, 11836(%rsi)
+ je PIDESELECT
+ cmpb $0, 28(%rdi)
+ je PIDESELECT
+ movq $-1, %rdi
+ movq -16(%rbp), %rsi
+ call selectUnit
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+ movl $0, 11828(%rsi)
+PIDESELECT:
+
+ cmpb $0, 25(%rdi)
+ je PISTEP
+ movq -16(%rbp), %rdi
+ call step
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+PISTEP:
+
+ cmpl $1, 11836(%rsi)
+ je PISMC
+ cmpl $2, 11836(%rsi)
+ je PISMC
+ jmp PIGBS
+PISMC:
+ pushq $0
+ pushq $0
+ pushq $0
+ pushq $0
+ movsd 48(%rdi), %xmm0
+ movsd 56(%rdi), %xmm1
+ leaq -24(%rbp), %rdi
+ leaq -32(%rbp), %rsi
+ call mouseCoordsToViewport
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+ movss -24(%rbp), %xmm0
+ movss -32(%rbp), %xmm1
+ movss 11760(%rsi), %xmm2
+ movss 11764(%rsi), %xmm3
+ movss 11784(%rsi), %xmm4
+ leaq -40(%rbp), %rdi
+ leaq -48(%rbp), %rsi
+ call viewportToHexGrid
+ movq -40(%rbp), %rdi
+ movq -48(%rbp), %rsi
+ movq -16(%rbp), %rdx
+ call setMoveCursor
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+ cmpb $0, 21(%rdi)
+ je PIMCW
+ movq $0, %rax
+ movl 11824(%rsi), %eax
+ incq %rax
+ movq %rax, %rsi
+ andq $1, %rax
+ movq -16(%rbp), %rdi
+ addq $11820, %rdi
+ movq $0, %rdx
+ movl (%rdi), %edx
+ movq %rdx, %rdi
+ subq %rax, %rdi
+ movq -16(%rbp), %rdx
+ call setMoveCursor
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+
+PIMCW:
+ cmpb $0, 22(%rdi)
+ je PIMCA
+ movq $0, %rax
+ movl 11824(%rsi), %eax
+ movq %rax, %rsi
+ movq -16(%rbp), %rdi
+ addq $11820, %rdi
+ movq $0, %rax
+ movl (%rdi), %eax
+ movq %rax, %rdi
+ decq %rdi
+ movq -16(%rbp), %rdx
+ call setMoveCursor
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+
+PIMCA:
+ cmpb $0, 23(%rdi)
+ je PIMCS
+ movq $0, %rax
+ movl 11824(%rsi), %eax
+ movq %rax, %rsi
+ decq %rsi
+ andq $1, %rax
+ movq -16(%rbp), %rdi
+ addq $11820, %rdi
+ movq $0, %rdx
+ movl (%rdi), %edx
+ movq %rdx, %rdi
+ addq %rax, %rdi
+ movq -16(%rbp), %rdx
+ call setMoveCursor
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+
+PIMCS:
+ cmpb $0, 24(%rdi)
+ je PIMCD
+ movq $0, %rax
+ movl 11824(%rsi), %eax
+ movq %rax, %rsi
+ movq -16(%rbp), %rdi
+ addq $11820, %rdi
+ movq $0, %rax
+ movl (%rdi), %eax
+ movq %rax, %rdi
+ incq %rdi
+ movq -16(%rbp), %rdx
+ call setMoveCursor
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+
+PIMCD:
+PIGBS:
+ cmpl $1, 11836(%rsi)
+ je PILCLICK
+ cmpl $2, 11836(%rsi)
+ je PILCLICK
+ cmpl $4, 11836(%rsi)
+ je PILCLICK
+ cmpb $0, 40(%rdi)
+ je PILCLICK
+ pushq $0
+ pushq $0
+ pushq $0
+ pushq $0
+ movsd 48(%rdi), %xmm0
+ movsd 56(%rdi), %xmm1
+cvtsd2ss %xmm0, %xmm0
+cvtsd2ss %xmm1, %xmm1
+ leaq -24(%rbp), %rdi
+ leaq -32(%rbp), %rsi
+ call mouseCoordsToViewport
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+ movss -24(%rbp), %xmm0
+ movss -32(%rbp), %xmm1
+ movss 11760(%rsi), %xmm2
+ movss 11764(%rsi), %xmm3
+ movss 11784(%rsi), %xmm4
+ leaq -40(%rbp), %rdi
+ leaq -48(%rbp), %rsi
+ call viewportToHexGrid
+ movq -40(%rbp), %rdi
+ movq -48(%rbp), %rsi
+ movq -16(%rbp), %rdx
+ call findUnit
+ cmpq $-1, %rax
+ je PILCLKELSE
+ pushq %rax
+ imul $12, %rax
+ addq $10192, %rax
+ addq -16(%rbp), %rax
+ movq -16(%rbp), %rsi
+ movb 5(%rax), %al
+ cmpb %al, 11800(%rsi)
+ jne PILCLKELSE
+ popq %rdi
+ movq -16(%rbp), %rsi
+ call selectUnit
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+ jmp PILCLICK
+
+PILCLKELSE:
+ movq $-1, %rdi
+ movq -16(%rbp), %rsi
+ call selectUnit
+ movq -8(%rbp), %rdi
+ movq -16(%rbp), %rsi
+
+PILCLICK:
+ movss FPOONE, %xmm0
+ movsd 80(%rdi), %xmm1
+cvtsd2ss %xmm1, %xmm1
+ mulss %xmm0, %xmm1
+ movss 11784(%rsi), %xmm0
+ addss %xmm1, %xmm0
+ movss %xmm0, 11784(%rsi)
+ movsd DZERO, %xmm0
+ movsd %xmm0, 80(%rdi)
+ movss 11784(%rsi), %xmm0
+ divss TENTH, %xmm0
+ mulss NFIVE, %xmm0
+ movss %xmm0, 11768(%rsi)
+ divss FTWO, %xmm0
+ movss %xmm0, 11772(%rsi)
+ movq -16(%rbp), %rdi
+ call clampHexSize
+ movq -16(%rbp), %rdi
+ call clampMapOffset
+
+PIEND:
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+# Generate Test Map
+# Params:
+# RDI: game_state *state
+.global generateTestMap
+generateTestMap:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rdi
+ movl $20, 11752(%rdi)
+ movl $20, 11756(%rdi)
+ movq $19, %rdx
+GTMILOOP:
+ movq %rdx, %rsi
+ imul $100, %rsi
+ movq $19, %rcx
+GTMJLOOP:
+ addq %rcx, %rsi
+ addq %rdi, %rsi
+ movb $1, (%rsi)
+ subq %rdi, %rsi
+ subq %rcx, %rsi
+ decq %rcx
+ cmpq $0, %rcx
+ jge GTMJLOOP
+
+ decq %rdx
+ cmpq $0, %rdx
+ jge GTMILOOP
+
+ movb $0, (%rdi)
+ movb $0, 1(%rdi)
+ movb $0, 100(%rdi)
+ movb $0, 1919(%rdi)
+ movb $0, 1819(%rdi)
+ movb $0, 1918(%rdi)
+ movb $2, 303(%rdi)
+ movb $2, 108(%rdi)
+ movb $2, 801(%rdi)
+ movb $2, 1616(%rdi)
+ movb $2, 1811(%rdi)
+ movb $2, 1118(%rdi)
+ movb $4, 316(%rdi)
+ movb $5, 514(%rdi)
+ movb $6, 712(%rdi)
+ movq %rdi, %rcx
+ movq $1, %rdi
+ movq $1, %rsi
+ movq $0, %rdx
+ call createWorkshop
+ movq -8(%rbp), %rdi
+ movl $1, 10012(%rdi)
+ movl $2, 10016(%rdi)
+ movl $18, 10036(%rdi)
+ movl $17, 10040(%rdi)
+ movq %rdi, %rcx
+ movq $2, %rdi
+ movq $0, %rsi
+ movq $0, %rdx
+ call createGolem
+ movq $18, %rdi
+ movq $18, %rsi
+ movq $1, %rdx
+ movq -8(%rbp), %rcx
+ call createWorkshop
+ movq $19, %rdi
+ movq $17, %rsi
+ movq $1, %rdx
+ movq -8(%rbp), %rcx
+ call createGolem
+
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+# 8 "main.S" 2
+# 1 "texture.S" 1
+.text
+FZERO: .float 0.0
+FTWELVE: .float 12.0
+
+
+# Load Texture
+# Params:
+# RDI: *texture_location
+.global loadTexture
+loadTexture:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rdi
+ movq $1, %rdi
+ call stbi_set_flip_vertically_on_load
+ popq %rdi
+ subq $24, %rsp
+ leaq (%rsp), %rsi
+ leaq 8(%rsp), %rdx
+ leaq 16(%rsp), %rcx
+ movq $0, %r8
+ call stbi_load
+
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+
+# Load Subtexture Bounds
+# Params:
+# RDI: int texture_index
+.global loadSubtextureBounds
+loadSubtextureBounds:
+# Prologue
+ pushq %rbp
+ movq %rsp, %rbp
+
+ pushq %rdi
+ movq $16, %rdi
+ call malloc
+ popq %rdi
+cvtsi2ssq %rdi, %xmm0
+ movss FONE, %xmm1
+ movss FTWELVE, %xmm2
+ divss %xmm2, %xmm1
+ mulss %xmm1, %xmm0
+ movss %xmm0, (%rax)
+ movss FZERO, %xmm1
+ movss %xmm1, 4(%rax)
+ movss FONE, %xmm0
+ movss FTWELVE, %xmm1
+ divss %xmm1, %xmm0
+ movss %xmm0, 8(%rax)
+ movss FONE, %xmm0
+ movss %xmm0, 12(%rax)
+# Epilogue
+ movq %rbp, %rsp
+ popq %rbp
+ ret
+# 9 "main.S" 2

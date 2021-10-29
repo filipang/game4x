@@ -1,5 +1,4 @@
 .text
-FONE:		.float 1.0
 FZERO:		.float 0.0
 FTWELVE:	.float 12.0
 

@@ -73,8 +73,8 @@ void _glCheckErrors(const char *filename, int line)
 
 void updateStoreSizeGL(int vertices_size, gl_game_state *gl_state);
 
-void renderUnitText(int displayed_unit, game_state *state, gl_game_state *gl_state)
-{
+void renderUnitText(int displayed_unit, game_state *state, gl_game_state *gl_state);
+/*{
 	char message[200];
 	snprintf(message, 100, "Unit type: %s", 
 			gl_state->state->unit_names[state->units[displayed_unit].type]);
@@ -112,10 +112,10 @@ void renderUnitText(int displayed_unit, game_state *state, gl_game_state *gl_sta
 				"1-Wisp(50 E), 2-Golem(100 E), 3-Unbound Elemental(100 E), 4-Arcane Pulse(600 E)");
 		updateText(message, -0.96, -0.90, gl_state);
 	}
-}
+}*/
 
-void renderHelpText(game_state *state, gl_game_state *gl_state)
-{
+void renderHelpText(game_state *state, gl_game_state *gl_state);
+/*{
 	char message[200];
 	snprintf(message, 100, "Help menu");
 	updateText(message, -0.7, 0.70, gl_state);
@@ -155,10 +155,11 @@ void renderHelpText(game_state *state, gl_game_state *gl_state)
 
 	snprintf(message, 100, "1 - Wisp, 2 - Golem, 3 - Unbound Elemental, 4 - Arcane Pulse");
 	updateText(message, -0.7, -0.30, gl_state);
-}
+}*/
 
-void renderPersistentTexts(game_state *state, gl_game_state *gl_state)
-{
+
+void renderPersistentTexts(game_state *state, gl_game_state *gl_state);
+/*{
 	char message[200];
 	snprintf(message, 100, "%.0f FPS", 
 			 1/state->delta_time);
@@ -178,10 +179,10 @@ void renderPersistentTexts(game_state *state, gl_game_state *gl_state)
 	snprintf(message, 100, "Press H to see key bindings.."); 
 	updateText(message, -0.96, -0.65, gl_state);
 
-}
+}*/
 
-void updateTexts(game_state *state, gl_game_state *gl_state)
-{
+void updateTexts(game_state *state, gl_game_state *gl_state);
+/*{
 	while(gl_state->text_objects != NULL)
 	{
 		removeGLObject(&gl_state->text_objects, gl_state->text_objects);	
@@ -189,7 +190,7 @@ void updateTexts(game_state *state, gl_game_state *gl_state)
 	char message[200];
 
 	renderPersistentTexts(state, gl_state);
-	if(state->players[(state->turn+1)%2].turns_to_pulse == -1)
+if(state->players[(state->turn+1)%2].turns_to_pulse == -1)
 		snprintf(message, 100, "Enemy Pulse: not detected");
 	else 
 		snprintf(message, 100, "Enemy Pulse: %d turns left", state->players[(state->turn+1)%2].turns_to_pulse);
@@ -233,43 +234,45 @@ void updateTexts(game_state *state, gl_game_state *gl_state)
 	{
 		renderHelpText(state, gl_state);
 	}
-}
+}*/
 
+void initializeFontGL(game_state *state, gl_game_state *gl_state);
+/*
 void initializeFontGL(game_state *state, gl_game_state *gl_state)
 {
 	FT_Face *face = &gl_state->face;
-	FT_GlyphSlot g = (*face)->glyph;
+	FT_GlyphSlot g = (*face)->glyph; //152 + *face
 	int w = 0;
 	int h = 0;
 
+	printf("DIFF %d\n", (long long)&(g->bitmap.rows) - (long long)g);
 	for(int i = 32; i < 128; i++) {
 	  if(FT_Load_Char(*face, i, FT_LOAD_RENDER)) {
 		fprintf(stderr, "Loading character %c failed!\n", i);
 		continue;
 	  }
 
-	  w += g->bitmap.width;
-	  if(g->bitmap.rows > h)
-		  h = g->bitmap.rows;
+	  w += g->bitmap.width; //156
+	  if(g->bitmap.rows > h) //152
+		  h = g->bitmap.rows; 
 	}
 
-	/* you might as well save this value as it is needed later on */
-	gl_state->atlas_w = w;
-	gl_state->atlas_h = h;
-
-	glBindVertexArray(gl_state->VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, gl_state->VBO);
-	glActiveTexture(GL_TEXTURE0);
-	glGenTextures(1, &gl_state->font_texture);
-	glBindTexture(GL_TEXTURE_2D, gl_state->font_texture);
+	gl_state->atlas_w = w; //104
+	gl_state->atlas_h = h; //108
+//	glBindVertexArray(gl_state->VAO);
+//	glBindBuffer(GL_ARRAY_BUFFER, gl_state->VBO);
+//	glActiveTexture(GL_TEXTURE0);
+//	glGenTextures(1, &gl_state->font_texture);
+//	glBindTexture(GL_TEXTURE_2D, gl_state->font_texture);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, 1, w, h, 0, GL_RED, GL_UNSIGNED_BYTE, 0);
 	
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1); 
+	// CORRECT SO FAR
 	int x = 0;
 
 	for(int i = 32; i < 128; i++) {
@@ -288,88 +291,124 @@ void initializeFontGL(game_state *state, gl_game_state *gl_state)
 
 	  gl_state->gl_glyphs[i].tx = (float)x / w;
 	  x += g->bitmap.width;
+	  printf("%d. ax:%.2f, ay:%.2f, bw:%.2f, bh:%.2f, bl:%.2f, bt:%.2f, tx:%.2f\n", 
+			  i,
+			  gl_state->gl_glyphs[i].ax,
+			  gl_state->gl_glyphs[i].ay,
+			  gl_state->gl_glyphs[i].bw,
+			  gl_state->gl_glyphs[i].bh,
+			  gl_state->gl_glyphs[i].bl,
+			  gl_state->gl_glyphs[i].bt,
+			  gl_state->gl_glyphs[i].tx);
+
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);	
 	glActiveTexture(GL_TEXTURE0);
-	gl_state->initFonts = 1;
+
+}*/
+
+typedef struct point {
+	GLfloat x;
+	GLfloat y;
+	GLfloat z;
+	GLfloat r;
+	GLfloat g;
+	GLfloat b;
+	GLfloat a;
+	GLfloat s;
+	GLfloat t;
+	GLfloat w;
+} point;
+
+void drawCharacter(int p, 
+				   float *x, 
+				   float *y, 
+				   float alpha, 
+				   point *coords, 
+				   int *n,
+				   game_state *state, 
+				   gl_game_state *gl_state);
+//#define C
+/*#ifdef C
+void drawCharacter(int p, 
+				   float *x, 
+				   float *y, 
+				   float alpha, 
+				   point *coords, 
+				   int *n,
+				   game_state *state, 
+				   gl_game_state *gl_state)
+
+{
+	float sx = 0.00085, sy = 0.00085;
+	float x2 =  *x + gl_state->gl_glyphs[p].bl * sx;
+	float y2 = -*y - gl_state->gl_glyphs[p].bt * sy;
+	float w = gl_state->gl_glyphs[p].bw * sx;
+	float h = gl_state->gl_glyphs[p].bh * sy;
+	printf("%f\n", h);
+	coords[(*n)++] = (point){x2,     -y2    , 0, 1, 1, 1, alpha, gl_state->gl_glyphs[p].tx, 0, 1};
+
+	coords[(*n)++] = (point){x2 + w, -y2    , 0, 1, 1, 1, alpha, gl_state->gl_glyphs[p].tx + gl_state->gl_glyphs[p].bw / gl_state->atlas_w, 0, 1};
+
+	coords[(*n)++] = (point){x2,     -y2 - h, 0, 1, 1, 1, alpha, gl_state->gl_glyphs[p].tx,gl_state->gl_glyphs[p].bh / gl_state->atlas_h, 1}; //remember: each glyph occupies a different amount of vertical space
+	coords[(*n)++] = (point){x2 + w, -y2    , 0, 1, 1, 1, alpha, gl_state->gl_glyphs[p].tx + gl_state->gl_glyphs[p].bw / gl_state->atlas_w,   0, 1};
+
+	coords[(*n)++] = (point){x2,     -y2 - h, 0, 1, 1, 1, alpha, gl_state->gl_glyphs[p].tx, gl_state->gl_glyphs[p].bh / gl_state->atlas_h, 1};
+
+	coords[(*n)++] = (point){x2 + w, -y2 - h, 0, 1, 1, 1, alpha, gl_state->gl_glyphs[p].tx + gl_state->gl_glyphs[p].bw / gl_state->atlas_w, gl_state->gl_glyphs[p].bh / gl_state->atlas_h, 1};
+
+	*x += gl_state->gl_glyphs[p].ax * sx;
+	*y += gl_state->gl_glyphs[p].ay * sy;	
 }
+#endif
+*/
+void drawText(gl_object *iter, game_state *state, gl_game_state *gl_state);
+/*{
+	float x = iter->vertices[0], y = iter->vertices[1];
+	float alpha = iter->vertices[2];
+
+	char *p;
+	int string_length = strlen(iter->text);
+	point coords[6*100]; // 12000
+	int n = 0;
+	for(p = iter->text; *p != '\0'; p++)
+	{
+		drawCharacter(*p, &x, &y, alpha, coords, &n, state, gl_state);
+		printf("n = %d\n", n);
+	}
+
+	updateStoreSizeGL(string_length * 10 * 6 * sizeof(GLfloat), gl_state);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, n * 10  * sizeof(GLfloat), coords);
+	glDrawArrays(GL_TRIANGLES, 0, n);
+}*/
 
 void drawTexts(game_state *state, gl_game_state *gl_state) 
-{
+;
+/*{
 	FT_Face *face = &gl_state->face;
 	FT_Library *library = &gl_state->library;
 	glCheckErrors(); 
+	glBindVertexArray(gl_state->VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, gl_state->VBO);
+	glUniform1i(glGetUniformLocation(gl_state->shader_program, "isText"), 1);
 	for(gl_object *iter = gl_state->text_objects; iter !=NULL; iter = iter->next)
+	//text_objects = 16
+	//next = 16
 	{
-		float x = iter->vertices[0], y = iter->vertices[1];
-		float alpha = iter->vertices[2];
-		float sx = 0.00085, sy = 0.00085;
-
-		char *p;
-		int string_length = strlen(iter->text);
-		typedef struct point {
-			GLfloat x;
-			GLfloat y;
-			GLfloat z;
-			GLfloat r;
-			GLfloat g;
-			GLfloat b;
-			GLfloat a;
-			GLfloat s;
-			GLfloat t;
-			GLfloat w;
-		} point;
-		point coords[6*100];
-		int n = 0;
-		for(p = iter->text; *p != '\0'; p++)
-		{
-
-			if(FT_Load_Char(*face, *p, FT_LOAD_RENDER))
-			{
-				printf("CHAR %x NOT FOUND ERROR\n", *p);
-				//return;
-			}		
-			int error = FT_Render_Glyph( (*face)->glyph,  //glyph slot  
-								 FT_RENDER_MODE_NORMAL ); //render mode 
-		    
-			float x2 =  x + gl_state->gl_glyphs[*p].bl * sx;
-			float y2 = -y - gl_state->gl_glyphs[*p].bt * sy;
-			float w = gl_state->gl_glyphs[*p].bw * sx;
-			float h = gl_state->gl_glyphs[*p].bh * sy;
-
-		  	coords[n++] = (point){x2,     -y2    , 0, 1, 1, 1, alpha, gl_state->gl_glyphs[*p].tx, 0, 1};
-			coords[n++] = (point){x2 + w, -y2    , 0, 1, 1, 1, alpha, gl_state->gl_glyphs[*p].tx + gl_state->gl_glyphs[*p].bw / gl_state->atlas_w, 0, 1};
-
-			coords[n++] = (point){x2,     -y2 - h, 0, 1, 1, 1, alpha, gl_state->gl_glyphs[*p].tx,gl_state->gl_glyphs[*p].bh / gl_state->atlas_h, 1}; //remember: each glyph occupies a different amount of vertical space
-			coords[n++] = (point){x2 + w, -y2    , 0, 1, 1, 1, alpha, gl_state->gl_glyphs[*p].tx + gl_state->gl_glyphs[*p].bw / gl_state->atlas_w,   0, 1};
-			coords[n++] = (point){x2,     -y2 - h, 0, 1, 1, 1, alpha, gl_state->gl_glyphs[*p].tx, gl_state->gl_glyphs[*p].bh / gl_state->atlas_h, 1};
-			coords[n++] = (point){x2 + w, -y2 - h, 0, 1, 1, 1, alpha, gl_state->gl_glyphs[*p].tx + gl_state->gl_glyphs[*p].bw / gl_state->atlas_w, gl_state->gl_glyphs[*p].bh / gl_state->atlas_h, 1};
-
-
-			x += gl_state->gl_glyphs[*p].ax * sx;
-			y += gl_state->gl_glyphs[*p].ay * sy;	
-		}
-		glBindVertexArray(gl_state->VAO);
-		glBindBuffer(GL_ARRAY_BUFFER, gl_state->VBO);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, gl_state->font_texture);
-
-		glUniform1i(glGetUniformLocation(gl_state->shader_program, "isText"), 1);
-		updateStoreSizeGL(string_length * 10 * 6 * sizeof(GLfloat), gl_state);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, n * 10  * sizeof(GLfloat), coords);
-  		glDrawArrays(GL_TRIANGLES, 0, n);
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
-		glBindTexture(GL_TEXTURE_2D, 0);	
-		glActiveTexture(GL_TEXTURE0);
-	}	
-}
+		drawText(iter, state, gl_state);
+	}
+	
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);	
+	glActiveTexture(GL_TEXTURE0);
+	
+}*/
 
 void initFreetype(FT_Library *library, FT_Face *face)
-{
+;/*{
 	int error;
 
 	error = FT_Init_FreeType(library);
@@ -392,9 +431,9 @@ void initFreetype(FT_Library *library, FT_Face *face)
 	printf("%d",(*face)->num_glyphs);
 	printf("\n");
 	error = FT_Set_Char_Size(
-          *face,    /* handle to face object           */
-          0,       /* char_width in 1/64th of points  */
-          4*64,   /* char_height in 1/64th of points */
-          800,     /* horizontal device resolution    */
-          800 );   /* vertical device resolution      */
-}
+//          *face,    /* handle to face object           */
+  //        0,       /* char_width in 1/64th of points  */
+    //      4*64,   /* char_height in 1/64th of points */
+      //    800,     /* horizontal device resolution    */
+        //  800 );   /* vertical device resolution      */
+//}
