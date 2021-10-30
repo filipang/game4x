@@ -29,7 +29,7 @@
 
 #define MAX_MAP_SIZE_X 100
 #define MAX_MAP_SIZE_Y 100
-#define MAX_UNIT_COUNT 25
+#define MAX_UNIT_COUNT 100
 
 #define MAX_PLAYERS 8
 
@@ -40,18 +40,18 @@
 
 typedef struct unit
 {
-	int health; 			// from 0.0 to 1.0
-	int health_stat;
-	int position_x;			// map position
-	int position_y;
-	int type; 				// 1, 2 or 3
-	int team; 				// from 0 to number of players
-	int attack_range;		// attack range
-    int attack_damage;		
-	int mp_current;			// points left this turn
-	int mp_stat;			// total mp
-	int vision_range;
-	int rotation;
+	unsigned char health; 			// from 0.0 to 1.0
+	unsigned char health_stat;
+	unsigned char position_x;			// map position
+	unsigned char position_y;
+	unsigned char type; 				// 1, 2 or 3
+	unsigned char team; 				// from 0 to number of players
+	unsigned char attack_range;		// attack range
+    unsigned char attack_damage;		
+	unsigned char mp_current;			// points left this turn
+	unsigned char mp_stat;			// total mp
+	unsigned char vision_range;
+	unsigned char rotation;
 } unit;
 
 
@@ -115,21 +115,37 @@ typedef struct game_state
 	int end;
 } game_state;
 
+// UNIT HEADERS ----------------------------------------------------
+int createUnit(int position_x, int position_y, game_state *state);
+void removeUnit(int index, game_state *state);
+int findUnit(int position_x, int position_y, game_state *state);
+void createWorkshop(int position_x, int position_y, int team, game_state *state);
+void createGolem(int position_x, int position_y, int team, game_state *state);
+void createWisp(int position_x, int position_y, int team, game_state *state);
+void createUnboundElemental(int position_x, int position_y, int team, game_state *state);
+void createFireElemental(int position_x, int position_y, int team, game_state *state);
+void createWaterElemental(int position_x, int position_y, int team, game_state *state);
+void createIceElemental(int position_x, int position_y, int team, game_state *state);
+void createArcaneElemental(int position_x, int position_y, int team, game_state *state);
+// END UNIT HEADERS ------------------------------------------------
 #include "unit.c"
 
-void saveState(game_state* state)
+void saveState(game_state* state);
+/*
 {
 	writeFile("data.save", (char *)state, sizeof(game_state) + 1);
 }
-
-void loadState(game_state* state)
+*/
+void loadState(game_state* state);
+/*
 {
 	char* data = loadFile("data.save");
 	memcpy(state, data, sizeof(game_state));
 }
-
+*/
 // NOTE(filip): This could be optimized with a memset
-void initializeGameState(game_state* state)
+void initializeGameState(game_state* state);
+/*
 {
 	state->player_number = 2;
 	state->turn = 0;
@@ -148,7 +164,7 @@ void initializeGameState(game_state* state)
 	state->min_offset_x = -5.0;
 	state->min_offset_y = -2.0;
 	state->max_offset_x = 0.0;
-	state->max_offset_y = -0.3;
+	state->max_offset_y = -0.0;
 
 	state->min_hex_size = 0.05;
 	state->max_hex_size = 0.2;
@@ -171,11 +187,11 @@ void initializeGameState(game_state* state)
 	#undef BIND_UNIT_NAME
 	
 }
-
+*/
 // TODO(filip): implement this!
-void finalizeGameState(game_state state);
 
-void updateEssenceGeneration(int team, game_state *state)
+void updateEssenceGeneration(int team, game_state *state);
+/*
 {
 	state->players[team].essence_generation = 0;
 	int i;
@@ -191,21 +207,24 @@ void updateEssenceGeneration(int team, game_state *state)
 		}
 	}
 }
-
-void updateEssenceTotal(int team, game_state *state)
+*/
+void updateEssenceTotal(int team, game_state *state);
+/*
 {
 	state->players[team].essence_total += 
 		state->players[team].essence_generation;  
 }
-
-void alertMessage(char* message, float time, game_state *state)
+*/
+void alertMessage(char* message, float time, game_state *state);
+/*
 {
 	snprintf(state->alert_message, 100, "%s", message);
 	state->alert_countdown = time;
 	state->alert_countdown_max = time;
 }
-
-void updateAltars(int team, game_state *state)
+*/
+void updateAltars(int team, game_state *state);
+/*
 {
 	int i;
 	for(i = 0; i < state->unit_count; i++)
@@ -238,8 +257,9 @@ void updateAltars(int team, game_state *state)
 		}
 	}
 }
-
-void startArcanePulse(game_state *state)
+*/
+void startArcanePulse(game_state *state);
+/*
 {
 	if(state->players[state->turn].essence_total >= 600)
 	{
@@ -250,8 +270,9 @@ void startArcanePulse(game_state *state)
 	else
 		alertMessage("NOT ENOUGH ESSENCE!", 2, state);
 }
-
-void killAllEnemies(int team, game_state *state)
+*/
+void killAllEnemies(int team, game_state *state);
+/*
 {
 	int i;
 	for(i = 0; i < state->unit_count; i++)
@@ -263,8 +284,9 @@ void killAllEnemies(int team, game_state *state)
 		}
 	}
 }
-
-void updateArcanePulse(game_state *state)
+*/
+void updateArcanePulse(game_state *state);
+/*
 {
 	if(state->players[state->turn].turns_to_pulse != -1)
 	{
@@ -277,14 +299,16 @@ void updateArcanePulse(game_state *state)
 		}
 	}
 }
-
-int unitDistance(int u1, int u2, game_state *state)
+*/
+int unitDistance(int u1, int u2, game_state *state);
+/*
 {
 	return hexDistance(state->units[u1].position_x, state->units[u1].position_y,
 					   state->units[u2].position_x, state->units[u2].position_y);
 }
-
-void updateArcaneElemental(game_state *state)
+*/
+void updateArcaneElemental(game_state *state);
+/*
 {
 	int i, j, k;
 	for(i = 0; i < state->unit_count; i++)
@@ -320,8 +344,9 @@ void updateArcaneElemental(game_state *state)
 		}
 	}
 }
-
-int isUnitInVisionRange(int target, game_state *state)
+*/
+int isUnitInVisionRange(int target, game_state *state);
+/*
 {
 	int in_range = 0;
 	int i;
@@ -339,9 +364,10 @@ int isUnitInVisionRange(int target, game_state *state)
 	}
 	return in_range;	
 }
-
+*/
 // End curent player turn and start next player turn
-void turn(game_state* state)
+void turn(game_state* state);
+/*
 {
 	//state-> turn is -1 when the game starts
 	if(state->turn != -1)
@@ -370,8 +396,9 @@ void turn(game_state* state)
 	state->cursor_active = 0;
 
 }
-
-int isInMapBounds(int x, int y, game_state *state)
+*/
+int isInMapBounds(int x, int y, game_state *state);
+/*
 {
 	if(x >= state->size_x || x < 0)
 		return 0;
@@ -384,9 +411,10 @@ int isInMapBounds(int x, int y, game_state *state)
 
 	return 1;
 }
-
+*/
 // NOTE(filip): Function header
-void setMoveCursor(int new_move_x, int new_move_y, struct game_state *state)
+void setMoveCursor(int new_move_x, int new_move_y, struct game_state *state);
+/*
 {
 	if(isInMapBounds(new_move_x, new_move_y, state) == 0)
 		return;
@@ -400,7 +428,7 @@ void setMoveCursor(int new_move_x, int new_move_y, struct game_state *state)
 						  new_move_x, new_move_y);
 	state->cursor_active = 1;
 
-	// NOTE(filip): Clarify this
+	e/ NOTE(filip): Clarify this
 	if(state->selected_unit != -1)
 		state->cursor_distance = hexDistance(state->units[state->selected_unit].position_x,
 											 state->units[state->selected_unit].position_y,
@@ -422,11 +450,12 @@ void setMoveCursor(int new_move_x, int new_move_y, struct game_state *state)
 	state->target_unit = target;
 	
 }
-
+*/
 // Jump to the next unit (or first if state->started == 0)
 // FIXME(filip): Step selects unit with 0 mp if it can't select any other unit
 
-void selectUnit(int u, game_state *state)
+void selectUnit(int u, game_state *state);
+/*
 {
 	if(u == -1)
 	{
@@ -445,8 +474,9 @@ void selectUnit(int u, game_state *state)
 	}
 
 }
-
-void step (struct game_state* state)
+*/
+void step (struct game_state* state);
+/*
 {
 	int i = state->selected_unit;
 	if(state->selected_unit == -1)
@@ -465,9 +495,10 @@ void step (struct game_state* state)
 	assert(0);
 	return;
 }
-
+*/
 // Confirms move, moving unit from cursor to cursor
-void moveSelectedUnit(struct game_state *state)
+void moveSelectedUnit(struct game_state *state);
+/*
 {
 	if(findUnit(state->cursor_x, state->cursor_y, state) == -1)
 	{
@@ -488,8 +519,9 @@ void moveSelectedUnit(struct game_state *state)
 		alertMessage("Can't move there!", 2, state);
 	}
 }
-
-void attackSelectedUnit(struct game_state *state)
+*/
+void attackSelectedUnit(struct game_state *state);
+/*
 {
 	int target = findUnit(state->cursor_x, state->cursor_y, state);
 	unit* selected_unit = &state->units[state->selected_unit];
@@ -525,8 +557,9 @@ void attackSelectedUnit(struct game_state *state)
 		}
 	}
 }
-
-void clampMapOffset(game_state *state)
+*/
+void clampMapOffset(game_state *state);
+/*
 {
 	if(state->map_offset_x > state->max_offset_x) 
 		state->map_offset_x = state->max_offset_x;
@@ -537,16 +570,18 @@ void clampMapOffset(game_state *state)
 	if(state->map_offset_y < state->min_offset_y) 
 		state->map_offset_y = state->min_offset_y;
 }
-
-void clampHexSize(game_state *state)
+*/
+void clampHexSize(game_state *state);
+/*
 {
 	if(state->map_hex_size > state->max_hex_size) 
 		state->map_hex_size = state->max_hex_size;
 	if(state->map_hex_size < state->min_hex_size) 
 		state->map_hex_size = state->min_hex_size;
 }
-
-void processInput(struct input_pressed *input, struct game_state *state)
+*/
+void processInput(struct input_pressed *input, struct game_state *state);
+/*
 {
 	if(input->key_pressed_ESCAPE >= 30)
 	{
@@ -587,23 +622,6 @@ void processInput(struct input_pressed *input, struct game_state *state)
 			state->map_offset_y -= 0.0022 * input->mouse_delta_y;
 		}
 
-		if(input->button_ESCAPE)
-		{
-			selectUnit(-1, state);
-			state->cursor_active = 0;
-		}
-		if(input->button_TAB)
-		{
-			step(state);
-		}
-		if(input->button_V && state->selected_unit != -1)
-		{
-			state->mode = MODE_MOVE;
-		}
-		if(input->button_T && state->selected_unit != -1)
-		{
-			state->mode = MODE_ATTACK;
-		}
 		if(input->key_pressed_W)
 		{	
 			state->map_offset_y -= state->delta_time;
@@ -625,93 +643,24 @@ void processInput(struct input_pressed *input, struct game_state *state)
 	}
 	else if(state->mode == MODE_MOVE) 
 	{
-		if(input->button_TAB)
-			step(state);
-
 		if(input->button_SPACE || input->button_LMB)
 		{
 			moveSelectedUnit(state);
 			if(state->units[state->selected_unit].mp_current == 0)
 				step(state);
 		}
-		// TODO(filip): Implement pathfinding
-		// TODO(filip): Highlight path from unit to move cursor
-		// TODO(filip): Make unit go up left if it can't go up right and vice
-		// 				versa	
-
-		// NOTE(filip): moves cursor up
-		if(input->button_W)	
-			setMoveCursor(state->cursor_x - (state->cursor_y + 1) % 2, 
-						  state->cursor_y + 1, 
-						  state);
-		// NOTE(filip): moves cursor down
-		if(input->button_S)			
-			setMoveCursor(state->cursor_x + state->cursor_y % 2, 
-						  state->cursor_y - 1, 
-						  state);
-		// NOTE(filip): moves cursor left
-		if(input->button_A)			
-			setMoveCursor(state->cursor_x - 1, state->cursor_y, state);
-		// NOTE(filip): moves cursor right
-		if(input->button_D)
-			setMoveCursor(state->cursor_x + 1, state->cursor_y, state);
-
-		if(input->button_ESCAPE){
-			selectUnit(-1, state);
-			state->cursor_active = 0;
-		}
-		if(input->button_T && state->selected_unit != -1)
-		{
-			state->mode = MODE_ATTACK;
-			setMoveCursor(state->cursor_x, state->cursor_y, state);
-		}
-
 	} 
 	else if(state->mode == MODE_ATTACK)
 	{
-		if(input->button_ESCAPE)
-		{
-			selectUnit(-1, state);
-			state->cursor_active = 0;
-			state->cursor_active = 0;
-		}
-		if(input->button_TAB)
-			step(state);
-
-		if(input->button_V && state->selected_unit != -1){
-			state->mode = MODE_MOVE;
-			setMoveCursor(state->cursor_x, state->cursor_y, state);
-		}
 		if(input->button_SPACE || input->button_LMB)
+		{
 			attackSelectedUnit(state);
-		// Move cursor up
-		if(input->button_W)	
-			setMoveCursor(state->cursor_x - (state->cursor_y + 1) % 2, 
-						  state->cursor_y + 1, 
-						  state);
-		// Move cursor down
-		if(input->button_S)			
-			setMoveCursor(state->cursor_x + state->cursor_y % 2, 
-						  state->cursor_y - 1, 
-						  state);
-		// Move cursor left 
-		if(input->button_A)			
-			setMoveCursor(state->cursor_x - 1, state->cursor_y, state);
-		// Move cursor right
-		if(input->button_D)
-			setMoveCursor(state->cursor_x + 1, state->cursor_y, state);
+			if(state->units[state->selected_unit].mp_current == 0)
+				step(state);
+		}
 	} 
 	else if(state->mode == MODE_BUILD)
 	{
-		if(input->button_ESCAPE)
-		{
-			selectUnit(-1, state);
-			state->cursor_active = 0;
-		}
-		if(input->button_TAB)
-		{
-			step(state);
-		}
 		if(findUnit(state->players[state->turn].spawn_tile_x,
 					state->players[state->turn].spawn_tile_y,
 					state) == -1
@@ -782,6 +731,30 @@ void processInput(struct input_pressed *input, struct game_state *state)
 		}
 	}
 
+	if(state->mode == MODE_ATTACK || state->mode == MODE_MOVE || state->mode == MODE_NORMAL)
+	{
+		if(input->button_V && state->selected_unit != -1)
+		{
+			state->mode = MODE_MOVE;
+		}
+		if(input->button_T && state->selected_unit != -1)
+		{
+			state->mode = MODE_ATTACK;
+		}
+	}
+
+	if(state->mode != MODE_TRANSITION)
+	{
+		if(input->button_ESCAPE)
+		{
+			selectUnit(-1, state);
+			state->cursor_active = 0;
+		}
+	}
+	if(input->button_TAB)
+	{
+		step(state);
+	}
 	if((state->mode == MODE_ATTACK || state->mode == MODE_MOVE) && 
 		state->mode != MODE_TRANSITION)
 	{
@@ -793,6 +766,24 @@ void processInput(struct input_pressed *input, struct game_state *state)
 						  state->map_hex_size,
 						  &hex_x, &hex_y);
 		setMoveCursor(hex_x, hex_y, state);
+
+		// Move cursor up
+		if(input->button_W)	
+			setMoveCursor(state->cursor_x - (state->cursor_y + 1) % 2, 
+						  state->cursor_y + 1, 
+						  state);
+		// Move cursor down
+		if(input->button_S)			
+			setMoveCursor(state->cursor_x + state->cursor_y % 2, 
+						  state->cursor_y - 1, 
+						  state);
+		// Move cursor left 
+		if(input->button_A)			
+			setMoveCursor(state->cursor_x - 1, state->cursor_y, state);
+		// Move cursor right
+		if(input->button_D)
+			setMoveCursor(state->cursor_x + 1, state->cursor_y, state);
+		
 	}
 
 	if(state->mode != MODE_ATTACK && 
@@ -808,6 +799,7 @@ void processInput(struct input_pressed *input, struct game_state *state)
 							  state->map_offset_x, state->map_offset_y,
 							  state->map_hex_size,
 							  &hex_x, &hex_y);
+			printf("hex_x = %d, hex_y = %d\n", hex_x, hex_y);
 			int target = findUnit(hex_x, hex_y, state);
 			if(target!=-1 && state->units[target].team == state->turn)
 			{
@@ -820,23 +812,21 @@ void processInput(struct input_pressed *input, struct game_state *state)
 		}
 	}
 
-
+	//FIXME(filip): Obvious camera zoom bug
 	state->map_hex_size += 0.01*input->scroll_delta;
-	char msg[50];
-	sprintf(msg, "Scroll delta: %f", input->scroll_delta);
 	input->scroll_delta = 0;
-	alertMessage(msg, 10, state);
 
-	state->min_offset_x = -5.0 * (0.1 / state->map_hex_size);	
-	state->min_offset_y = -2.0 * (0.1 / state->map_hex_size);	
+	state->min_offset_x = -5.0 * (state->map_hex_size / 0.1);	
+	state->min_offset_y = -2.5 * (state->map_hex_size / 0.1);	
 	clampHexSize(state);
 	clampMapOffset(state);
 }
-
+*/
 // Generates a hard coded hexagonal test map
 // TODO(filip): Free memory allocated by initializeMap() and initializeUIState()
 // 				Create freeMap and freeUIState functions
-void generateTestMap(struct game_state *state)
+void generateTestMap(struct game_state *state);
+/*
 {
 	int i, j;
 	state->size_x = 20;
@@ -876,3 +866,4 @@ void generateTestMap(struct game_state *state)
 	createGolem(state->size_x - 1, state->size_y - 3, 1, state);
 
 }
+*/
